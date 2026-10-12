@@ -1,0 +1,513 @@
+/*
+ * Benue Arise for Hon — admin-content.css
+ * Supplemental styles for the admin page and Vision & Mission content.
+ * Load after styles.css.
+ */
+
+:root {
+  --arise-violet: #27143f;
+  --arise-violet-light: #49256b;
+  --arise-violet-soft: #f3edf8;
+  --arise-green: #168447;
+  --arise-green-dark: #0d6333;
+  --arise-green-soft: #eaf7ef;
+  --arise-ink: #201b27;
+  --arise-muted: #706a78;
+  --arise-line: #e6e0eb;
+  --arise-paper: #fff;
+  --arise-danger: #b42318;
+  --arise-danger-soft: #fff0ee;
+  --arise-warning: #8a5a00;
+  --arise-warning-soft: #fff7df;
+  --arise-radius: 18px;
+  --arise-shadow: 0 14px 38px rgba(39, 20, 63, .09);
+}
+
+.admin-content-page,
+.vision-mission-page { color: var(--arise-ink); }
+
+.admin-content-page *,
+.vision-mission-page * { box-sizing: border-box; }
+
+.admin-content-page img,
+.vision-mission-page img { max-width: 100%; }
+
+.admin-content-wrap,
+.vision-mission-wrap {
+  width: min(1160px, calc(100% - 36px));
+  margin-inline: auto;
+}
+
+.admin-content-section,
+.vision-mission-section { padding: clamp(34px, 6vw, 76px) 0; }
+
+.admin-content-heading,
+.vision-mission-heading {
+  max-width: 780px;
+  margin: 0 auto 30px;
+  text-align: center;
+}
+
+.admin-content-heading h1,
+.admin-content-heading h2,
+.vision-mission-heading h1,
+.vision-mission-heading h2 {
+  color: var(--arise-violet);
+  line-height: 1.12;
+  margin: 8px 0 14px;
+  letter-spacing: -.035em;
+}
+
+.admin-content-heading h1,
+.vision-mission-heading h1 { font-size: clamp(2rem, 5vw, 3.8rem); }
+
+.admin-content-heading h2,
+.vision-mission-heading h2 { font-size: clamp(1.65rem, 3vw, 2.5rem); }
+
+.admin-content-heading p,
+.vision-mission-heading p {
+  color: var(--arise-muted);
+  line-height: 1.75;
+}
+
+.admin-content-kicker,
+.vision-mission-kicker {
+  color: var(--arise-green-dark);
+  font-size: .75rem;
+  font-weight: 800;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+/* Admin dashboard panels and form controls */
+.admin-content-panel {
+  background: var(--arise-paper);
+  border: 1px solid var(--arise-line);
+  border-radius: var(--arise-radius);
+  box-shadow: var(--arise-shadow);
+  margin: 22px 0;
+  padding: clamp(20px, 4vw, 34px);
+}
+
+.admin-content-panel > h2,
+.admin-content-panel > h3 {
+  color: var(--arise-violet);
+  margin: 0 0 12px;
+}
+
+.admin-content-panel > p {
+  color: var(--arise-muted);
+  line-height: 1.7;
+}
+
+.admin-content-grid,
+.hero-admin-grid,
+.admin-slide-grid,
+.vision-mission-cards,
+.statement-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.admin-content-field { display: grid; gap: 8px; margin-bottom: 18px; }
+
+.admin-content-field label,
+.admin-content-panel label {
+  color: var(--arise-ink);
+  font-size: .9rem;
+  font-weight: 700;
+}
+
+.admin-content-field input,
+.admin-content-field textarea,
+.admin-content-field select,
+.admin-content-panel input:not([type="checkbox"]):not([type="radio"]),
+.admin-content-panel textarea,
+.admin-content-panel select {
+  width: 100%;
+  min-height: 46px;
+  border: 1px solid #d9d0e2;
+  border-radius: 11px;
+  background: #fff;
+  color: var(--arise-ink);
+  font: inherit;
+  padding: 12px 14px;
+  outline: none;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.admin-content-field textarea,
+.admin-content-panel textarea {
+  min-height: 130px;
+  resize: vertical;
+  line-height: 1.65;
+}
+
+.admin-content-field input:focus,
+.admin-content-field textarea:focus,
+.admin-content-field select:focus,
+.admin-content-panel input:focus,
+.admin-content-panel textarea:focus,
+.admin-content-panel select:focus {
+  border-color: var(--arise-violet-light);
+  box-shadow: 0 0 0 4px rgba(73, 37, 107, .12);
+}
+
+.admin-content-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.admin-content-button,
+.admin-content-page button[type="submit"],
+.admin-content-panel button[type="submit"] {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 9px;
+  min-height: 44px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 11px 20px;
+  background: var(--arise-violet);
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 750;
+  text-decoration: none;
+  transition: transform 160ms ease, background 160ms ease, box-shadow 160ms ease;
+}
+
+.admin-content-button:hover,
+.admin-content-page button[type="submit"]:hover,
+.admin-content-panel button[type="submit"]:hover {
+  background: var(--arise-violet-light);
+  box-shadow: 0 8px 22px rgba(39, 20, 63, .18);
+  transform: translateY(-1px);
+}
+
+.admin-content-button--green { background: var(--arise-green); }
+.admin-content-button--green:hover { background: var(--arise-green-dark); }
+
+.admin-content-button--outline {
+  border-color: var(--arise-line);
+  background: #fff;
+  color: var(--arise-violet);
+}
+
+.admin-content-button--outline:hover {
+  background: var(--arise-violet-soft);
+  color: var(--arise-violet);
+}
+
+.admin-content-button:disabled,
+.admin-content-page button:disabled,
+.admin-content-panel button:disabled {
+  cursor: not-allowed;
+  opacity: .58;
+  transform: none;
+  box-shadow: none;
+}
+
+.admin-content-note,
+.admin-content-status,
+.vision-status {
+  border: 1px solid var(--arise-line);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--arise-muted);
+  line-height: 1.6;
+  margin: 16px 0;
+  padding: 13px 16px;
+}
+
+.admin-content-status[data-state="success"],
+.vision-status[data-state="success"] {
+  border-color: #b9e3c7;
+  background: var(--arise-green-soft);
+  color: var(--arise-green-dark);
+}
+
+.admin-content-status[data-state="error"],
+.vision-status[data-state="error"] {
+  border-color: #f1c2bd;
+  background: var(--arise-danger-soft);
+  color: var(--arise-danger);
+}
+
+.admin-content-status[data-state="warning"],
+.vision-status[data-state="warning"] {
+  border-color: #f0d88d;
+  background: var(--arise-warning-soft);
+  color: var(--arise-warning);
+}
+
+/* Hero slide / image management cards */
+.hero-admin-card,
+.admin-slide-card {
+  overflow: hidden;
+  border: 1px solid var(--arise-line);
+  border-radius: 16px;
+  background: #fff;
+}
+
+.hero-admin-card img,
+.admin-slide-card img,
+.admin-slide-preview {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  background: var(--arise-violet-soft);
+}
+
+.hero-admin-card-body,
+.admin-slide-card-body { padding: 17px; }
+
+.hero-admin-card h3,
+.admin-slide-card h3 {
+  color: var(--arise-violet);
+  margin: 0 0 8px;
+}
+
+.hero-admin-card p,
+.admin-slide-card p { color: var(--arise-muted); line-height: 1.6; }
+
+.admin-content-meta { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+.admin-content-pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 5px 10px;
+  background: var(--arise-violet-soft);
+  color: var(--arise-violet);
+  font-size: .75rem;
+  font-weight: 800;
+}
+
+.admin-content-pill--published { background: var(--arise-green-soft); color: var(--arise-green-dark); }
+.admin-content-pill--draft { background: var(--arise-warning-soft); color: var(--arise-warning); }
+
+/* Vision & Mission hero */
+.vision-mission-intro {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 90% 10%, rgba(255,255,255,.12), transparent 30%),
+    linear-gradient(135deg, var(--arise-violet), #432164);
+  color: #fff;
+  padding: clamp(32px, 7vw, 78px) 20px;
+}
+
+.vision-mission-intro .vision-mission-wrap { position: relative; z-index: 1; }
+.vision-mission-intro .vision-mission-kicker { color: #bde9cb; }
+
+.vision-mission-intro h1 {
+  max-width: 850px;
+  color: #fff;
+  font-size: clamp(2.2rem, 6vw, 4.6rem);
+  line-height: 1.04;
+  letter-spacing: -.045em;
+  margin: 14px 0;
+}
+
+.vision-mission-intro p {
+  max-width: 720px;
+  color: rgba(255,255,255,.83);
+  line-height: 1.8;
+}
+
+.vision-mission-slogan {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  align-items: center;
+  margin-top: 14px;
+  border: 1px solid rgba(255,255,255,.25);
+  border-radius: 999px;
+  padding: 10px 15px;
+  color: #fff;
+  font-size: .78rem;
+  font-weight: 850;
+  letter-spacing: .1em;
+}
+
+/* Published statement cards */
+.vision-mission-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--arise-line);
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: var(--arise-shadow);
+  padding: clamp(23px, 4vw, 38px);
+}
+
+.vision-mission-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 5px;
+  background: var(--arise-green);
+}
+
+.vision-mission-card--mission::before { background: var(--arise-violet-light); }
+
+.vision-mission-card .statement-number {
+  display: inline-grid;
+  place-items: center;
+  width: 43px;
+  height: 43px;
+  border-radius: 13px;
+  background: var(--arise-green-soft);
+  color: var(--arise-green-dark);
+  font-size: .82rem;
+  font-weight: 900;
+}
+
+.vision-mission-card--mission .statement-number {
+  background: var(--arise-violet-soft);
+  color: var(--arise-violet);
+}
+
+.vision-mission-card h2,
+.vision-mission-card h3 {
+  color: var(--arise-violet);
+  font-size: clamp(1.35rem, 2.4vw, 1.9rem);
+  line-height: 1.25;
+  margin: 19px 0 12px;
+}
+
+.vision-mission-card p {
+  color: #57515f;
+  line-height: 1.85;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.statement-entry {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  gap: 16px;
+  padding: 21px 0;
+  border-bottom: 1px solid var(--arise-line);
+}
+
+.statement-entry:first-child { padding-top: 0; }
+.statement-entry:last-child { border-bottom: 0; padding-bottom: 0; }
+
+.statement-entry .statement-number {
+  display: grid;
+  place-items: center;
+  align-self: start;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--arise-violet-soft);
+  color: var(--arise-violet);
+  font-size: .78rem;
+  font-weight: 900;
+}
+
+.statement-entry-copy h3 {
+  color: var(--arise-violet);
+  font-size: 1.1rem;
+  margin: 0 0 9px;
+}
+
+.statement-entry-copy p {
+  color: #57515f;
+  line-height: 1.85;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.statement-empty {
+  border: 1px dashed #cfc3da;
+  border-radius: 13px;
+  background: #fcfaff;
+  color: var(--arise-muted);
+  line-height: 1.7;
+  padding: 18px;
+}
+
+/* PDF export area */
+.vision-download-panel {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  border: 1px solid var(--arise-line);
+  border-radius: 18px;
+  background: linear-gradient(135deg, #fff, #f7f1fb);
+  padding: clamp(20px, 4vw, 30px);
+}
+
+.vision-download-panel h2,
+.vision-download-panel h3 { color: var(--arise-violet); margin: 0 0 8px; }
+
+.vision-download-panel p { color: var(--arise-muted); line-height: 1.7; margin: 0; }
+
+#download-vision-pdf {
+  flex: 0 0 auto;
+  min-height: 46px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--arise-green);
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+  padding: 12px 20px;
+  transition: transform 160ms ease, background 160ms ease;
+}
+
+#download-vision-pdf:hover { background: var(--arise-green-dark); transform: translateY(-1px); }
+#download-vision-pdf:disabled { cursor: wait; opacity: .65; transform: none; }
+
+.admin-content-page a:focus-visible,
+.admin-content-page button:focus-visible,
+.admin-content-page input:focus-visible,
+.admin-content-page textarea:focus-visible,
+.admin-content-page select:focus-visible,
+.vision-mission-page a:focus-visible,
+.vision-mission-page button:focus-visible,
+.vision-mission-page input:focus-visible,
+.vision-mission-page textarea:focus-visible,
+.vision-mission-page select:focus-visible,
+#download-vision-pdf:focus-visible {
+  outline: 3px solid #8b62b1;
+  outline-offset: 3px;
+}
+
+@media (max-width: 760px) {
+  .admin-content-wrap,
+  .vision-mission-wrap { width: min(100% - 28px, 1160px); }
+
+  .admin-content-grid,
+  .hero-admin-grid,
+  .admin-slide-grid,
+  .vision-mission-cards,
+  .statement-grid { grid-template-columns: minmax(0, 1fr); }
+
+  .vision-download-panel { align-items: stretch; }
+  #download-vision-pdf { width: 100%; }
+
+  .statement-entry { grid-template-columns: 38px minmax(0, 1fr); gap: 12px; }
+  .statement-entry .statement-number { width: 36px; height: 36px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-content-button,
+  .admin-content-page button,
+  #download-vision-pdf { transition: none; }
+
+  .admin-content-button:hover,
+  #download-vision-pdf:hover { transform: none; }
+}
