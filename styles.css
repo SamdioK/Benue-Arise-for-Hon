@@ -5,6 +5,10 @@
    File: styles.css
    ========================================================== */
 
+/* =========================
+   1. GLOBAL VARIABLES
+   ========================= */
+
 :root {
   --navy: #101b3b;
   --navy-deep: #080f27;
@@ -26,7 +30,10 @@
   --content-width: 1240px;
 }
 
-* {
+/* Correct universal box sizing */
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -56,15 +63,28 @@ a {
 }
 
 button,
-input {
+input,
+textarea,
+select {
   font: inherit;
 }
 
+button {
+  cursor: pointer;
+}
+
 a:focus-visible,
+button:focus-visible,
 input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
 label:focus-visible {
   outline: 3px solid var(--orange);
   outline-offset: 4px;
+}
+
+[hidden] {
+  display: none !important;
 }
 
 .skip-link {
@@ -99,7 +119,9 @@ label:focus-visible {
   margin-inline: auto;
 }
 
-/* HEADER */
+/* =========================
+   2. HEADER AND NAVIGATION
+   ========================= */
 
 .site-header {
   position: relative;
@@ -207,7 +229,9 @@ label:focus-visible {
   display: none;
 }
 
-/* BUTTONS */
+/* =========================
+   3. BUTTONS
+   ========================= */
 
 .button {
   min-height: 44px;
@@ -235,7 +259,12 @@ label:focus-visible {
 
 .button-primary {
   color: var(--white);
-  background: linear-gradient(105deg, var(--orange), #e00068 60%, var(--purple));
+  background: linear-gradient(
+    105deg,
+    var(--orange),
+    #e00068 60%,
+    var(--purple)
+  );
 }
 
 .nav-join {
@@ -265,7 +294,9 @@ label:focus-visible {
   white-space: nowrap;
 }
 
-/* HERO */
+/* =========================
+   4. HERO SECTION
+   ========================= */
 
 .hero {
   position: relative;
@@ -273,8 +304,17 @@ label:focus-visible {
   overflow: hidden;
   color: var(--white);
   background:
-    radial-gradient(ellipse at 74% 25%, rgba(37, 78, 144, 0.62), transparent 40%),
-    linear-gradient(115deg, var(--navy-deep), #101b3b 57%, #1e1252);
+    radial-gradient(
+      ellipse at 74% 25%,
+      rgba(37, 78, 144, 0.62),
+      transparent 40%
+    ),
+    linear-gradient(
+      115deg,
+      var(--navy-deep),
+      #101b3b 57%,
+      #1e1252
+    );
 }
 
 .hero-backdrop {
@@ -283,7 +323,11 @@ label:focus-visible {
   inset: 0;
   opacity: 0.35;
   background:
-    linear-gradient(90deg, var(--navy-deep) 0%, transparent 100%),
+    linear-gradient(
+      90deg,
+      var(--navy-deep) 0%,
+      transparent 100%
+    ),
     url("assets/images/benue-landscape.jpg") center / cover no-repeat;
 }
 
@@ -383,12 +427,14 @@ label:focus-visible {
 .hero-visual {
   position: relative;
   align-self: stretch;
+  min-width: 0;
   min-height: 430px;
   display: flex;
   align-items: flex-end;
   justify-content: center;
 }
 
+/* Original portrait styling retained */
 .portrait-frame {
   position: relative;
   z-index: 2;
@@ -397,6 +443,7 @@ label:focus-visible {
   display: flex;
   align-items: flex-end;
   justify-content: center;
+  overflow: hidden;
 }
 
 .candidate-portrait {
@@ -420,7 +467,11 @@ label:focus-visible {
   padding: 20px;
   color: rgba(255, 255, 255, 0.8);
   text-align: center;
-  background: linear-gradient(150deg, rgba(255, 255, 255, 0.08), transparent);
+  background: linear-gradient(
+    150deg,
+    rgba(255, 255, 255, 0.08),
+    transparent
+  );
   border: 1px dashed rgba(255, 255, 255, 0.35);
   border-radius: 24px 24px 0 0;
 }
@@ -448,9 +499,10 @@ label:focus-visible {
   font-size: 11px;
 }
 
+/* SDP party logo */
 .hero-party-mark {
   position: absolute;
-  z-index: 4;
+  z-index: 7;
   top: 26px;
   right: 4px;
   width: 116px;
@@ -470,9 +522,10 @@ label:focus-visible {
   object-fit: contain;
 }
 
+/* Original candidate caption */
 .candidate-caption {
   position: absolute;
-  z-index: 5;
+  z-index: 7;
   right: -20px;
   bottom: 28px;
   width: min(410px, 95%);
@@ -481,7 +534,11 @@ label:focus-visible {
   align-items: stretch;
   gap: 13px;
   color: var(--white);
-  background: linear-gradient(105deg, rgba(0, 116, 65, 0.97), rgba(87, 0, 151, 0.96));
+  background: linear-gradient(
+    105deg,
+    rgba(0, 116, 65, 0.97),
+    rgba(87, 0, 151, 0.96)
+  );
   border: 1px solid rgba(255, 255, 255, 0.17);
   border-radius: 12px 0 0 12px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.23);
@@ -510,6 +567,7 @@ label:focus-visible {
   font-size: 11px;
 }
 
+/* Decorative hero shapes */
 .hero-decoration {
   position: absolute;
   z-index: 1;
@@ -548,7 +606,242 @@ label:focus-visible {
   );
 }
 
-/* DEVELOPMENT PRIORITIES */
+/* =========================
+   5. HERO SLIDESHOW
+   Compatible with:
+   #hero-slideshow
+   #hero-slide-frame
+   .hero-slide-image
+   .hero-slide-generated
+   .hero-slide-shade
+   .hero-slide-caption
+   .hero-slide-prev
+   .hero-slide-next
+   #hero-slide-dots
+   ========================= */
+
+.hero-portrait.hero-slideshow {
+  position: relative;
+  isolation: isolate;
+  z-index: 2;
+  width: 100%;
+  min-width: 0;
+  min-height: 430px;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      ellipse at 50% 25%,
+      rgba(101, 0, 168, 0.28),
+      transparent 65%
+    ),
+    linear-gradient(145deg, #080f27, #202e55);
+}
+
+.hero-slideshow .portrait-frame,
+.hero-slideshow .hero-slide-frame {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 470px;
+  height: 430px;
+  min-height: 0;
+  margin-inline: auto;
+  display: block;
+  overflow: hidden;
+  background: transparent;
+  border-radius: 18px 18px 0 0;
+}
+
+/* All slideshow images */
+.hero-slideshow .hero-slide-image {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  margin: 0;
+  object-fit: contain;
+  object-position: center bottom;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.65s ease,
+    visibility 0.65s ease;
+}
+
+/* Visible slide */
+.hero-slideshow .hero-slide-image.is-active {
+  z-index: 2;
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Preserve visibility of the original fallback portrait */
+.hero-slideshow .hero-slide-image:not(.hero-slide-generated).is-active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Gradient overlay */
+.hero-slideshow .hero-slide-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(8, 15, 39, 0.02) 30%,
+    rgba(8, 15, 39, 0.14) 57%,
+    rgba(8, 15, 39, 0.82) 100%
+  );
+}
+
+/* Loading or empty-state placeholder */
+.hero-slideshow .portrait-placeholder {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+  padding: 24px;
+  color: rgba(255, 255, 255, 0.85);
+  text-align: center;
+  background: linear-gradient(145deg, #101b3b, #35005e);
+}
+
+.hero-slideshow .portrait-placeholder[hidden] {
+  display: none !important;
+}
+
+/* Slideshow caption */
+.hero-slideshow .hero-slide-caption {
+  position: absolute;
+  right: 18px;
+  bottom: 54px;
+  left: 18px;
+  z-index: 5;
+  max-width: 390px;
+  margin-inline: auto;
+  padding: 13px 16px;
+  color: #fff;
+  text-align: left;
+  background: linear-gradient(
+    105deg,
+    rgba(0, 116, 65, 0.96),
+    rgba(53, 0, 94, 0.96)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-left: 4px solid var(--orange);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+  overflow-wrap: anywhere;
+}
+
+.hero-slideshow .hero-slide-caption strong {
+  display: block;
+  margin-bottom: 3px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1.5;
+}
+
+.hero-slideshow .hero-slide-caption span {
+  display: block;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+/* Previous and next arrows */
+.hero-slideshow .hero-slide-arrow {
+  position: absolute;
+  top: 43%;
+  z-index: 8;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background: rgba(8, 15, 39, 0.76);
+  border: 1px solid rgba(255, 255, 255, 0.48);
+  border-radius: 50%;
+  font-size: 25px;
+  line-height: 1;
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.hero-slideshow .hero-slide-prev {
+  left: 12px;
+}
+
+.hero-slideshow .hero-slide-next {
+  right: 12px;
+}
+
+.hero-slideshow .hero-slide-arrow:hover {
+  background: var(--purple);
+  transform: translateY(-50%) scale(1.06);
+}
+
+/* Dot indicators */
+.hero-slideshow .hero-slide-dots {
+  position: absolute;
+  right: 12px;
+  bottom: 17px;
+  left: 12px;
+  z-index: 8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.hero-slideshow .hero-slide-dots button {
+  width: 9px;
+  height: 9px;
+  min-width: 9px;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 50%;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.hero-slideshow .hero-slide-dots button.is-active,
+.hero-slideshow .hero-slide-dots button[aria-current="true"] {
+  background: var(--orange);
+  border-color: #fff;
+  transform: scale(1.25);
+}
+
+.hero-slideshow .hero-slide-arrow:focus-visible,
+.hero-slideshow .hero-slide-dots button:focus-visible {
+  outline: 3px solid var(--orange);
+  outline-offset: 3px;
+}
+
+/* =========================
+   6. DEVELOPMENT PRIORITIES
+   ========================= */
 
 .priorities {
   position: relative;
@@ -617,7 +910,9 @@ label:focus-visible {
 .priority-black { --priority-color: #252525; }
 .priority-gold { --priority-color: #f3a000; }
 
-/* ABOUT, MISSION AND VISION */
+/* =========================
+   7. ABOUT, MISSION AND VISION
+   ========================= */
 
 .about-band {
   display: grid;
@@ -632,23 +927,31 @@ label:focus-visible {
   position: relative;
   min-height: 265px;
   overflow: hidden;
-  background:
-    linear-gradient(135deg, #0a442f, #274f7c 65%, #d5a66a);
+  background: linear-gradient(
+    135deg,
+    #0a442f,
+    #274f7c 65%,
+    #d5a66a
+  );
 }
 
 .about-landscape img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   min-height: 265px;
-  position: absolute;
-  inset: 0;
   object-fit: cover;
 }
 
 .landscape-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(12, 12, 46, 0.5));
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(12, 12, 46, 0.5)
+  );
 }
 
 .about-intro {
@@ -787,7 +1090,9 @@ label:focus-visible {
   transform: rotate(-5deg);
 }
 
-/* NEWS AND EVENTS */
+/* =========================
+   8. NEWS AND EVENTS
+   ========================= */
 
 .updates-section {
   padding-block: 43px 48px;
@@ -938,7 +1243,9 @@ label:focus-visible {
   font-weight: 900;
 }
 
-/* EVENTS */
+/* =========================
+   9. EVENTS
+   ========================= */
 
 .event-list {
   display: flex;
@@ -1022,7 +1329,9 @@ label:focus-visible {
   color: var(--orange);
 }
 
-/* JOIN BANNER */
+/* =========================
+   10. JOIN BANNER
+   ========================= */
 
 .join-banner {
   position: relative;
@@ -1107,7 +1416,9 @@ label:focus-visible {
   text-decoration: underline;
 }
 
-/* FOOTER */
+/* =========================
+   11. FOOTER
+   ========================= */
 
 .site-footer {
   color: rgba(255, 255, 255, 0.8);
@@ -1215,7 +1526,9 @@ label:focus-visible {
   color: var(--orange);
 }
 
-/* TABLET */
+/* =========================
+   12. TABLET LAYOUT
+   ========================= */
 
 @media (max-width: 1100px) {
   .header-inner {
@@ -1272,6 +1585,15 @@ label:focus-visible {
     height: 390px;
   }
 
+  .hero-portrait.hero-slideshow {
+    min-height: 390px;
+  }
+
+  .hero-slideshow .portrait-frame,
+  .hero-slideshow .hero-slide-frame {
+    height: 390px;
+  }
+
   .priority-item {
     padding-inline: 5px;
   }
@@ -1320,7 +1642,9 @@ label:focus-visible {
   }
 }
 
-/* MOBILE NAVIGATION AND LAYOUT */
+/* =========================
+   13. MOBILE NAVIGATION
+   ========================= */
 
 @media (max-width: 760px) {
   .section-wrap {
@@ -1434,6 +1758,7 @@ label:focus-visible {
     padding: 13px;
   }
 
+  /* Mobile hero */
   .hero-inner {
     width: 100%;
     min-height: auto;
@@ -1484,13 +1809,27 @@ label:focus-visible {
   }
 
   .hero-visual {
-    min-height: 310px;
+    min-height: 320px;
     margin-top: 5px;
   }
 
   .portrait-frame {
     width: min(88%, 350px);
     height: 320px;
+  }
+
+  .hero-portrait.hero-slideshow {
+    width: 100%;
+    min-height: 320px;
+    margin-top: 0;
+    border-radius: 0;
+  }
+
+  .hero-slideshow .portrait-frame,
+  .hero-slideshow .hero-slide-frame {
+    width: min(100%, 350px);
+    height: 320px;
+    border-radius: 14px 14px 0 0;
   }
 
   .hero-party-mark {
@@ -1516,6 +1855,47 @@ label:focus-visible {
     font-size: 9px;
   }
 
+  .hero-slideshow .hero-slide-arrow {
+    top: 40%;
+    width: 36px;
+    height: 36px;
+    font-size: 21px;
+  }
+
+  .hero-slideshow .hero-slide-prev {
+    left: 8px;
+  }
+
+  .hero-slideshow .hero-slide-next {
+    right: 8px;
+  }
+
+  .hero-slideshow .hero-slide-caption {
+    right: 10px;
+    bottom: 43px;
+    left: 10px;
+    padding: 9px 11px;
+  }
+
+  .hero-slideshow .hero-slide-caption strong {
+    font-size: 10px;
+  }
+
+  .hero-slideshow .hero-slide-caption span {
+    font-size: 9px;
+  }
+
+  .hero-slideshow .hero-slide-dots {
+    bottom: 13px;
+    gap: 7px;
+  }
+
+  .hero-slideshow .hero-slide-dots button {
+    width: 8px;
+    height: 8px;
+    min-width: 8px;
+  }
+
   .hero-decoration-one {
     right: -18%;
     height: 170px;
@@ -1526,6 +1906,7 @@ label:focus-visible {
     height: 130px;
   }
 
+  /* Development priorities */
   .priorities {
     width: calc(100% - 24px);
     margin-top: 18px;
@@ -1566,6 +1947,7 @@ label:focus-visible {
     font-size: 10px;
   }
 
+  /* About, mission and vision */
   .about-band {
     grid-template-columns: 1fr;
   }
@@ -1625,6 +2007,7 @@ label:focus-visible {
     max-width: 160px;
   }
 
+  /* News and events */
   .updates-section {
     padding-block: 31px;
     gap: 27px;
@@ -1687,6 +2070,7 @@ label:focus-visible {
     min-height: 60px;
   }
 
+  /* Join banner */
   .join-banner-inner {
     width: calc(100% - 32px);
     padding-block: 26px;
@@ -1703,6 +2087,7 @@ label:focus-visible {
     gap: 8px;
   }
 
+  /* Footer */
   .footer-main {
     width: calc(100% - 36px);
     padding-block: 31px;
@@ -1723,7 +2108,9 @@ label:focus-visible {
   }
 }
 
-/* SMALL PHONES */
+/* =========================
+   14. SMALL PHONES
+   ========================= */
 
 @media (max-width: 380px) {
   .brand-logo {
@@ -1753,6 +2140,21 @@ label:focus-visible {
 
   .hero-actions .button {
     width: 100%;
+  }
+
+  .hero-portrait.hero-slideshow {
+    min-height: 285px;
+  }
+
+  .hero-slideshow .portrait-frame,
+  .hero-slideshow .hero-slide-frame {
+    height: 285px;
+  }
+
+  .hero-slideshow .hero-slide-caption {
+    right: 8px;
+    left: 8px;
+    padding: 8px 9px;
   }
 
   .priority-icon {
@@ -1787,7 +2189,9 @@ label:focus-visible {
   }
 }
 
-/* REDUCED MOTION ACCESSIBILITY */
+/* =========================
+   15. REDUCED MOTION ACCESSIBILITY
+   ========================= */
 
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -1797,5 +2201,11 @@ label:focus-visible {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+  }
+
+  .hero-slideshow .hero-slide-image,
+  .hero-slideshow .hero-slide-arrow,
+  .hero-slideshow .hero-slide-dots button {
+    transition: none !important;
   }
 }
