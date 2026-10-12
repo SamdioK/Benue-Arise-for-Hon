@@ -24,13 +24,19 @@
 }
 
 .admin-content-page,
-.vision-mission-page { color: var(--arise-ink); }
+.vision-mission-page {
+  color: var(--arise-ink);
+}
 
 .admin-content-page *,
-.vision-mission-page * { box-sizing: border-box; }
+.vision-mission-page * {
+  box-sizing: border-box;
+}
 
 .admin-content-page img,
-.vision-mission-page img { max-width: 100%; }
+.vision-mission-page img {
+  max-width: 100%;
+}
 
 .admin-content-wrap,
 .vision-mission-wrap {
@@ -39,7 +45,9 @@
 }
 
 .admin-content-section,
-.vision-mission-section { padding: clamp(34px, 6vw, 76px) 0; }
+.vision-mission-section {
+  padding: clamp(34px, 6vw, 76px) 0;
+}
 
 .admin-content-heading,
 .vision-mission-heading {
@@ -59,10 +67,14 @@
 }
 
 .admin-content-heading h1,
-.vision-mission-heading h1 { font-size: clamp(2rem, 5vw, 3.8rem); }
+.vision-mission-heading h1 {
+  font-size: clamp(2rem, 5vw, 3.8rem);
+}
 
 .admin-content-heading h2,
-.vision-mission-heading h2 { font-size: clamp(1.65rem, 3vw, 2.5rem); }
+.vision-mission-heading h2 {
+  font-size: clamp(1.65rem, 3vw, 2.5rem);
+}
 
 .admin-content-heading p,
 .vision-mission-heading p {
@@ -80,6 +92,7 @@
 }
 
 /* Admin dashboard panels and form controls */
+
 .admin-content-panel {
   background: var(--arise-paper);
   border: 1px solid var(--arise-line);
@@ -110,7 +123,11 @@
   gap: 22px;
 }
 
-.admin-content-field { display: grid; gap: 8px; margin-bottom: 18px; }
+.admin-content-field {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 18px;
+}
 
 .admin-content-field label,
 .admin-content-panel label {
@@ -190,8 +207,13 @@
   transform: translateY(-1px);
 }
 
-.admin-content-button--green { background: var(--arise-green); }
-.admin-content-button--green:hover { background: var(--arise-green-dark); }
+.admin-content-button--green {
+  background: var(--arise-green);
+}
+
+.admin-content-button--green:hover {
+  background: var(--arise-green-dark);
+}
 
 .admin-content-button--outline {
   border-color: var(--arise-line);
@@ -246,7 +268,8 @@
   color: var(--arise-warning);
 }
 
-/* Hero slide / image management cards */
+/* Hero slide and image management cards */
+
 .hero-admin-card,
 .admin-slide-card {
   overflow: hidden;
@@ -266,7 +289,9 @@
 }
 
 .hero-admin-card-body,
-.admin-slide-card-body { padding: 17px; }
+.admin-slide-card-body {
+  padding: 17px;
+}
 
 .hero-admin-card h3,
 .admin-slide-card h3 {
@@ -275,9 +300,17 @@
 }
 
 .hero-admin-card p,
-.admin-slide-card p { color: var(--arise-muted); line-height: 1.6; }
+.admin-slide-card p {
+  color: var(--arise-muted);
+  line-height: 1.6;
+}
 
-.admin-content-meta { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.admin-content-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
 
 .admin-content-pill {
   display: inline-flex;
@@ -290,10 +323,18 @@
   font-weight: 800;
 }
 
-.admin-content-pill--published { background: var(--arise-green-soft); color: var(--arise-green-dark); }
-.admin-content-pill--draft { background: var(--arise-warning-soft); color: var(--arise-warning); }
+.admin-content-pill--published {
+  background: var(--arise-green-soft);
+  color: var(--arise-green-dark);
+}
 
-/* Vision & Mission hero */
+.admin-content-pill--draft {
+  background: var(--arise-warning-soft);
+  color: var(--arise-warning);
+}
+
+/* Vision and Mission hero */
+
 .vision-mission-intro {
   position: relative;
   overflow: hidden;
@@ -304,8 +345,14 @@
   padding: clamp(32px, 7vw, 78px) 20px;
 }
 
-.vision-mission-intro .vision-mission-wrap { position: relative; z-index: 1; }
-.vision-mission-intro .vision-mission-kicker { color: #bde9cb; }
+.vision-mission-intro .vision-mission-wrap {
+  position: relative;
+  z-index: 1;
+}
+
+.vision-mission-intro .vision-mission-kicker {
+  color: #bde9cb;
+}
 
 .vision-mission-intro h1 {
   max-width: 850px;
@@ -338,6 +385,7 @@
 }
 
 /* Published statement cards */
+
 .vision-mission-card {
   position: relative;
   overflow: hidden;
@@ -356,7 +404,9 @@
   background: var(--arise-green);
 }
 
-.vision-mission-card--mission::before { background: var(--arise-violet-light); }
+.vision-mission-card--mission::before {
+  background: var(--arise-violet-light);
+}
 
 .vision-mission-card .statement-number {
   display: inline-grid;
@@ -398,8 +448,14 @@
   border-bottom: 1px solid var(--arise-line);
 }
 
-.statement-entry:first-child { padding-top: 0; }
-.statement-entry:last-child { border-bottom: 0; padding-bottom: 0; }
+.statement-entry:first-child {
+  padding-top: 0;
+}
+
+.statement-entry:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
 
 .statement-entry .statement-number {
   display: grid;
@@ -436,7 +492,8 @@
   padding: 18px;
 }
 
-/* PDF export area */
+/* PDF download area */
+
 .vision-download-panel {
   display: flex;
   flex-wrap: wrap;
@@ -450,9 +507,16 @@
 }
 
 .vision-download-panel h2,
-.vision-download-panel h3 { color: var(--arise-violet); margin: 0 0 8px; }
+.vision-download-panel h3 {
+  color: var(--arise-violet);
+  margin: 0 0 8px;
+}
 
-.vision-download-panel p { color: var(--arise-muted); line-height: 1.7; margin: 0; }
+.vision-download-panel p {
+  color: var(--arise-muted);
+  line-height: 1.7;
+  margin: 0;
+}
 
 #download-vision-pdf {
   flex: 0 0 auto;
@@ -468,8 +532,18 @@
   transition: transform 160ms ease, background 160ms ease;
 }
 
-#download-vision-pdf:hover { background: var(--arise-green-dark); transform: translateY(-1px); }
-#download-vision-pdf:disabled { cursor: wait; opacity: .65; transform: none; }
+#download-vision-pdf:hover {
+  background: var(--arise-green-dark);
+  transform: translateY(-1px);
+}
+
+#download-vision-pdf:disabled {
+  cursor: wait;
+  opacity: .65;
+  transform: none;
+}
+
+/* Keyboard accessibility */
 
 .admin-content-page a:focus-visible,
 .admin-content-page button:focus-visible,
@@ -486,28 +560,52 @@
   outline-offset: 3px;
 }
 
+/* Responsive layout */
+
 @media (max-width: 760px) {
   .admin-content-wrap,
-  .vision-mission-wrap { width: min(100% - 28px, 1160px); }
+  .vision-mission-wrap {
+    width: min(100% - 28px, 1160px);
+  }
 
   .admin-content-grid,
   .hero-admin-grid,
   .admin-slide-grid,
   .vision-mission-cards,
-  .statement-grid { grid-template-columns: minmax(0, 1fr); }
+  .statement-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
 
-  .vision-download-panel { align-items: stretch; }
-  #download-vision-pdf { width: 100%; }
+  .vision-download-panel {
+    align-items: stretch;
+  }
 
-  .statement-entry { grid-template-columns: 38px minmax(0, 1fr); gap: 12px; }
-  .statement-entry .statement-number { width: 36px; height: 36px; }
+  #download-vision-pdf {
+    width: 100%;
+  }
+
+  .statement-entry {
+    grid-template-columns: 38px minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .statement-entry .statement-number {
+    width: 36px;
+    height: 36px;
+  }
 }
+
+/* Respect reduced-motion preferences */
 
 @media (prefers-reduced-motion: reduce) {
   .admin-content-button,
   .admin-content-page button,
-  #download-vision-pdf { transition: none; }
+  #download-vision-pdf {
+    transition: none;
+  }
 
   .admin-content-button:hover,
-  #download-vision-pdf:hover { transform: none; }
+  #download-vision-pdf:hover {
+    transform: none;
+  }
 }
