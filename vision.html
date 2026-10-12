@@ -1,1025 +1,302 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#35105d">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#27143f">
 
-  <title>Our Mission & Vision | Benue Arise for Hon</title>
+  <title>Vision &amp; Mission | Benue Arise for Hon</title>
 
   <meta
     name="description"
-    content="Discover the official mission and vision of Benue Arise for Hon. Read the published statements and download beautifully formatted PDF copies."
+    content="Discover the official vision and mission of Benue Arise for Hon, guided by Rescue, Rebuild, Restore."
   >
 
   <link rel="stylesheet" href="styles.css">
 
   <style>
-    :root {
-      --arise-purple: #35105d;
-      --arise-violet: #6d28d9;
-      --arise-red: #c51d36;
-      --arise-gold: #d6ad55;
-      --arise-ink: #241631;
-      --arise-muted: #71677c;
-      --arise-paper: #ffffff;
-      --arise-bg: #f7f3fb;
-      --arise-border: #e8dff0;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      color: var(--arise-ink);
-      background: var(--arise-bg);
-      font-family: Arial, Helvetica, sans-serif;
-      line-height: 1.7;
-    }
-
-    a {
-      color: inherit;
-    }
-
-    button {
-      font: inherit;
-    }
-
-    .vm-hero {
-      position: relative;
-      overflow: hidden;
-      padding: 75px 20px 65px;
-      color: #fff;
-      text-align: center;
-      background:
-        radial-gradient(
-          circle at 15% 15%,
-          rgba(255,255,255,.13),
-          transparent 32%
-        ),
-        linear-gradient(
-          135deg,
-          #25083f,
-          #4b1680 55%,
-          #771e68
-        );
-    }
-
-    .vm-hero::after {
-      content: "";
-      position: absolute;
-      left: -70px;
-      bottom: -145px;
-      width: 290px;
-      height: 290px;
-      border: 1px solid rgba(255,255,255,.16);
-      border-radius: 50%;
-      box-shadow:
-        0 0 0 30px rgba(255,255,255,.035),
-        0 0 0 60px rgba(255,255,255,.025);
-      pointer-events: none;
-    }
-
-    .vm-hero-inner {
-      position: relative;
-      z-index: 1;
-      max-width: 900px;
-      margin: 0 auto;
-    }
-
-    .vm-eyebrow {
-      display: inline-block;
-      margin-bottom: 15px;
-      padding: 7px 15px;
-      border: 1px solid rgba(255,255,255,.3);
-      border-radius: 30px;
-      color: #ffe5a4;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-
-    .vm-hero h1 {
-      margin: 0 0 12px;
-      color: #fff;
-      font-size: clamp(32px, 6vw, 56px);
-      line-height: 1.13;
-      letter-spacing: -1px;
-    }
-
-    .vm-hero p {
-      max-width: 700px;
-      margin: 15px auto 0;
-      color: rgba(255,255,255,.86);
-      font-size: 16px;
-    }
-
-    .vm-slogan {
-      margin-top: 25px;
-      color: #ffe5a4;
-      font-size: 13px;
-      font-weight: 900;
-      letter-spacing: 2px;
-    }
-
-    .vm-main {
-      width: min(1100px, calc(100% - 32px));
-      margin: 42px auto 70px;
-    }
-
-    .vm-intro {
-      max-width: 780px;
-      margin: 0 auto 30px;
-      text-align: center;
-    }
-
-    .vm-intro h2 {
-      margin: 0 0 8px;
-      color: var(--arise-purple);
-      font-size: clamp(24px, 4vw, 34px);
-    }
-
-    .vm-intro p {
-      margin: 0;
-      color: var(--arise-muted);
-    }
-
-    .vm-status {
-      margin: 0 auto 22px;
-      padding: 13px 16px;
-      border: 1px solid var(--arise-border);
+    .vision-status {
+      max-width: 1100px;
+      margin: 24px auto;
+      padding: 14px 18px;
       border-radius: 12px;
-      background: #fff;
-      color: var(--arise-muted);
-      font-size: 14px;
-      text-align: center;
+      background: #f3edf8;
+      color: #27143f;
+      border: 1px solid #d9c8e8;
     }
 
-    .vm-status[hidden] {
-      display: none;
+    .vision-status[data-type="error"] {
+      background: #fff0f0;
+      color: #8b1e1e;
+      border-color: #efc1c1;
     }
 
-    .vm-status.error {
-      border-color: #f1c7cd;
-      background: #fff5f6;
-      color: #a51d32;
+    .vision-status[data-type="success"] {
+      background: #edf9f0;
+      color: #175b2b;
+      border-color: #b9e2c2;
     }
 
-    .vm-list {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 30px;
-    }
-
-    .vm-card {
-      overflow: hidden;
-      border: 1px solid var(--arise-border);
-      border-radius: 18px;
-      background: #fff;
-      box-shadow: 0 12px 35px rgba(53,16,93,.07);
-    }
-
-    .vm-card-head {
-      position: relative;
-      padding: 23px 26px;
-      color: #fff;
-      background: linear-gradient(
-        120deg,
-        var(--arise-purple),
-        var(--arise-violet)
-      );
-    }
-
-    .vm-card[data-type="mission"] .vm-card-head {
-      background: linear-gradient(
-        120deg,
-        #7c1734,
-        var(--arise-red)
-      );
-    }
-
-    .vm-card-head::after {
-      content: "";
-      position: absolute;
-      right: -25px;
-      top: -55px;
-      width: 150px;
-      height: 150px;
-      border: 1px solid rgba(255,255,255,.2);
-      border-radius: 50%;
-      box-shadow: 0 0 0 22px rgba(255,255,255,.035);
-      pointer-events: none;
-    }
-
-    .vm-card-kicker {
-      position: relative;
-      z-index: 1;
-      margin-bottom: 5px;
-      color: #ffe5a4;
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-
-    .vm-card-head h2 {
-      position: relative;
-      z-index: 1;
-      margin: 0;
-      color: #fff;
-      font-size: clamp(24px, 4vw, 32px);
-      line-height: 1.25;
+    .statement-copy p {
+      line-height: 1.85;
+      white-space: normal;
       overflow-wrap: anywhere;
     }
 
-    .vm-card-body {
-      padding: 25px 26px 28px;
+    .statement-card small {
+      display: block;
+      margin-top: 22px;
     }
 
-    .vm-letterhead {
-      margin-bottom: 24px;
-      padding: 17px 12px 15px;
-      border-top: 4px solid var(--arise-gold);
-      border-bottom: 1px solid var(--arise-border);
+    .vision-download-section {
+      padding: 30px 20px 70px;
       text-align: center;
     }
 
-    .vm-letterhead-name {
-      color: var(--arise-purple);
-      font-size: clamp(15px, 3vw, 21px);
-      font-weight: 900;
-      letter-spacing: .3px;
-      line-height: 1.4;
+    .vision-download-panel {
+      max-width: 850px;
+      margin: 0 auto;
+      padding: 32px 24px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #27143f, #49246b);
+      color: #fff;
+      box-shadow: 0 16px 40px rgba(39, 20, 63, 0.16);
     }
 
-    .vm-letterhead-sub {
-      margin-top: 4px;
-      color: var(--arise-muted);
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-    }
-
-    .vm-letterhead-rule {
-      width: 75px;
-      height: 3px;
-      margin: 13px auto 0;
-      background: var(--arise-red);
-    }
-
-    .vm-statement-title {
+    .vision-download-panel h2 {
       margin: 0 0 12px;
-      color: var(--arise-purple);
-      font-size: 22px;
+      color: #fff;
     }
 
-    .vm-text {
-      color: #35283f;
-      font-size: 16px;
-      line-height: 1.95;
-      overflow-wrap: anywhere;
-      white-space: pre-wrap;
+    .vision-download-panel p {
+      max-width: 620px;
+      margin: 0 auto 22px;
+      color: #eee4f6;
+      line-height: 1.8;
     }
 
-    .vm-text:empty {
-      display: none;
-    }
-
-    .vm-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 26px;
-      padding-top: 22px;
-      border-top: 1px solid var(--arise-border);
-    }
-
-    .vm-btn {
+    .vision-download-button {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 9px;
-      min-height: 46px;
-      padding: 12px 18px;
+      gap: 10px;
+      min-height: 48px;
+      padding: 13px 22px;
       border: 0;
-      border-radius: 10px;
-      background: var(--arise-purple);
-      color: #fff;
+      border-radius: 999px;
+      background: #fff;
+      color: #27143f;
+      font: inherit;
+      font-weight: 700;
       cursor: pointer;
-      font-size: 13px;
-      font-weight: 800;
-      text-decoration: none;
-      transition:
-        transform .2s ease,
-        box-shadow .2s ease,
-        background .2s ease;
+      transition: transform 0.2s ease, opacity 0.2s ease;
     }
 
-    .vm-btn:hover {
+    .vision-download-button:hover {
       transform: translateY(-2px);
-      box-shadow: 0 7px 18px rgba(53,16,93,.2);
-      background: #4c1b78;
     }
 
-    .vm-btn:focus-visible {
-      outline: 3px solid var(--arise-gold);
-      outline-offset: 3px;
-    }
-
-    .vm-btn:disabled {
+    .vision-download-button:disabled {
+      opacity: 0.6;
       cursor: wait;
-      opacity: .65;
       transform: none;
     }
 
-    .vm-btn-secondary {
-      border: 1px solid var(--arise-border);
-      background: #fff;
-      color: var(--arise-purple);
+    .vision-slogan {
+      margin-top: 22px;
+      color: #e5c8ff;
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
     }
 
-    .vm-btn-secondary:hover {
-      background: #f7f0ff;
-    }
-
-    .vm-updated {
-      margin-top: 17px;
-      color: var(--arise-muted);
-      font-size: 11px;
-    }
-
-    .vm-empty {
-      padding: 35px 20px;
-      border: 1px dashed #cbb8dd;
-      border-radius: 16px;
-      background: #fff;
-      text-align: center;
-    }
-
-    .vm-empty h3 {
-      margin: 0 0 8px;
-      color: var(--arise-purple);
-    }
-
-    .vm-empty p {
-      margin: 0;
-      color: var(--arise-muted);
-    }
-
-    .vm-notice {
-      margin-top: 32px;
-      padding: 21px;
-      border-left: 4px solid var(--arise-gold);
-      border-radius: 8px;
-      background: #fff;
-      color: var(--arise-muted);
-      font-size: 13px;
-    }
-
-    .vm-notice strong {
-      color: var(--arise-purple);
-    }
-
-    .vm-footer {
-      padding: 30px 20px;
-      background: #200832;
-      color: rgba(255,255,255,.78);
-      text-align: center;
-      font-size: 12px;
-    }
-
-    .vm-footer strong {
-      color: #ffe5a4;
-    }
-
-    @media (min-width: 820px) {
-      .vm-list {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        align-items: start;
-      }
-    }
-
-    @media (max-width: 520px) {
-      .vm-hero {
-        padding: 55px 18px 48px;
+    @media (max-width: 640px) {
+      .vision-download-panel {
+        padding: 26px 18px;
       }
 
-      .vm-main {
-        width: calc(100% - 22px);
-        margin-top: 25px;
-      }
-
-      .vm-card-body {
-        padding: 19px 17px 22px;
-      }
-
-      .vm-card-head {
-        padding: 21px 18px;
-      }
-
-      .vm-actions {
-        flex-direction: column;
-      }
-
-      .vm-btn {
+      .vision-download-button {
         width: 100%;
-      }
-
-      .vm-text {
-        font-size: 15px;
-      }
-    }
-
-    @media print {
-      .vm-hero,
-      .vm-actions,
-      .vm-status,
-      .vm-notice,
-      .vm-footer {
-        display: none !important;
-      }
-
-      body {
-        background: #fff;
-      }
-
-      .vm-main {
-        width: 100%;
-        margin: 0;
-      }
-
-      .vm-list {
-        display: block;
-      }
-
-      .vm-card {
-        margin-bottom: 25px;
-        border: 0;
-        box-shadow: none;
-        break-inside: avoid;
       }
     }
   </style>
+
+  <script src="config.js"></script>
+  <script type="module" src="site.js"></script>
+  <script type="module" src="vision.js"></script>
 </head>
 
 <body>
-  <header class="vm-hero">
-    <div class="vm-hero-inner">
-      <div class="vm-eyebrow">Official Movement Documents</div>
+  <div class="announcement">
+    <span class="dot"></span>
+    BENUE ARISE FOR HON
+    <span class="announce-sep">/</span>
+    BENUE STATE
+  </div>
 
-      <h1>Our Mission &amp; Vision</h1>
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="Benue Arise for Hon home">
+      <span class="brand-mark">
+        <img
+          src="sdp-logo.png"
+          alt="SDP logo"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"
+        >
+        <span class="brand-fallback">A<span>+</span></span>
+      </span>
 
-      <p>
-        Discover the mission and vision officially published by
-        Benue Arise for Hon. Read each statement online or download
-        a professionally formatted PDF copy.
-      </p>
+      <span class="brand-copy">
+        <strong>BENUE <em>ARISE</em></strong>
+        <small>FOR HON · BENUE STATE</small>
+      </span>
+    </a>
 
-      <div class="vm-slogan">
-        RESCUE <span aria-hidden="true">|</span>
-        REBUILD <span aria-hidden="true">|</span>
-        RESTORE
-      </div>
-    </div>
+    <button
+      class="menu-toggle"
+      aria-expanded="false"
+      aria-controls="primary-nav"
+      aria-label="Open navigation"
+      type="button"
+    >
+      <span></span>
+      <span></span>
+    </button>
+
+    <nav id="primary-nav" class="primary-nav" aria-label="Main navigation">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a class="active" href="vision.html" aria-current="page">Vision &amp; Mission</a>
+      <a href="news.html">News</a>
+      <a href="events.html">Events</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="contact.html">Contact</a>
+      <a class="nav-contact" href="contact.html">Contact <span>↗</span></a>
+    </nav>
   </header>
 
-  <main class="vm-main">
-    <section class="vm-intro">
-      <h2>Our Purpose. Our Direction.</h2>
+  <main>
+    <section class="page-hero">
+      <div class="section-kicker light">PURPOSE / 02</div>
+
+      <h1>Vision &amp; <span>mission.</span></h1>
+
       <p>
-        These statements are managed by the website administrator.
-        Published updates will appear here automatically.
+        Our direction, our purpose, and our commitment to a better Benue State.
       </p>
+
+      <div class="page-hero-mark">02</div>
     </section>
 
-    <div
-      id="vm-status"
-      class="vm-status"
+    <p
+      id="vision-status"
+      class="vision-status"
       role="status"
       aria-live="polite"
-    >
-      Loading published Mission and Vision statements...
-    </div>
+      hidden
+    ></p>
 
-    <section
-      id="vm-list"
-      class="vm-list"
-      aria-label="Published Mission and Vision statements"
-    ></section>
+    <section class="section-pad statement-grid" aria-label="Vision and Mission">
+      <article class="statement-card" data-statement="vision">
+        <div class="section-kicker">01 / VISION</div>
 
-    <div class="vm-notice">
-      <strong>Official information:</strong>
-      The statements displayed on this page come from the content
-      published by the website administrator. PDF downloads are
-      generated from the currently displayed text.
-    </div>
+        <div class="statement-symbol" aria-hidden="true">✳</div>
+
+        <h2 id="vision-heading">
+          The vision<br>
+          <span>statement.</span>
+        </h2>
+
+        <div id="vision-content" class="statement-copy">
+          <p>Loading the approved vision statement…</p>
+        </div>
+
+        <small>BENUE ARISE FOR HON · OFFICIAL STATEMENT</small>
+      </article>
+
+      <article class="statement-card statement-dark" data-statement="mission">
+        <div class="section-kicker light">02 / MISSION</div>
+
+        <div class="statement-symbol" aria-hidden="true">↗</div>
+
+        <h2 id="mission-heading">
+          The mission<br>
+          <span>statement.</span>
+        </h2>
+
+        <div id="mission-content" class="statement-copy">
+          <p>Loading the approved mission statement…</p>
+        </div>
+
+        <small>BENUE ARISE FOR HON · OFFICIAL STATEMENT</small>
+      </article>
+    </section>
+
+    <section class="vision-download-section">
+      <div class="vision-download-panel">
+        <div class="section-kicker light">OFFICIAL CAMPAIGN RESOURCE</div>
+
+        <h2>Take our vision with you.</h2>
+
+        <p>
+          Download a printable document containing the published Vision and
+          Mission statements, presented with the campaign name and official
+          slogan.
+        </p>
+
+        <button
+          id="download-vision-pdf"
+          class="vision-download-button"
+          type="button"
+        >
+          <span aria-hidden="true">↓</span>
+          Download Vision &amp; Mission PDF
+        </button>
+
+        <div class="vision-slogan">
+          RESCUE | REBUILD | RESTORE
+        </div>
+      </div>
+    </section>
   </main>
 
-  <footer class="vm-footer">
-    <strong>BENUE ARISE FOR HON</strong>
-    <br>
-    RESCUE | REBUILD | RESTORE
-    <br><br>
-    &copy; <span id="vm-year"></span> Benue Arise for Hon.
-    All rights reserved.
+  <footer class="site-footer">
+    <div class="footer-top">
+      <a class="brand footer-brand" href="index.html">
+        <span class="brand-mark">
+          <img
+            src="sdp-logo.png"
+            alt="SDP logo"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"
+          >
+          <span class="brand-fallback">A<span>+</span></span>
+        </span>
+
+        <span class="brand-copy">
+          <strong>BENUE <em>ARISE</em></strong>
+          <small>FOR HON · BENUE STATE</small>
+        </span>
+      </a>
+
+      <p>
+        A public information platform for Benue Arise for Hon and its
+        approved activities.
+      </p>
+
+      <div class="footer-links">
+        <a href="about.html">About</a>
+        <a href="vision.html">Vision &amp; Mission</a>
+        <a href="contact.html">Contact</a>
+        <a href="privacy.html">Privacy</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>
+        © <span data-year></span> Benue Arise for Hon. All rights reserved.
+      </span>
+
+      <span>RESCUE · REBUILD · RESTORE</span>
+    </div>
   </footer>
-
-  <!-- Existing website configuration -->
-  <script src="config.js"></script>
-
-  <!-- PDF generation library -->
-  <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"
-    referrerpolicy="no-referrer"
-  ></script>
-
-  <script type="module">
-    import { createClient } from
-      "https://esm.sh/@supabase/supabase-js@2";
-
-    const statusBox = document.getElementById("vm-status");
-    const list = document.getElementById("vm-list");
-
-    document.getElementById("vm-year").textContent =
-      new Date().getFullYear();
-
-    /*
-      EXPECTED SUPABASE SETUP
-
-      Schema: arise_site
-      Table: vision_mission_content
-
-      Expected columns:
-        id
-        section_type  (mission or vision)
-        title
-        content_text
-        published
-        updated_at
-        display_order
-
-      The table and column names must match your actual database.
-    */
-
-    const config = window.ARISE_CONFIG;
-
-    if (
-      !config ||
-      !config.SUPABASE_URL ||
-      !config.SUPABASE_PUBLISHABLE_KEY
-    ) {
-      showError(
-        "Website configuration is missing. Please check config.js."
-      );
-      throw new Error("ARISE_CONFIG is missing.");
-    }
-
-    const supabase = createClient(
-      config.SUPABASE_URL,
-      config.SUPABASE_PUBLISHABLE_KEY
-    );
-
-    const db = supabase.schema("arise_site");
-
-    function showError(message) {
-      statusBox.hidden = false;
-      statusBox.classList.add("error");
-      statusBox.textContent = message;
-    }
-
-    function showStatus(message) {
-      statusBox.hidden = false;
-      statusBox.classList.remove("error");
-      statusBox.textContent = message;
-    }
-
-    function escapeFileName(value) {
-      return String(value || "document")
-        .normalize("NFKD")
-        .replace(/[^a-zA-Z0-9_-]+/g, "-")
-        .replace(/^-+|-+$/g, "")
-        .toLowerCase() || "document";
-    }
-
-    function formatDate(value) {
-      if (!value) return "";
-
-      const date = new Date(value);
-
-      if (Number.isNaN(date.getTime())) return "";
-
-      return date.toLocaleDateString(undefined, {
-        year: "numeric",
-        month: "long",
-        day: "numeric"
-      });
-    }
-
-    function makeElement(tag, className, text) {
-      const element = document.createElement(tag);
-
-      if (className) {
-        element.className = className;
-      }
-
-      if (text !== undefined && text !== null) {
-        // Use textContent to avoid injecting admin text as HTML.
-        element.textContent = String(text);
-      }
-
-      return element;
-    }
-
-    function buildLetterhead(doc, pageWidth) {
-      const purple = [53, 16, 93];
-      const red = [197, 29, 54];
-      const gold = [214, 173, 85];
-
-      doc.setFillColor(...purple);
-      doc.rect(0, 0, pageWidth, 12, "F");
-
-      doc.setFillColor(...gold);
-      doc.rect(0, 12, pageWidth, 2, "F");
-
-      doc.setTextColor(...purple);
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(17);
-
-      doc.text(
-        "BENUE ARISE FOR HON",
-        pageWidth / 2,
-        29,
-        { align: "center" }
-      );
-
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(9);
-      doc.setTextColor(95, 79, 108);
-
-      doc.text(
-        "OFFICIAL MOVEMENT STATEMENT",
-        pageWidth / 2,
-        36,
-        { align: "center" }
-      );
-
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(10);
-      doc.setTextColor(...red);
-
-      doc.text(
-        "RESCUE | REBUILD | RESTORE",
-        pageWidth / 2,
-        44,
-        { align: "center" }
-      );
-
-      doc.setDrawColor(...gold);
-      doc.setLineWidth(0.8);
-      doc.line(20, 50, pageWidth - 20, 50);
-    }
-
-    function addPageFooter(doc, pageWidth, pageHeight, pageNumber) {
-      const purple = [53, 16, 93];
-
-      doc.setDrawColor(214, 173, 85);
-      doc.setLineWidth(0.5);
-      doc.line(
-        20,
-        pageHeight - 19,
-        pageWidth - 20,
-        pageHeight - 19
-      );
-
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(8);
-      doc.setTextColor(...purple);
-
-      doc.text(
-        "BENUE ARISE FOR HON  |  RESCUE | REBUILD | RESTORE",
-        20,
-        pageHeight - 12
-      );
-
-      doc.text(
-        `Page ${pageNumber}`,
-        pageWidth - 20,
-        pageHeight - 12,
-        { align: "right" }
-      );
-    }
-
-    function downloadPdf(record, button) {
-      if (!window.jspdf || !window.jspdf.jsPDF) {
-        alert(
-          "The PDF library could not load. Please check your internet connection and try again."
-        );
-        return;
-      }
-
-      const originalLabel = button.textContent;
-      button.disabled = true;
-      button.textContent = "Preparing PDF...";
-
-      try {
-        const { jsPDF } = window.jspdf;
-
-        const doc = new jsPDF({
-          orientation: "portrait",
-          unit: "mm",
-          format: "a4",
-          compress: true
-        });
-
-        const pageWidth = doc.internal.pageSize.getWidth();
-        const pageHeight = doc.internal.pageSize.getHeight();
-
-        const margin = 22;
-        const contentWidth = pageWidth - margin * 2;
-
-        const title = String(
-          record.title ||
-          (record.section_type === "mission"
-            ? "Our Mission"
-            : "Our Vision")
-        );
-
-        const text = String(record.content_text || "").trim();
-
-        buildLetterhead(doc, pageWidth);
-
-        let y = 64;
-
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(19);
-        doc.setTextColor(53, 16, 93);
-
-        const titleLines = doc.splitTextToSize(
-          title,
-          contentWidth
-        );
-
-        doc.text(titleLines, margin, y);
-
-        y += titleLines.length * 8 + 9;
-
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(11);
-        doc.setTextColor(49, 39, 57);
-
-        const paragraphs = text.split(/\r?\n/);
-        const lineHeight = 6.5;
-
-        for (const paragraph of paragraphs) {
-          const lines = doc.splitTextToSize(
-            paragraph || " ",
-            contentWidth
-          );
-
-          const requiredHeight = lines.length * lineHeight + 3;
-
-          if (y + requiredHeight > pageHeight - 29) {
-            addPageFooter(
-              doc,
-              pageWidth,
-              pageHeight,
-              doc.internal.getNumberOfPages()
-            );
-
-            doc.addPage();
-            buildLetterhead(doc, pageWidth);
-            y = 64;
-
-            doc.setFont("helvetica", "normal");
-            doc.setFontSize(11);
-            doc.setTextColor(49, 39, 57);
-          }
-
-          doc.text(lines, margin, y, {
-            lineHeightFactor: 1.45,
-            maxWidth: contentWidth
-          });
-
-          y += requiredHeight;
-        }
-
-        // Add a footer to every page, including pages created by wrapping.
-        const totalPages = doc.internal.getNumberOfPages();
-
-        for (let page = 1; page <= totalPages; page++) {
-          doc.setPage(page);
-          addPageFooter(
-            doc,
-            pageWidth,
-            pageHeight,
-            page
-          );
-        }
-
-        const fileName =
-          "benue-arise-for-hon-" +
-          escapeFileName(record.section_type) +
-          "-" +
-          escapeFileName(title) +
-          ".pdf";
-
-        doc.save(fileName);
-
-      } catch (error) {
-        console.error("PDF generation failed:", error);
-
-        alert(
-          "The PDF could not be generated. Please try again."
-        );
-      } finally {
-        button.disabled = false;
-        button.textContent = originalLabel;
-      }
-    }
-
-    function renderRecord(record) {
-      const type = String(record.section_type || "").toLowerCase();
-
-      if (type !== "mission" && type !== "vision") {
-        return null;
-      }
-
-      const card = makeElement("article", "vm-card");
-      card.dataset.type = type;
-
-      const heading = makeElement("div", "vm-card-head");
-      const kicker = makeElement(
-        "div",
-        "vm-card-kicker",
-        "Benue Arise for Hon"
-      );
-
-      const title = makeElement(
-        "h2",
-        "",
-        record.title ||
-          (type === "mission" ? "Our Mission" : "Our Vision")
-      );
-
-      heading.append(kicker, title);
-
-      const body = makeElement("div", "vm-card-body");
-
-      const letterhead = makeElement("div", "vm-letterhead");
-
-      letterhead.append(
-        makeElement(
-          "div",
-          "vm-letterhead-name",
-          "BENUE ARISE FOR HON"
-        ),
-        makeElement(
-          "div",
-          "vm-letterhead-sub",
-          "RESCUE | REBUILD | RESTORE"
-        ),
-        makeElement("div", "vm-letterhead-rule")
-      );
-
-      const statementTitle = makeElement(
-        "h3",
-        "vm-statement-title",
-        record.title ||
-          (type === "mission" ? "Our Mission" : "Our Vision")
-      );
-
-      const text = makeElement(
-        "div",
-        "vm-text",
-        record.content_text || ""
-      );
-
-      const actions = makeElement("div", "vm-actions");
-
-      const downloadButton = makeElement(
-        "button",
-        "vm-btn",
-        "↓  Download PDF"
-      );
-
-      downloadButton.type = "button";
-      downloadButton.setAttribute(
-        "aria-label",
-        `Download ${type} as PDF`
-      );
-
-      downloadButton.addEventListener("click", () => {
-        downloadPdf(record, downloadButton);
-      });
-
-      const printButton = makeElement(
-        "button",
-        "vm-btn vm-btn-secondary",
-        "Print Statement"
-      );
-
-      printButton.type = "button";
-
-      printButton.addEventListener("click", () => {
-        window.print();
-      });
-
-      actions.append(downloadButton, printButton);
-
-      body.append(
-        letterhead,
-        statementTitle,
-        text,
-        actions
-      );
-
-      const updated = formatDate(record.updated_at);
-
-      if (updated) {
-        body.append(
-          makeElement(
-            "div",
-            "vm-updated",
-            `Last updated: ${updated}`
-          )
-        );
-      }
-
-      card.append(heading, body);
-
-      return card;
-    }
-
-    function renderEmpty() {
-      list.replaceChildren();
-
-      const empty = makeElement("div", "vm-empty");
-      empty.append(
-        makeElement("h3", "", "Statements Coming Soon"),
-        makeElement(
-          "p",
-          "",
-          "The administrator has not published a Mission or Vision statement yet. Please check back later."
-        )
-      );
-
-      list.append(empty);
-    }
-
-    async function loadStatements() {
-      showStatus("Loading published Mission and Vision statements...");
-
-      try {
-        const { data, error } = await db
-          .from("vision_mission_content")
-          .select(
-            "id, section_type, title, content_text, published, updated_at, display_order"
-          )
-          .eq("published", true)
-          .in("section_type", ["mission", "vision"])
-          .order("display_order", { ascending: true });
-
-        if (error) {
-          throw error;
-        }
-
-        list.replaceChildren();
-
-        const records = Array.isArray(data) ? data : [];
-
-        for (const record of records) {
-          const card = renderRecord(record);
-
-          if (card) {
-            list.append(card);
-          }
-        }
-
-        if (!list.children.length) {
-          renderEmpty();
-          showStatus(
-            "No published Mission or Vision statements are available yet."
-          );
-        } else {
-          statusBox.hidden = true;
-        }
-
-      } catch (error) {
-        console.error(
-          "Could not load Mission and Vision statements:",
-          error
-        );
-
-        showError(
-          "We could not load the published statements. Please check the Supabase table, column names, schema permissions, and Row Level Security policies."
-        );
-      }
-    }
-
-    await loadStatements();
-  </script>
 </body>
 </html>
