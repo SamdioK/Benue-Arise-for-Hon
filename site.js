@@ -1,56 +1,165 @@
-// ============================================================
-// BENUE ARISE FOR HON
-// Public website frontend
-// File: site.js
-// ============================================================
+/* ============================================================
+   BENUE ARISE FOR HON
+   Main Website JavaScript
+   File: site.js
+
+   Handles:
+   - Mobile navigation
+   - Current-year footer
+   - Supabase initialization
+   - Published news and article pages
+   - Published events
+   - Published gallery items
+   - Homepage hero slideshow
+   - Secure contact form submission through an Edge Function
+
+   Vision and Mission content + PDF download are handled by
+   vision.js. Administrator functions are handled by admin.js.
+
+   Official slogan: RESCUE | REBUILD | RESTORE
+   ============================================================ */
 
 const cfg = window.ARISE_CONFIG || {};
 
 const $ = (selector, root = document) =>
   root.querySelector(selector);
 
-// Update copyright years.
-document.querySelectorAll("[data-year]").forEach((el) => {
-  el.textContent = new Date().getFullYear();
+const $$ = (selector, root = document) =>
+  [...root.querySelectorAll(selector)];
+
+const CAMPAIGN_NAME = "Benue Arise for Hon";
+const CAMPAIGN_SLOGAN = "RESCUE | REBUILD | RESTORE";
+
+/* ------------------------------------------------------------
+   1. SHARED HELPERS
+   ------------------------------------------------------------ */
+
+function escapeHTML(value = "") {
+  return String(value).replace(/[&<>"']/g, character => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[character]);
+}
+
+function safeURL(value) {
+  if (!value) return "";
+
+  try {
+    const url = new URL(String(value), window.location.href);
+
+    if (!["http:", "https:"].includes(url.protocol)) {
+      return "";
+    }
+
+    return url.href;
+  } catch {
+    return "";
+  }
+}
+
+function dateLabel(value) {
+  if (!value) return "Date to be announced";
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "Date to be announced";
+  }
+
+  return date.toLocaleDateString(undefined, {
+    day: "numeric",
+    month: "short",
+    year: "numeric"
+  });
+}
+
+function showStatus(id, message) {
+  const element = document.getElementById(id);
+
+  if (element) {
+    element.textContent = message;
+  }
+}
+
+function showEmptyCard(title, description, symbol = "✳") {
+  return `
+    <article class="empty-card">
+      <span class="empty-symbol" aria-hidden="true">
+        ${escapeHTML(symbol)}
+      </span>
+      <h3>${escapeHTML(title)}</h3>
+      <p>${escapeHTML(description)}</p>
+    </article>
+  `;
+}
+
+function showLoadError(container, title, description) {
+  if (!container) return;
+
+  container.innerHTML = showEmptyCard(
+    title,
+    description
+  );
+}
+
+/* ------------------------------------------------------------
+   2. FOOTER YEAR
+   ------------------------------------------------------------ */
+
+$$("[data-year]").forEach(element => {
+  element.textContent = String(new Date().getFullYear());
 });
 
-// ------------------------------------------------------------
-// MOBILE NAVIGATION
-// ------------------------------------------------------------
+/* ------------------------------------------------------------
+   3. MOBILE NAVIGATION
+   ------------------------------------------------------------ */
 
 const menu = $(".menu-toggle");
 const nav = $("#primary-nav");
 
 if (menu && nav) {
   menu.addEventListener("click", () => {
-    const open = menu.getAttribute("aria-expanded") !== "true";
+    const isOpen = menu.getAttribute("aria-expanded") !== "true";
 
-    menu.setAttribute("aria-expanded", String(open));
-    nav.classList.toggle("is-open", open);
+    menu.setAttribute("aria-expanded", String(isOpen));
+    nav.classList.toggle("is-open", isOpen);
 
     menu.setAttribute(
       "aria-label",
-      open ? "Close navigation" : "Open navigation"
+      isOpen ? "Close navigation" : "Open navigation"
     );
   });
 
-  nav.querySelectorAll("a").forEach((link) => {
+  nav.querySelectorAll("a").forEach(link => {
     link.addEventListener("click", () => {
       menu.setAttribute("aria-expanded", "false");
       nav.classList.remove("is-open");
+      menu.setAttribute("aria-label", "Open navigation");
     });
+  });
+
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") {
+      menu.setAttribute("aria-expanded", "false");
+      nav.classList.remove("is-open");
+      menu.setAttribute("aria-label", "Open navigation");
+    }
   });
 }
 
-// ------------------------------------------------------------
-// SUPABASE INITIALIZATION
-// Reads the root-level config.js file.
-// Uses the arise_site schema.
-// ------------------------------------------------------------
+/* ------------------------------------------------------------
+   4. SUPABASE INITIALIZATION
+   ------------------------------------------------------------ */
 
 let supabaseClient = null;
 
-if (cfg.SUPABASE_URL && cfg.SUPABASE_PUBLISHABLE_KEY) {
+if (
+  cfg.SUPABASE_URL &&
+  cfg.SUPABASE_PUBLISHABLE_KEY
+) {
   try {
     const { createClient } = await import(
       "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm"
@@ -72,82 +181,61 @@ if (cfg.SUPABASE_URL && cfg.SUPABASE_PUBLISHABLE_KEY) {
     );
   } catch (error) {
     console.error(
-      "Supabase client could not be initialized.",
+      "Supabase client initialization failed:",
       error
     );
   }
+} else {
+  console.warn(
+    "Supabase is not configured. Check config.js."
+  );
 }
 
-// ------------------------------------------------------------
-// GENERAL HELPERS
-// ------------------------------------------------------------
-
-function escapeHTML(value = "") {
-  return String(value).replace(/[&<>"']/g, (character) => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;"
-  })[character]);
-}
-
-function dateLabel(value) {
-  if (!value) return "Date not specified";
-
-  const date = new Date(value);
-
-  if (Number.isNaN(date.getTime())) {
-    return "Date not specified";
-  }
-
-  return date.toLocaleDateString(undefined, {
-    day: "numeric",
-    month: "short",
-    year: "numeric"
-  });
-}
-
-function showStatus(id, message) {
-  const element = document.getElementById(id);
-
-  if (element) {
-    element.textContent = message;
-  }
-}
-
-// ------------------------------------------------------------
-// NEWS CARDS
-// ------------------------------------------------------------
+/* ------------------------------------------------------------
+   5. NEWS CARD
+   Uses the verified arise_site.news table.
+   ------------------------------------------------------------ */
 
 function articleCard(item) {
   const slug = encodeURIComponent(item.slug || "");
-
-  const image = item.cover_image_url
-    ? `<img loading="lazy"
-            src="${escapeHTML(item.cover_image_url)}"
-            alt="">`
-    : `<span class="empty-symbol">✳</span>`;
+  const cover = safeURL(item.featured_image);
 
   return `
     <article class="news-card">
       <div class="news-card-image">
-        ${image}
+        ${
+          cover
+            ? `
+              <img
+                loading="lazy"
+                decoding="async"
+                src="${escapeHTML(cover)}"
+                alt=""
+              >
+            `
+            : `
+              <span class="empty-symbol" aria-hidden="true">
+                ✳
+              </span>
+            `
+        }
       </div>
 
       <div class="news-card-body">
         <div class="card-meta">
           ${escapeHTML(dateLabel(item.published_at))}
           <span>·</span>
-          ${escapeHTML(item.category || "Update")}
+          ${escapeHTML(item.category || "Campaign Update")}
         </div>
 
-        <h3>${escapeHTML(item.title || "Untitled update")}</h3>
+        <h3>${escapeHTML(item.title || "Campaign update")}</h3>
 
         <p>${escapeHTML(item.excerpt || "")}</p>
 
-        <a class="text-link"
-           href="article.html?slug=${slug}">
+        <a
+          class="text-link"
+          href="article.html?slug=${slug}"
+        >
           Read article <span>↗</span>
         </a>
       </div>
@@ -155,93 +243,125 @@ function articleCard(item) {
   `;
 }
 
-// ------------------------------------------------------------
-// LOAD PUBLISHED NEWS
-// Expected table: arise_site.news_articles
-// ------------------------------------------------------------
+/* ------------------------------------------------------------
+   6. LOAD PUBLISHED NEWS
+   ------------------------------------------------------------ */
 
 async function loadNews() {
   const list = $("#news-list");
   const home = $("#home-news");
 
+  if (!list && !home) return;
+
   if (!supabaseClient) {
     showStatus(
       "news-status",
-      "Supabase is not configured. Check the root config.js file and its project URL and publishable key."
+      "News is temporarily unavailable. Please check back later."
     );
     return;
   }
 
   try {
     const { data, error } = await supabaseClient
-      .from("news_articles")
+      .from("news")
       .select(
-        "title,slug,excerpt,category,published_at,cover_image_url"
+        "id,title,slug,excerpt,featured_image,status,published_at,created_at"
       )
       .eq("status", "published")
+      .not("published_at", "is", null)
       .lte("published_at", new Date().toISOString())
       .order("published_at", { ascending: false })
       .limit(12);
 
     if (error) throw error;
 
-    const html = data?.length
-      ? data.map(articleCard).join("")
-      : `
-        <article class="empty-card">
-          <span class="empty-symbol">✳</span>
-          <h3>No published articles yet</h3>
-          <p>Approved news will appear here when published.</p>
-        </article>
-      `;
+    const articles = data || [];
+
+    const cards = articles.length
+      ? articles.map(articleCard).join("")
+      : showEmptyCard(
+          "No published articles yet",
+          "Approved news and campaign updates will appear here.",
+          "✳"
+        );
 
     if (list) {
-      list.innerHTML = html;
+      list.innerHTML = cards;
     }
 
     if (home) {
-      home.innerHTML = data?.length
-        ? data.slice(0, 3).map(articleCard).join("")
-        : html;
+      home.innerHTML = articles.length
+        ? articles.slice(0, 3).map(articleCard).join("")
+        : cards;
     }
 
     showStatus(
       "news-status",
-      `${data?.length || 0} published article(s) available.`
+      `${articles.length} published article(s) available.`
     );
   } catch (error) {
     console.error("News loading failed:", error);
 
     showStatus(
       "news-status",
-      "News could not be loaded. Check that the news_articles table exists in arise_site, the schema is exposed, and the required read policies are configured."
+      "News could not be loaded. Check the Supabase news table, schema permissions and public read policies."
+    );
+
+    showLoadError(
+      list,
+      "News temporarily unavailable",
+      "Please try again later."
+    );
+
+    showLoadError(
+      home,
+      "News temporarily unavailable",
+      "Please try again later."
     );
   }
 }
 
-// ------------------------------------------------------------
-// SINGLE NEWS ARTICLE
-// Expected table: arise_site.news_articles
-// URL example: article.html?slug=sample-article
-// ------------------------------------------------------------
+/* ------------------------------------------------------------
+   7. LOAD A SINGLE NEWS ARTICLE
+   Uses the content column in arise_site.news.
+   ------------------------------------------------------------ */
 
 async function loadArticle() {
   const container = $("#article-detail");
 
-  if (!container || !supabaseClient) return;
+  if (!container) return;
 
-  const slug = new URLSearchParams(location.search).get("slug");
+  const slug = new URLSearchParams(
+    window.location.search
+  ).get("slug");
 
-  if (!slug) return;
+  if (!slug) {
+    showLoadError(
+      container,
+      "Article link is incomplete",
+      "Return to the newsroom and choose an article."
+    );
+    return;
+  }
+
+  if (!supabaseClient) {
+    showLoadError(
+      container,
+      "Article temporarily unavailable",
+      "The website database is not configured."
+    );
+    return;
+  }
 
   try {
     const { data, error } = await supabaseClient
-      .from("news_articles")
+      .from("news")
       .select(
-        "title,body,category,published_at,cover_image_url"
+        "title,slug,excerpt,content,featured_image,status,published_at,created_at"
       )
       .eq("slug", slug)
       .eq("status", "published")
+      .not("published_at", "is", null)
       .lte("published_at", new Date().toISOString())
       .maybeSingle();
 
@@ -251,59 +371,86 @@ async function loadArticle() {
       container.innerHTML = `
         <div class="section-kicker">NEWSROOM</div>
         <h1>Article <span>not found.</span></h1>
-        <p>This article may be unpublished or the link may be incorrect.</p>
+        <p>
+          This article may not be published, or the link may be incorrect.
+        </p>
+        <a class="text-link" href="news.html">
+          Return to news <span>↗</span>
+        </a>
       `;
       return;
     }
 
-    const cover = data.cover_image_url
-      ? `
-        <img class="article-cover"
-             src="${escapeHTML(data.cover_image_url)}"
-             alt="">
-      `
-      : "";
+    const imageURL = safeURL(data.featured_image);
 
-    const paragraphs = escapeHTML(data.body || "")
-      .split(/\n{2,}/)
-      .map((paragraph) =>
-        `<p>${paragraph.replace(/\n/g, "<br>")}</p>`
-      )
+    const paragraphs = String(data.content || "")
+      .trim()
+      .split(/\n\s*\n/)
+      .filter(Boolean)
+      .map(paragraph => `
+        <p>${escapeHTML(paragraph).replace(/\n/g, "<br>")}</p>
+      `)
       .join("");
 
     container.innerHTML = `
       <div class="section-kicker">
-        ${escapeHTML(data.category || "NEWSROOM")}
-        · ${escapeHTML(dateLabel(data.published_at))}
+        ${escapeHTML(dateLabel(data.published_at))}
       </div>
 
-      <h1>${escapeHTML(data.title || "News article")}</h1>
+      <h1>${escapeHTML(data.title)}</h1>
 
-      ${cover}
+      ${
+        data.excerpt
+          ? `<p class="lead">${escapeHTML(data.excerpt)}</p>`
+          : ""
+      }
+
+      ${
+        imageURL
+          ? `
+            <img
+              class="article-cover"
+              src="${escapeHTML(imageURL)}"
+              alt=""
+              loading="eager"
+              decoding="async"
+            >
+          `
+          : ""
+      }
 
       <div class="article-body">
-        ${paragraphs}
+        ${
+          paragraphs ||
+          "<p>The article content has not been added yet.</p>"
+        }
       </div>
+
+      <p class="small-muted">
+        ${escapeHTML(CAMPAIGN_NAME)} · ${escapeHTML(CAMPAIGN_SLOGAN)}
+      </p>
+
+      <a class="text-link" href="news.html">
+        Back to newsroom <span>↗</span>
+      </a>
     `;
 
-    document.title =
-      `${data.title || "Article"} | Benue Arise for Hon`;
+    document.title = `${data.title} | ${CAMPAIGN_NAME}`;
   } catch (error) {
     console.error("Article loading failed:", error);
 
-    container.insertAdjacentHTML(
-      "beforeend",
-      `<p class="form-status">
-        Article could not be loaded. Please try again later.
-      </p>`
+    showLoadError(
+      container,
+      "Article temporarily unavailable",
+      "Please try again later."
     );
   }
 }
 
-// ------------------------------------------------------------
-// LOAD UPCOMING EVENTS
-// Expected table: arise_site.events
-// ------------------------------------------------------------
+/* ------------------------------------------------------------
+   8. LOAD PUBLISHED EVENTS
+   Uses registration_url from arise_site.events.
+   ------------------------------------------------------------ */
 
 async function loadEvents() {
   const list = $("#events-list");
@@ -313,114 +460,254 @@ async function loadEvents() {
   if (!supabaseClient) {
     showStatus(
       "events-status",
-      "Events will load after the Supabase project is configured."
+      "Events are temporarily unavailable. Please check back later."
     );
     return;
   }
 
   try {
+    const cutoff = new Date(
+      Date.now() - 24 * 60 * 60 * 1000
+    ).toISOString();
+
     const { data, error } = await supabaseClient
       .from("events")
       .select(
-        "title,description,starts_at,ends_at,venue,public_url"
+        "id,title,description,venue,starts_at,ends_at,registration_url,featured_image,status"
       )
       .eq("status", "published")
-      .gte(
-        "starts_at",
-        new Date(Date.now() - 86400000).toISOString()
-      )
+      .gte("starts_at", cutoff)
       .order("starts_at", { ascending: true })
       .limit(12);
 
     if (error) throw error;
 
-    list.innerHTML = data?.length
-      ? data.map((event) => {
-          const eventDate = new Date(event.starts_at);
+    const events = data || [];
 
-          const month = Number.isNaN(eventDate.getTime())
-            ? ""
-            : eventDate.toLocaleDateString(undefined, {
-                month: "short"
-              });
+    if (!events.length) {
+      list.innerHTML = showEmptyCard(
+        "No upcoming events published",
+        "Please check back for confirmed activities and event details.",
+        "◷"
+      );
+    } else {
+      list.innerHTML = events.map(event => {
+        const start = new Date(event.starts_at);
+        const validDate = !Number.isNaN(start.getTime());
+        const month = validDate
+          ? start.toLocaleDateString(undefined, { month: "short" })
+          : "TBA";
+        const day = validDate
+          ? start.toLocaleDateString(undefined, { day: "2-digit" })
+          : "—";
 
-          const day = Number.isNaN(eventDate.getTime())
-            ? "--"
-            : eventDate.toLocaleDateString(undefined, {
-                day: "2-digit"
-              });
+        const registrationURL = safeURL(event.registration_url);
+        const imageURL = safeURL(event.featured_image);
 
-          const eventLink = event.public_url
-            ? `
-              <a class="text-link"
-                 href="${escapeHTML(event.public_url)}"
-                 target="_blank"
-                 rel="noopener noreferrer">
-                Event details ↗
-              </a>
-            `
-            : "";
+        return `
+          <article class="event-card">
+            ${
+              imageURL
+                ? `
+                  <img
+                    class="event-cover"
+                    src="${escapeHTML(imageURL)}"
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                  >
+                `
+                : ""
+            }
 
-          return `
-            <article class="event-card">
-              <div class="event-date">
-                <span>${escapeHTML(month)}</span>
-                <strong>${escapeHTML(day)}</strong>
+            <div class="event-date">
+              <span>${escapeHTML(month)}</span>
+              <strong>${escapeHTML(day)}</strong>
+            </div>
+
+            <div class="event-copy">
+              <div class="card-meta">
+                ${escapeHTML(dateLabel(event.starts_at))}
               </div>
 
-              <div class="event-copy">
-                <div class="card-meta">
-                  ${escapeHTML(dateLabel(event.starts_at))}
-                </div>
+              <h3>${escapeHTML(event.title)}</h3>
 
-                <h3>${escapeHTML(event.title || "Event")}</h3>
+              <p>${escapeHTML(event.description || "")}</p>
 
-                <p>${escapeHTML(event.description || "")}</p>
+              <p class="event-venue">
+                ⌖ ${escapeHTML(
+                  event.venue || "Venue to be announced"
+                )}
+              </p>
 
-                <p class="event-venue">
-                  ⌖ ${escapeHTML(
-                    event.venue ||
-                    "Venue to be announced by organizers"
-                  )}
-                </p>
-
-                ${eventLink}
-              </div>
-            </article>
-          `;
-        }).join("")
-      : `
-        <article class="empty-card">
-          <span class="empty-symbol">◷</span>
-          <h3>No upcoming events published</h3>
-          <p>Please check back for confirmed activity details.</p>
-        </article>
-      `;
+              ${
+                registrationURL
+                  ? `
+                    <a
+                      class="text-link"
+                      href="${escapeHTML(registrationURL)}"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Registration / details <span>↗</span>
+                    </a>
+                  `
+                  : ""
+              }
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
 
     showStatus(
       "events-status",
-      `${data?.length || 0} upcoming event(s) available.`
+      `${events.length} upcoming event(s) available.`
     );
   } catch (error) {
     console.error("Events loading failed:", error);
 
     showStatus(
       "events-status",
-      "Events could not be loaded. Check the events table, schema exposure, policies and configuration."
+      "Events could not be loaded. Check the events table and its public read policy."
+    );
+
+    showLoadError(
+      list,
+      "Events temporarily unavailable",
+      "Please try again later.",
+      "◷"
     );
   }
 }
 
-// ------------------------------------------------------------
-// CONTACT FORM
-// Requires CONTACT_FUNCTION_URL in config.js.
-// This form does not write directly to the database.
-// ------------------------------------------------------------
+/* ------------------------------------------------------------
+   9. LOAD PUBLISHED GALLERY
+   Uses arise_site.gallery.
+   ------------------------------------------------------------ */
+
+async function loadGallery() {
+  const list =
+    $("#gallery-list") ||
+    $("#gallery-grid");
+
+  if (!list) return;
+
+  if (!supabaseClient) {
+    showStatus(
+      "gallery-status",
+      "Gallery items are temporarily unavailable."
+    );
+    return;
+  }
+
+  try {
+    const { data, error } = await supabaseClient
+      .from("gallery")
+      .select(
+        "id,title,caption,alt_text,storage_path,display_order,status,created_at"
+      )
+      .eq("status", "published")
+      .order("display_order", { ascending: true })
+      .limit(60);
+
+    if (error) throw error;
+
+    const items = data || [];
+
+    if (!items.length) {
+      list.innerHTML = showEmptyCard(
+        "No gallery items published yet",
+        "Approved campaign photographs will appear here.",
+        "▧"
+      );
+
+      showStatus("gallery-status", "No published gallery items yet.");
+      return;
+    }
+
+    /*
+      If storage_path is a full URL, use it directly.
+      Otherwise, try the public "gallery" Storage bucket.
+      This assumes the bucket is named "gallery".
+      Adjust the bucket name if your project uses another one.
+    */
+
+    list.innerHTML = items.map(item => {
+      let imageURL = safeURL(item.storage_path);
+
+      if (!imageURL && item.storage_path && supabaseClient) {
+        const { data: publicData } = supabaseClient
+          .storage
+          .from("gallery")
+          .getPublicUrl(item.storage_path);
+
+        imageURL = safeURL(publicData?.publicUrl);
+      }
+
+      return `
+        <article class="gallery-item">
+          ${
+            imageURL
+              ? `
+                <img
+                  src="${escapeHTML(imageURL)}"
+                  alt="${escapeHTML(item.alt_text || item.title || "Campaign photograph")}"
+                  loading="lazy"
+                  decoding="async"
+                >
+              `
+              : `
+                <div class="gallery-placeholder">
+                  <span class="empty-symbol">▧</span>
+                  <p>Image unavailable</p>
+                </div>
+              `
+          }
+
+          <div class="gallery-item-copy">
+            <h3>${escapeHTML(item.title || "Campaign photograph")}</h3>
+            ${
+              item.caption
+                ? `<p>${escapeHTML(item.caption)}</p>`
+                : ""
+            }
+          </div>
+        </article>
+      `;
+    }).join("");
+
+    showStatus(
+      "gallery-status",
+      `${items.length} gallery item(s) available.`
+    );
+  } catch (error) {
+    console.error("Gallery loading failed:", error);
+
+    showStatus(
+      "gallery-status",
+      "Gallery items could not be loaded. Check the gallery table, Storage bucket and public policies."
+    );
+
+    showLoadError(
+      list,
+      "Gallery temporarily unavailable",
+      "Please try again later.",
+      "▧"
+    );
+  }
+}
+
+/* ------------------------------------------------------------
+   10. CONTACT FORM
+   Submits only to the configured Edge Function.
+   Never writes contact submissions directly from the browser.
+   ------------------------------------------------------------ */
 
 const contactForm = $("#contact-form");
 
 if (contactForm) {
-  contactForm.addEventListener("submit", async (event) => {
+  contactForm.addEventListener("submit", async event => {
     event.preventDefault();
 
     const status = $("#contact-status");
@@ -428,11 +715,14 @@ if (contactForm) {
       'button[type="submit"]'
     );
 
-    if (!status || !button) return;
+    if (!status) {
+      console.error("Missing #contact-status element.");
+      return;
+    }
 
     if (!cfg.CONTACT_FUNCTION_URL) {
       status.textContent =
-        "This contact form is not active yet. Please use the movement's verified contact details once published.";
+        "This contact form is not active yet. Please use a verified official contact channel.";
       return;
     }
 
@@ -449,22 +739,23 @@ if (contactForm) {
       /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email);
 
     if (
-      !payload.name ||
+      payload.name.length < 1 ||
       payload.name.length > 100 ||
       !validEmail ||
       payload.email.length > 254 ||
-      !payload.subject ||
+      payload.subject.length < 1 ||
       payload.subject.length > 150 ||
-      !payload.message ||
+      payload.message.length < 1 ||
       payload.message.length > 3000
     ) {
       status.textContent =
-        "Please check your name, email, subject and message. Messages must be no longer than 3,000 characters.";
+        "Please check your name, email, subject and message. Messages must not exceed 3,000 characters.";
       return;
     }
 
-    button.disabled = true;
-    status.textContent = "Sending…";
+    if (button) button.disabled = true;
+
+    status.textContent = "Sending your enquiry…";
 
     try {
       const response = await fetch(
@@ -479,36 +770,42 @@ if (contactForm) {
       );
 
       if (!response.ok) {
-        throw new Error(
-          `Contact submission failed: HTTP ${response.status}`
-        );
+        let message = "Request failed.";
+
+        try {
+          const result = await response.json();
+          if (result?.error) message = result.error;
+        } catch {
+          // Keep the generic error when no JSON response is available.
+        }
+
+        throw new Error(message);
       }
 
       contactForm.reset();
 
       status.textContent =
-        "Your enquiry was submitted. Please do not send sensitive personal information through this form.";
+        "Your enquiry was submitted successfully.";
     } catch (error) {
       console.error("Contact submission failed:", error);
 
       status.textContent =
         "We could not submit your message. Please try again later or use a verified official contact channel.";
     } finally {
-      button.disabled = false;
+      if (button) button.disabled = false;
     }
   });
 }
 
-// ------------------------------------------------------------
-// HOMEPAGE HERO SLIDESHOW
-// Reads active records from arise_site.hero_slides.
-// Maximum of five slides.
-// Falls back to the local portrait if no slides are available.
-// ------------------------------------------------------------
+/* ------------------------------------------------------------
+   11. HOMEPAGE HERO SLIDESHOW
+   Loads up to five active slides from hero_slides.
+   Uses the existing portrait as fallback.
+   ------------------------------------------------------------ */
 
 async function setupHeroSlideshow() {
-  const root = document.getElementById("hero-slideshow");
-  const frame = document.getElementById("hero-slide-frame");
+  const root = $("#hero-slideshow");
+  const frame = $("#hero-slide-frame");
 
   if (!root || !frame) return;
 
@@ -528,24 +825,24 @@ async function setupHeroSlideshow() {
       if (error) throw error;
 
       slides = (data || [])
-        .slice(0, 5)
-        .filter((slide) => slide.image_url);
+        .filter(slide => safeURL(slide.image_url))
+        .slice(0, 5);
     } catch (error) {
       console.warn(
-        "Hero slides could not be loaded; using the default portrait.",
+        "Could not load homepage slides; using the fallback portrait.",
         error
       );
     }
   }
 
-  const defaultImage = frame.querySelector(
+  const originalImage = frame.querySelector(
     ".hero-slide-image"
   );
 
   if (slides.length) {
     frame.querySelectorAll(
       ".hero-slide-image, .hero-slide-generated"
-    ).forEach((element) => element.remove());
+    ).forEach(element => element.remove());
 
     const shade = frame.querySelector(".hero-slide-shade");
     const caption = frame.querySelector(".hero-slide-caption");
@@ -557,11 +854,11 @@ async function setupHeroSlideshow() {
         "hero-slide-image" +
         (index === 0 ? " is-active" : "");
 
-      image.src = slide.image_url;
+      image.src = safeURL(slide.image_url);
       image.alt =
         slide.alt_text ||
         slide.caption ||
-        "Benue Arise for Hon featured photograph";
+        "Benue Arise for Hon campaign photograph";
 
       image.loading = index === 0 ? "eager" : "lazy";
       image.decoding = "async";
@@ -571,7 +868,23 @@ async function setupHeroSlideshow() {
         image,
         shade || caption || null
       );
+
+      image.addEventListener("error", () => {
+        image.remove();
+
+        const remaining = frame.querySelectorAll(
+          ".hero-slide-image"
+        );
+
+        if (!remaining.length && originalImage) {
+          originalImage.style.display = "";
+        }
+      }, { once: true });
     });
+
+    if (originalImage) {
+      originalImage.remove();
+    }
 
     const placeholder = frame.querySelector(
       ".portrait-placeholder"
@@ -588,24 +901,20 @@ async function setupHeroSlideshow() {
       `;
 
       caption.querySelector("strong").textContent =
-        slides[0].caption || "RESCUE · REBUILD · RESTORE";
+        slides[0].caption || CAMPAIGN_SLOGAN;
     }
-  } else if (defaultImage) {
-    defaultImage.addEventListener(
-      "error",
-      () => {
-        defaultImage.style.display = "none";
+  } else if (originalImage) {
+    originalImage.addEventListener("error", () => {
+      originalImage.style.display = "none";
 
-        const placeholder = frame.querySelector(
-          ".portrait-placeholder"
-        );
+      const placeholder = frame.querySelector(
+        ".portrait-placeholder"
+      );
 
-        if (placeholder) {
-          placeholder.style.display = "flex";
-        }
-      },
-      { once: true }
-    );
+      if (placeholder) {
+        placeholder.style.display = "flex";
+      }
+    }, { once: true });
   }
 
   const images = [
@@ -616,8 +925,9 @@ async function setupHeroSlideshow() {
 
   let current = 0;
   let timer = null;
+  let touchX = null;
 
-  const dots = document.getElementById("hero-slide-dots");
+  const dots = $("#hero-slide-dots");
 
   if (dots) {
     dots.replaceChildren();
@@ -655,27 +965,26 @@ async function setupHeroSlideshow() {
       );
     });
 
-    dots?.querySelectorAll(".hero-slide-dot")
-      .forEach((dot, dotIndex) => {
-        dot.classList.toggle(
-          "is-active",
-          dotIndex === current
-        );
+    dots?.querySelectorAll(
+      ".hero-slide-dot"
+    ).forEach((dot, dotIndex) => {
+      const active = dotIndex === current;
 
-        dot.setAttribute(
-          "aria-current",
-          dotIndex === current ? "true" : "false"
-        );
-      });
+      dot.classList.toggle("is-active", active);
+      dot.setAttribute(
+        "aria-current",
+        active ? "true" : "false"
+      );
+    });
 
     const captionText = slides[current]?.caption;
-
     const caption = frame.querySelector(
       ".hero-slide-caption strong"
     );
 
-    if (caption && captionText) {
-      caption.textContent = captionText;
+    if (caption) {
+      caption.textContent =
+        captionText || CAMPAIGN_SLOGAN;
     }
   }
 
@@ -691,72 +1000,94 @@ async function setupHeroSlideshow() {
     if (previousButton) previousButton.hidden = true;
     if (nextButton) nextButton.hidden = true;
     if (dots) dots.hidden = true;
-
     return;
   }
 
-  previousButton?.addEventListener("click", () => {
-    show(current - 1);
-    restart();
-  });
+  if (previousButton) {
+    previousButton.addEventListener("click", () => {
+      show(current - 1);
+      restart();
+    });
+  }
 
-  nextButton?.addEventListener("click", () => {
-    show(current + 1);
-    restart();
-  });
+  if (nextButton) {
+    nextButton.addEventListener("click", () => {
+      show(current + 1);
+      restart();
+    });
+  }
 
-  let touchX = null;
+  frame.addEventListener("touchstart", event => {
+    touchX = event.changedTouches[0]?.clientX ?? null;
+  }, { passive: true });
 
-  frame.addEventListener(
-    "touchstart",
-    (event) => {
-      touchX = event.changedTouches[0]?.clientX ?? null;
-    },
-    { passive: true }
-  );
+  frame.addEventListener("touchend", event => {
+    if (touchX === null) return;
 
-  frame.addEventListener(
-    "touchend",
-    (event) => {
-      if (touchX === null) return;
+    const endX = event.changedTouches[0]?.clientX;
 
-      const dx =
-        event.changedTouches[0].clientX - touchX;
-
+    if (typeof endX !== "number") {
       touchX = null;
+      return;
+    }
 
-      if (Math.abs(dx) > 45) {
-        show(current + (dx < 0 ? 1 : -1));
-        restart();
-      }
-    },
-    { passive: true }
-  );
+    const difference = endX - touchX;
+    touchX = null;
+
+    if (Math.abs(difference) > 45) {
+      show(current + (difference < 0 ? 1 : -1));
+      restart();
+    }
+  }, { passive: true });
 
   function restart() {
-    clearInterval(timer);
+    if (timer) clearInterval(timer);
 
     timer = setInterval(() => {
       show(current + 1);
     }, 5500);
   }
 
-  if (
-    !window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches
-  ) {
+  const reduceMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  ).matches;
+
+  if (!reduceMotion) {
     restart();
   }
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      if (timer) clearInterval(timer);
+      timer = null;
+    } else if (!reduceMotion) {
+      restart();
+    }
+  });
 }
 
-// ------------------------------------------------------------
-// START PAGE FEATURES
-// ------------------------------------------------------------
+/* ------------------------------------------------------------
+   12. START PAGE FEATURES
+   Each function checks whether its page elements exist.
+   ------------------------------------------------------------ */
 
-await Promise.all([
-  loadNews(),
-  loadArticle(),
-  loadEvents(),
-  setupHeroSlideshow()
-]);
+const pageTasks = [
+  ["news", loadNews],
+  ["article", loadArticle],
+  ["events", loadEvents],
+  ["gallery", loadGallery],
+  ["hero slideshow", setupHeroSlideshow]
+];
+
+const results = await Promise.allSettled(
+  pageTasks.map(([, task]) => task())
+);
+
+results.forEach((result, index) => {
+  if (result.status === "rejected") {
+    console.error(
+      `Page feature "${pageTasks[index][0]}" failed:`,
+      result.reason
+    );
+  }
+});
