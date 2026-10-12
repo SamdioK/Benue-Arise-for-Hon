@@ -1,8 +1,12 @@
-/* Public browser configuration only. The publishable key is not a secret.
-   Never put Supabase secret/service-role keys in this file. */
+// Benue Arise for Hon — Supabase Configuration
+// File: config.js
+
 window.ARISE_CONFIG = {
-  SUPABASE_URL: "",
-  SUPABASE_PUBLISHABLE_KEY: "",
-  // Deploy the Edge Function and set its URL here before enabling contact submission.
+  SUPABASE_URL: "https://atstsekevoozausbiqbi.supabase.co",
+
+  SUPABASE_PUBLISHABLE_KEY: "sb_publishable_mD18Fear8eew3LrpdVwZyA_9AaTOSOx",
+
+  // Leave empty until your contact-message Edge Function
+  // has been deployed and you have its URL.
   CONTACT_FUNCTION_URL: ""
 };
