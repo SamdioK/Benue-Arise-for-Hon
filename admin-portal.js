@@ -1,7 +1,186 @@
-const cfg=window.ARISE_CONFIG||{},$=s=>document.querySelector(s);let client=null,user=null,activeRecord=null;const say=m=>$('#cms-status').textContent=m;const tableLabels={portal_biographies:'Biography',portal_career_records:'Legal & academic career',portal_service_records:'Public service',portal_scholarships:'Scholarships',portal_philanthropy:'Philanthropy',portal_achievements:'Achievements & awards',portal_projects:'Projects',portal_policies:'Policies',portal_documents:'Documents',portal_articles:'News & publications',portal_media:'Media',portal_events:'Events'};const slugify=s=>s.toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,220);const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));async function init(){if(!cfg.SUPABASE_URL||!cfg.SUPABASE_PUBLISHABLE_KEY){$('#auth-panel').insertAdjacentHTML('beforeend','<p class="admin-note">Configure the project URL and publishable key in config.js. Never use a service-role key in browser code.</p>');return;}const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');client=createClient(cfg.SUPABASE_URL,cfg.SUPABASE_PUBLISHABLE_KEY,{db:{schema:'arise_site'},auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});client.auth.onAuthStateChange(()=>setTimeout(checkAuth,0));await checkAuth();}
-async function checkAuth(){if(!client)return;const {data:{session}}=await client.auth.getSession();user=session?.user||null;if(!user){$('#auth-panel').hidden=false;$('#cms-panel').hidden=true;return;}const {data,error}=await client.from('portal_admins').select('user_id,role,active').eq('user_id',user.id).eq('active',true).maybeSingle();if(error||!data){$('#auth-panel').hidden=false;$('#cms-panel').hidden=true;const note=error?.message||'This account is not on the portal administrator allowlist.';$('#auth-panel').insertAdjacentHTML('beforeend',`<p class="admin-note">${esc(note)}</p>`);return;}$('#auth-panel').hidden=true;$('#cms-panel').hidden=false;$('#signed-in-as').textContent=`Signed in as ${user.email} · role: ${data.role}`;await loadList();}
-$('#login-form')?.addEventListener('submit',async e=>{e.preventDefault();const fd=new FormData(e.currentTarget),b=e.currentTarget.querySelector('button');b.disabled=true;try{const {error}=await client.auth.signInWithPassword({email:String(fd.get('email')).trim(),password:String(fd.get('password'))});if(error)throw error;await checkAuth();}catch(err){e.currentTarget.insertAdjacentHTML('beforeend',`<p class="admin-note">${esc(err.message||'Sign in failed')}</p>`)}finally{b.disabled=false;}});$('#signout')?.addEventListener('click',async()=>{await client?.auth.signOut();});$('#content-type')?.addEventListener('change',()=>{activeRecord=null;clearForm();loadList();});$('#admin-search')?.addEventListener('input',loadList);$('#new-record')?.addEventListener('click',()=>{activeRecord=null;clearForm();$('#form-heading').textContent='Create '+tableLabels[$('#content-type').value];$('#record-id-label').textContent='New record';$('#delete-record').hidden=true;});$('#reset-record')?.addEventListener('click',()=>{activeRecord=null;clearForm();});function clearForm(){const f=$('#record-form');f.reset();f.elements.id.value='';$('#form-heading').textContent='Select or create a record';$('#record-id-label').textContent='';$('#delete-record').hidden=true;say('');document.querySelectorAll('.admin-record').forEach(x=>x.classList.remove('active'));}
-async function loadList(){if(!client||!user)return;const table=$('#content-type').value,box=$('#admin-record-list');box.innerHTML='<p>Loading…</p>';const {data,error}=await client.from(table).select('id,title,status,category,updated_at').order('updated_at',{ascending:false}).limit(100);if(error){box.innerHTML=`<p class="admin-note">${esc(error.message)}. Confirm the reviewed SQL migration and schema exposure.</p>`;return;}const q=($('#admin-search').value||'').toLowerCase();const rows=(data||[]).filter(r=>!q||`${r.title} ${r.category} ${r.status}`.toLowerCase().includes(q));if(!rows.length){box.innerHTML='<p>No matching records.</p>';return;}box.innerHTML=rows.map(r=>`<button class="admin-record ${r.id===activeRecord?'active':''}" data-id="${esc(r.id)}"><strong>${esc(r.title)}</strong><small>${esc(r.category||'Uncategorised')} · ${esc(r.status||'draft')}</small></button>`).join('');box.querySelectorAll('[data-id]').forEach(b=>b.addEventListener('click',()=>loadOne(b.dataset.id)));}
-async function loadOne(id){const {data,error}=await client.from($('#content-type').value).select('*').eq('id',id).maybeSingle();if(error||!data)return say(error?.message||'Record not found');activeRecord=id;const f=$('#record-form');for(const name of ['id','title','category','status','excerpt','body','lga','community','verification_status','publication_date','source_url','document_url','evidence_notes','slug'])if(f.elements[name])f.elements[name].value=data[name]??'';$('#form-heading').textContent='Edit record';$('#record-id-label').textContent=id;$('#delete-record').hidden=false;await loadList();}
-const fields=['title','category','status','excerpt','body','lga','community','verification_status','publication_date','source_url','document_url','evidence_notes','slug'];$('#record-form')?.addEventListener('submit',async e=>{e.preventDefault();if(!user)return;const f=e.currentTarget,btn=$('#save-record');btn.disabled=true;say('Saving…');const fd=new FormData(f),payload={};for(const k of fields){const v=String(fd.get(k)||'').trim();if(v)payload[k]=v;}if(!payload.slug)payload.slug=slugify(payload.title||'record');payload.updated_at=new Date().toISOString();try{const table=$('#content-type').value;let result;if(activeRecord){result=await client.from(table).update(payload).eq('id',activeRecord).select('id').single();}else{payload.created_by=user.id;result=await client.from(table).insert(payload).select('id').single();}if(result.error)throw result.error;activeRecord=result.data.id;f.elements.id.value=activeRecord;say('Saved. Review the source evidence and publishing status before public release.');await loadList();$('#record-id-label').textContent=activeRecord;$('#form-heading').textContent='Edit record';$('#delete-record').hidden=false;}catch(err){say(err.message||'Save failed. Check table columns and role permissions.');}finally{btn.disabled=false;}});
-$('#delete-record')?.addEventListener('click',async()=>{if(!activeRecord||!confirm('Permanently delete this record? This cannot be undone.'))return;const {error}=await client.from($('#content-type').value).delete().eq('id',activeRecord);if(error)return say(error.message);say('Record deleted.');activeRecord=null;clearForm();await loadList();});init();
+const cfg = window.ARISE_CONFIG || {};
+const $ = (selector) => document.querySelector(selector);
+const esc = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({
+  "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+}[char]));
+document.querySelectorAll("[data-year]").forEach((node) => node.textContent = new Date().getFullYear());
+
+const modules = {
+  news: { label: "News & publications", table: "news", id: "id", order: "created_at",
+    fields: [
+      ["title","Title","text",true],["slug","URL slug","text",true],["excerpt","Short summary","textarea"],
+      ["content","Full article","textarea"],["featured_image","Featured image URL","url"],
+      ["status","Status","select",true,["draft","published","archived"]],["published_at","Publication date and time","datetime-local"]
+    ] },
+  events: { label: "Events", table: "events", id: "id", order: "created_at",
+    fields: [
+      ["title","Event title","text",true],["slug","URL slug","text",true],["description","Description","textarea"],
+      ["venue","Venue","text"],["starts_at","Starts at","datetime-local"],["ends_at","Ends at","datetime-local"],
+      ["registration_url","Registration URL","url"],["featured_image","Featured image URL","url"],
+      ["status","Status","select",true,["draft","published","archived"]]
+    ] },
+  gallery: { label: "Gallery captions", table: "gallery", id: "id", order: "created_at",
+    fields: [
+      ["title","Title","text"],["caption","Caption","textarea"],["alt_text","Accessible image description","text",true],
+      ["storage_path","Image storage path (existing public image URL accepted)","text",true],
+      ["display_order","Display order","number"],["status","Status","select",true,["draft","published","archived"]]
+    ] },
+  vision_mission_content: { label: "Vision & mission", table: "vision_mission_content", id: "id", order: "display_order",
+    fields: [
+      ["section_type","Section type","select",true,["vision","mission"]],["title","Title","text",true],
+      ["content_text","Content","textarea",true],["published","Published","select",true,["false","true"]],
+      ["display_order","Display order","number"]
+    ] }
+};
+
+let client;
+let activeId = null;
+let activeModule = modules.news;
+const say = (message) => { const node = $("#cms-status"); if (node) node.textContent = message; };
+const authSay = (message) => { const node = $("#auth-status"); if (node) node.textContent = message; };
+
+async function initialise() {
+  if (!cfg.SUPABASE_URL || !cfg.SUPABASE_PUBLISHABLE_KEY) {
+    authSay("Supabase browser configuration is missing.");
+    return;
+  }
+  const { createClient } = await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/+esm");
+  client = createClient(cfg.SUPABASE_URL, cfg.SUPABASE_PUBLISHABLE_KEY, {
+    db: { schema: "arise_site" },
+    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+  });
+  client.auth.onAuthStateChange(() => setTimeout(checkAuth, 0));
+  $("#login-form").addEventListener("submit", login);
+  $("#signout").addEventListener("click", async () => { await client.auth.signOut(); });
+  $("#content-type").addEventListener("change", () => { activeModule = modules[$("#content-type").value]; activeId = null; clearEditor(); loadList(); });
+  $("#admin-search").addEventListener("input", loadList);
+  $("#new-record").addEventListener("click", () => { activeId = null; clearEditor(); $("#form-heading").textContent = "New " + activeModule.label; });
+  $("#reset-record").addEventListener("click", () => { activeId = null; clearEditor(); });
+  $("#record-form").addEventListener("submit", saveRecord);
+  $("#delete-record").addEventListener("click", deleteRecord);
+  await checkAuth();
+}
+
+async function login(event) {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const button = form.querySelector('button[type="submit"]');
+  button.disabled = true;
+  authSay("Signing in…");
+  try {
+    const values = new FormData(form);
+    const { error } = await client.auth.signInWithPassword({
+      email: String(values.get("email") || "").trim(),
+      password: String(values.get("password") || "")
+    });
+    if (error) throw error;
+    await checkAuth();
+  } catch (error) {
+    authSay(error.message || "Sign in failed.");
+  } finally {
+    button.disabled = false;
+  }
+}
+
+async function checkAuth() {
+  if (!client) return;
+  const { data: { user } } = await client.auth.getUser();
+  if (!user) { $("#auth-panel").hidden = false; $("#cms-panel").hidden = true; return; }
+  const { data, error } = await client.from("admins").select("user_id,role").eq("user_id", user.id).maybeSingle();
+  if (error || !data) {
+    $("#auth-panel").hidden = false; $("#cms-panel").hidden = true;
+    authSay("This signed-in account is not authorised to administer this portal.");
+    return;
+  }
+  $("#auth-panel").hidden = true; $("#cms-panel").hidden = false;
+  $("#signed-in-as").textContent = "Signed in as " + (user.email || "authorised administrator") + " · " + data.role;
+  await loadList();
+}
+
+function renderFields(record = {}) {
+  const target = $("#record-fields");
+  target.innerHTML = activeModule.fields.map(([name,label,type,required,options]) => {
+    const value = record[name] ?? (name === "status" ? "draft" : name === "published" ? "false" : "");
+    const req = required ? " required" : "";
+    if (type === "textarea") return '<label>' + esc(label) + '<textarea name="' + name + '" rows="5"' + req + '>' + esc(value) + '</textarea></label>';
+    if (type === "select") return '<label>' + esc(label) + '<select name="' + name + '"' + req + '>' + options.map(option => '<option value="' + option + '"' + (String(value) === option ? " selected" : "") + '>' + esc(option) + '</option>').join("") + '</select></label>';
+    const inputType = type === "datetime-local" && value ? "datetime-local" : type;
+    const formatted = type === "datetime-local" && value ? new Date(value).toISOString().slice(0,16) : value;
+    return '<label>' + esc(label) + '<input name="' + name + '" type="' + inputType + '" value="' + esc(formatted) + '"' + req + '></label>';
+  }).join("");
+}
+
+function clearEditor() {
+  $("#record-form").reset();
+  renderFields();
+  $("#form-heading").textContent = "Select or create a record";
+  $("#record-id-label").textContent = "";
+  $("#delete-record").hidden = true;
+  say("");
+}
+
+async function loadList() {
+  if (!client || $("#cms-panel").hidden) return;
+  const box = $("#admin-record-list");
+  box.innerHTML = "<p>Loading…</p>";
+  const { data, error } = await client.from(activeModule.table).select("*").order(activeModule.order, { ascending: false }).limit(100);
+  if (error) { box.innerHTML = "<p>Records could not be loaded. Check administrator access.</p>"; say(error.message); return; }
+  const query = ($("#admin-search").value || "").toLowerCase();
+  const rows = (data || []).filter(row => JSON.stringify(row).toLowerCase().includes(query));
+  if (!rows.length) { box.innerHTML = "<p>No records in this module yet.</p>"; return; }
+  box.innerHTML = rows.map(row => '<button type="button" class="admin-record ' + (row.id === activeId ? "active" : "") + '" data-id="' + esc(row.id) + '"><strong>' + esc(row.title || row.section_type || "Untitled") + '</strong><small>' + esc(row.status || (row.published ? "published" : "draft")) + '</small></button>').join("");
+  box.querySelectorAll("[data-id]").forEach(button => button.addEventListener("click", () => loadRecord(button.dataset.id)));
+}
+
+async function loadRecord(id) {
+  const { data, error } = await client.from(activeModule.table).select("*").eq(activeModule.id, id).maybeSingle();
+  if (error || !data) { say(error?.message || "Record not found."); return; }
+  activeId = id;
+  renderFields(data);
+  $("#form-heading").textContent = "Edit " + activeModule.label;
+  $("#record-id-label").textContent = id;
+  $("#delete-record").hidden = false;
+  await loadList();
+}
+
+async function saveRecord(event) {
+  event.preventDefault();
+  const button = $("#save-record");
+  button.disabled = true;
+  say("Saving…");
+  try {
+    const form = new FormData(event.currentTarget);
+    const payload = {};
+    for (const [name] of activeModule.fields) {
+      let value = form.get(name);
+      if (typeof value === "string") value = value.trim();
+      if (name === "display_order") value = Number(value || 0);
+      if (name === "published") value = value === "true";
+      if (name.endsWith("_at") && value) value = new Date(value).toISOString();
+      if (value !== "" && value !== null) payload[name] = value;
+    }
+    if (activeModule.table === "news" && payload.status === "published" && !payload.published_at) payload.published_at = new Date().toISOString();
+    const result = activeId
+      ? await client.from(activeModule.table).update(payload).eq(activeModule.id, activeId).select(activeModule.id).single()
+      : await client.from(activeModule.table).insert(payload).select(activeModule.id).single();
+    if (result.error) throw result.error;
+    activeId = result.data.id;
+    say("Saved successfully. Check the public page after publishing.");
+    await loadList();
+    $("#record-id-label").textContent = activeId;
+    $("#delete-record").hidden = false;
+  } catch (error) {
+    say(error.message || "Save failed.");
+  } finally {
+    button.disabled = false;
+  }
+}
+
+async function deleteRecord() {
+  if (!activeId || !window.confirm("Permanently delete this record?")) return;
+  const { error } = await client.from(activeModule.table).delete().eq(activeModule.id, activeId);
+  if (error) { say(error.message); return; }
+  activeId = null; clearEditor(); say("Record deleted."); await loadList();
+}
+
+initialise();
