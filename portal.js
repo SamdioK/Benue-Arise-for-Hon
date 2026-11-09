@@ -48,7 +48,7 @@ function renderRecords(records, mode = "standard") {
   const category = $("#category-filter")?.value || "";
   const status = $("#status-filter")?.value || "";
   const filtered = records.filter((record) => {
-    const searchable = [record.title, record.description, record.content, record.excerpt,
+    const searchable = [record.title, record.description, record.content, record.content_text, record.excerpt,
       record.category, record.venue, record.caption, record.alt_text].join(" ").toLowerCase();
     return (!query || searchable.includes(query)) &&
       (!category || record.category === category) &&
@@ -59,7 +59,7 @@ function renderRecords(records, mode = "standard") {
     return;
   }
   box.innerHTML = filtered.map((record) => {
-    const summary = record.excerpt || record.description || record.content || record.caption || "";
+    const summary = record.excerpt || record.description || record.content || record.content_text || record.caption || "";
     const date = record.published_at || record.starts_at || record.created_at;
     const dateLabel = date ? new Date(date).toLocaleDateString("en-GB", { timeZone: "Africa/Lagos", day: "numeric", month: "short", year: "numeric" }) : "";
     const mediaUrl = /^https?:\/\//i.test(record.storage_path || "") ? record.storage_path : "";
@@ -86,14 +86,15 @@ async function loadPageRecords() {
   const fallback = placeholders[key] || [];
   try {
     const client = await getClient();
-    const table = ({ news: "news", events: "events", gallery: "gallery" })[key];
+    const table = ({ news: "news", events: "events", gallery: "gallery", manifesto: "vision_mission_content" })[key];
     if (!client || !table) {
       renderRecords(fallback);
       return;
     }
     const orderColumn = key === "events" ? "starts_at" : key === "news" ? "published_at" : "display_order";
-    const query = client.from(table).select("*").eq("status", "published")
-      .order(orderColumn, { ascending: key === "gallery", nullsFirst: false }).limit(60);
+    let query = client.from(table).select("*");
+    query = key === "manifesto" ? query.eq("published", true) : query.eq("status", "published");
+    query = query.order(orderColumn, { ascending: key !== "news", nullsFirst: false }).limit(60);
     const { data, error } = await query;
     if (error) throw error;
     renderRecords(data || []);
