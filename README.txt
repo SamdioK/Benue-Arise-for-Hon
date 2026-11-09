@@ -1,16 +1,45 @@
-BENUE ARISE FOR HON — SDP + VIOLET THEME UPDATE
+BENUE ARISE FOR HON — PUBLIC INFORMATION PORTAL
 
-Assets:
-- assets/prof-sebastine-hon.jpg — user-provided candidate portrait
-- assets/sdp-logo.png — user-provided SDP logo
+Official profile name:
+Prof. (Chief) Sebastine Tartenger Hon, SAN, FCIArb, DSSRS, Sema-Wan u Tiv.
 
-Theme:
-SDP green and orange with violet/purple accents, ivory backgrounds, and responsive navigation.
+Project:
+- Public information and campaign portal for Benue Arise for Hon.
+- SDP identity and approved green, orange and violet visual direction.
+- Responsive HTML/CSS/JavaScript frontend hosted through GitHub Pages.
+- Supabase project: atstsekevoozausbiqbi.
+- Supabase schema: arise_site.
 
-Pages:
-Home, About, Manifesto, News, Events, Gallery, Register, Contact, Privacy.
+Frontend configuration:
+- config.js contains the project URL and public publishable key only.
+- Never place a Supabase secret or service_role key in browser code.
+- Public access depends on the RLS policies in arise_site.
+
+Live public content integration:
+- news: published news and publications.
+- events: published public engagement events.
+- gallery: published gallery captions and metadata.
+- vision_mission_content: published vision and mission content on the manifesto page.
+- Other profile pages currently retain clearly labelled placeholders pending approved records and a reviewed content model.
+
+Administrator CMS:
+- admin.html uses Supabase Auth email/password.
+- Access is checked against arise_site.admins and protected again by database RLS.
+- Current CMS modules: news, events, gallery captions, vision and mission.
+- Draft records are not shown publicly.
+- The CMS does not yet provide general media upload, contact enquiry processing, audit-history UI, or full profile/project/achievement editing.
+
+Storage:
+- Existing public bucket: hero-slides.
+- Its upload/delete policies are restricted to the separate hero_admins allowlist and per-user folders.
+- Do not assume this bucket is a general gallery upload bucket.
+- Gallery records may reference an already-public image URL or an approved storage path.
+
+Privacy and editorial safeguards:
+- Online contact form submission is intentionally disabled until server-side validation, spam controls, access rules and retention policy are implemented.
+- Do not publish beneficiary identities or photographs without appropriate consent.
+- Verify professional credentials, biography, achievements, project claims and campaign statements against approved evidence before publication.
 
 Deployment:
-Upload the CONTENTS of this folder to the root of your existing GitHub repository and commit. Keep the assets folder structure unchanged.
-
-Registration is demo-only and does not store or transmit entries. Connect and secure a backend before collecting real personal information. Verify official biography, campaign contacts, manifesto and all claims before publishing.
+- Publish from the implementation branch only after review and merge.
+- See PHASE-1-IMPLEMENTATION-MANUAL.md for the phase workflow and current limitations.
