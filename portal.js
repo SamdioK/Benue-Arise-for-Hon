@@ -1,21 +1,142 @@
-const cfg=window.ARISE_CONFIG||{};const $=s=>document.querySelector(s);const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));document.querySelectorAll('[data-year]').forEach(x=>x.textContent=new Date().getFullYear());const toggle=$('.menu-toggle'),nav=$('.nav');toggle?.addEventListener('click',()=>{const open=nav.classList.toggle('nav-open');toggle.setAttribute('aria-expanded',String(open));});
-const dataSets={
- biography:[{title:'Personal profile',category:'Profile',status:'Under Verification',description:'Add the approved personal profile and verified biographical details.',evidence:'Add official biography or approved source URL.'},{title:'Education and qualifications',category:'Education',status:'Under Verification',description:'Add institution, qualification, dates and verification evidence.'},{title:'Professional journey',category:'Career',status:'Under Verification',description:'Add a sourced career milestone, actual role, dates and supporting records.'}],
- career:[{title:'Professional designations',category:'Credentials',status:'Under Verification',description:'Confirm every designation against the relevant professional body or official record.'},{title:'Academic appointments',category:'Academic',status:'Under Verification',description:'Add institution, position, dates and source documentation.'},{title:'Publications and research',category:'Publications',status:'Under Verification',description:'Add title, publisher or journal, publication date, DOI or stable source URL.'}],
- service:[{title:'Institutional contributions',category:'Institutional',status:'Under Verification',description:'Record the candidate’s actual role and distinguish individual work from collective outcomes.'},{title:'Public-interest initiatives',category:'Community',status:'Under Verification',description:'Describe the initiative, date, partners, outcomes and evidence.'}],
- scholarships:[{title:'Scholarship register',category:'Scholarship',status:'Under Verification',description:'No programme is asserted to exist until independently documented. Add year, location, assistance type, verified beneficiary count and supporting evidence.'}],
- philanthropy:[{title:'Humanitarian assistance register',category:'Humanitarian',status:'Under Verification',description:'Add only documented interventions. Obtain consent before publishing identifiable beneficiary details or photographs.'}],
- achievements:[{title:'Awards and recognitions',category:'Recognition',status:'Under Verification',description:'Add award title, awarding institution, date, explanation and evidence link.'}],
- projects:[{title:'Community project record template',category:'Community Development',status:'Under Verification',lga:'Select LGA',statusProject:'Under Verification',description:'No project is claimed here. Add title, LGA, community, category, dates, candidate role, implementing organisation, verified funding, outcomes and supporting evidence.'}],
- manifesto:[...['Security and peacebuilding','Agriculture and food security','Education','Healthcare','Roads and transportation','Electricity and energy','Youth employment','Women empowerment','Industrialisation and entrepreneurship','Water and sanitation','Housing and urban development','Rural development','Environmental protection','Digital transformation','Tourism, arts, culture and sports','Public-sector reform','Transparency and accountability','Community development'].map(title=>({title,category:'Policy proposal',status:'Campaign Statement',description:'Policy proposal template: define the problem, proposed interventions, intended beneficiaries, government responsibility, timeline, estimated cost/funding approach, performance indicators and monitoring mechanism. Publish as a commitment only after formal approval.'}))],
- documents:[{title:'Official biography',category:'Biography',status:'Under Verification',description:'Upload the approved biography and identify the issuing source, publication date and verification status.'},{title:'Professional credentials',category:'Credentials',status:'Under Verification',description:'Add publicly shareable evidence and redact private identifiers where necessary.'}],
- news:[{title:'News and publications',category:'Editorial',status:'Under Verification',description:'Approved articles, press releases, public statements and interviews will appear here.'}],
- gallery:[{title:'Approved photo and video gallery',category:'Media',status:'Under Verification',description:'Media uploads will appear here after the CMS and storage policies are configured. Add captions, dates, locations, usage rights and accessible alt text.'}],
- events:[{title:'Public engagement calendar',category:'Event',status:'Under Verification',description:'Events are not confirmed until authorized details, date, time, venue and approval status are recorded.'}]
+const cfg = window.ARISE_CONFIG || {};
+const $ = (selector) => document.querySelector(selector);
+const esc = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({
+  "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+}[char]));
+document.querySelectorAll("[data-year]").forEach((node) => node.textContent = new Date().getFullYear());
+
+const toggle = $(".menu-toggle");
+const nav = $(".nav");
+toggle?.addEventListener("click", () => {
+  const open = nav.classList.toggle("nav-open");
+  toggle.setAttribute("aria-expanded", String(open));
+});
+
+let clientPromise;
+async function getClient() {
+  if (!cfg.SUPABASE_URL || !cfg.SUPABASE_PUBLISHABLE_KEY) return null;
+  if (!clientPromise) {
+    clientPromise = import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/+esm")
+      .then(({ createClient }) => createClient(cfg.SUPABASE_URL, cfg.SUPABASE_PUBLISHABLE_KEY, {
+        db: { schema: "arise_site" },
+        auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+      }));
+  }
+  return clientPromise;
+}
+
+const placeholders = {
+  biography: [{ title: "Biography and personal profile", category: "Profile", status: "Under Verification", description: "The approved biography will be published here after review." }],
+  "legal-academic": [{ title: "Legal and academic career", category: "Career", status: "Under Verification", description: "Professional designations, appointments and publications will be added with supporting sources." }],
+  "public-service": [{ title: "Public service record", category: "Public service", status: "Under Verification", description: "Documented institutional and public-interest contributions will be published after verification." }],
+  scholarships: [{ title: "Scholarships and education", category: "Education", status: "Under Verification", description: "No scholarship programme is asserted until supporting records are reviewed." }],
+  philanthropy: [{ title: "Philanthropy and humanitarian services", category: "Humanitarian", status: "Under Verification", description: "Only documented interventions will be published. Identifiable beneficiary information requires consent." }],
+  achievements: [{ title: "Achievements and recognition", category: "Recognition", status: "Under Verification", description: "Awards and recognitions will be listed with issuing organisations and evidence." }],
+  projects: [{ title: "Community development register", category: "Projects", status: "Under Verification", description: "Project claims will be listed only when location, dates, candidate role and evidence have been checked." }],
+  manifesto: [{ title: "Governance vision and policy proposals", category: "Policy", status: "Under Verification", description: "Approved policy proposals will be published with implementation and accountability details." }],
+  evidence: [{ title: "Accountability and evidence centre", category: "Evidence", status: "Under Verification", description: "Public documents and source records will appear here after review." }]
 };
-let client=null;async function getClient(){if(client)return client;if(!cfg.SUPABASE_URL||!cfg.SUPABASE_PUBLISHABLE_KEY)return null;const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');client=createClient(cfg.SUPABASE_URL,cfg.SUPABASE_PUBLISHABLE_KEY,{db:{schema:'arise_site'},auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});return client;}
-function slug(){return location.pathname.split('/').pop().replace('.html','');}function renderRecords(records){const box=$('#record-list');if(!box)return;const q=($('#record-search')?.value||'').trim().toLowerCase(),cat=$('#category-filter')?.value||'',status=$('#status-filter')?.value||'';const filtered=records.filter(r=>(!q||[r.title,r.description,r.category,r.lga,r.location,r.source_url].join(' ').toLowerCase().includes(q))&&(!cat||r.category===cat)&&(!status||(r.verification_status||r.statusProject||r.status)===status));if(!filtered.length){box.innerHTML='<div class="empty-state">No matching published records. Try another search or check back after approved records are published.</div>';return;}box.innerHTML=filtered.map(r=>`<article class="record-card"><div class="record-meta"><span>${esc(r.category||'Public record')}</span><span class="status-pill">${esc(r.verification_status||r.statusProject||r.status||'Under Verification')}</span></div><h3>${esc(r.title)}</h3>${r.lga?`<p class="record-location">${esc(r.lga)}${r.community?' · '+esc(r.community):''}</p>`:''}<p>${esc(r.excerpt||r.description||'')}</p>${r.publication_date?`<small>${esc(new Date(r.publication_date).toLocaleDateString('en-GB',{timeZone:'Africa/Lagos',day:'numeric',month:'short',year:'numeric'}))}</small>`:''}${r.source_url?`<p><a class="text-link" href="${esc(r.source_url)}" target="_blank" rel="noopener noreferrer">View source ↗</a></p>`:''}${r.document_url?`<p><a class="text-link" href="${esc(r.document_url)}" target="_blank" rel="noopener noreferrer">Open document ↗</a></p>`:''}</article>`).join('');const cats=[...new Set(records.map(r=>r.category).filter(Boolean))];const select=$('#category-filter');if(select&&select.options.length<=1)cats.sort().forEach(c=>select.add(new Option(c,c)));}
-async function loadRecords(){const key=slug(),box=$('#record-list');if(!box)return;let records=dataSets[key]||[];try{const c=await getClient();if(c){const table=({biography:'portal_biographies','legal-academic':'portal_career_records','public-service':'portal_service_records',scholarships:'portal_scholarships',philanthropy:'portal_philanthropy',achievements:'portal_achievements',projects:'portal_projects',manifesto:'portal_policies',evidence:'portal_documents',news:'portal_articles',gallery:'portal_media',events:'portal_events'})[key];if(table){const {data,error}=await c.from(table).select('*').eq('status','published').order('publication_date',{ascending:false,nullsFirst:false}).limit(100);if(!error&&data?.length)records=data;}}}catch(e){console.warn('Portal records unavailable; showing safe placeholders.',e);}renderRecords(records);}
-['#record-search','#category-filter','#status-filter'].forEach(s=>$(s)?.addEventListener('input',()=>renderRecords(dataSets[slug()]||[])));loadRecords();
-const home=$('#home-news');if(home){(async()=>{try{const c=await getClient();if(c){const {data,error}=await c.from('portal_articles').select('title,excerpt,slug,category,publication_date').eq('status','published').order('publication_date',{ascending:false}).limit(3);if(!error&&data?.length){home.innerHTML=data.map(a=>`<article class="record-card"><div class="record-meta"><span>${esc(a.category||'News')}</span><span>${a.publication_date?esc(new Date(a.publication_date).toLocaleDateString('en-GB',{timeZone:'Africa/Lagos'})):''}</span></div><h3>${esc(a.title)}</h3><p>${esc(a.excerpt||'')}</p><a class="text-link" href="news.html#${encodeURIComponent(a.slug||'')}">Read update ↗</a></article>`).join('');}}}catch(e){console.warn(e);}})();}
-const contact=$('#contact-form');contact?.addEventListener('submit',async e=>{e.preventDefault();const status=$('#form-status'),button=contact.querySelector('button[type=submit]');if(!contact.reportValidity())return;button.disabled=true;status.textContent='Submitting securely…';try{const c=await getClient();if(!c)throw new Error('The contact service is not configured yet. Please use the movement’s verified official contact channels.');const fd=new FormData(contact);const payload={name:String(fd.get('name')||'').trim(),email:String(fd.get('email')||'').trim(),enquiry_type:String(fd.get('type')||'General enquiry'),message:String(fd.get('message')||'').trim(),consent:fd.get('consent')==='on'};if(payload.name.length<2||payload.message.length<10||!payload.consent)throw new Error('Check your details and consent, then try again.');const {error}=await c.from('portal_contact_submissions').insert(payload);if(error)throw error;contact.reset();status.textContent='Thank you. Your enquiry has been submitted.';}catch(err){status.textContent=err.message||'Submission failed. Please try again later.';}finally{button.disabled=false;}});
+
+function pageKey() {
+  return location.pathname.split("/").pop().replace(/\.html?$/i, "") || "index";
+}
+
+function renderRecords(records, mode = "standard") {
+  const box = $("#record-list");
+  if (!box) return;
+  const query = ($("#record-search")?.value || "").trim().toLowerCase();
+  const category = $("#category-filter")?.value || "";
+  const status = $("#status-filter")?.value || "";
+  const filtered = records.filter((record) => {
+    const searchable = [record.title, record.description, record.content, record.excerpt,
+      record.category, record.venue, record.caption, record.alt_text].join(" ").toLowerCase();
+    return (!query || searchable.includes(query)) &&
+      (!category || record.category === category) &&
+      (!status || (record.status || record.verification_status || "") === status);
+  });
+  if (!filtered.length) {
+    box.innerHTML = '<div class="empty-state">No published records are available in this section yet.</div>';
+    return;
+  }
+  box.innerHTML = filtered.map((record) => {
+    const summary = record.excerpt || record.description || record.content || record.caption || "";
+    const date = record.published_at || record.starts_at || record.created_at;
+    const dateLabel = date ? new Date(date).toLocaleDateString("en-GB", { timeZone: "Africa/Lagos", day: "numeric", month: "short", year: "numeric" }) : "";
+    const mediaUrl = /^https?:\/\//i.test(record.storage_path || "") ? record.storage_path : "";
+    const image = mediaUrl ? '<img class="record-image" src="' + esc(mediaUrl) + '" alt="' + esc(record.alt_text || record.title || "Campaign gallery image") + '" loading="lazy">' : "";
+    const link = record.registration_url ? '<p><a class="text-link" href="' + esc(record.registration_url) + '" target="_blank" rel="noopener noreferrer">Event information ↗</a></p>' : "";
+    return '<article class="record-card">' + image +
+      '<div class="record-meta"><span>' + esc(record.category || "Public information") + '</span><span class="status-pill">' + esc(record.status || "Published") + '</span></div>' +
+      '<h3>' + esc(record.title) + '</h3>' +
+      (record.venue ? '<p class="record-location">' + esc(record.venue) + '</p>' : "") +
+      (dateLabel ? '<small>' + esc(dateLabel) + '</small>' : "") +
+      (summary ? '<p>' + esc(summary) + '</p>' : "") + link + '</article>';
+  }).join("");
+  const select = $("#category-filter");
+  if (select && select.options.length <= 1) {
+    [...new Set(records.map((record) => record.category).filter(Boolean))].sort()
+      .forEach((value) => select.add(new Option(value, value)));
+  }
+}
+
+async function loadPageRecords() {
+  const key = pageKey();
+  const box = $("#record-list");
+  if (!box) return;
+  const fallback = placeholders[key] || [];
+  try {
+    const client = await getClient();
+    const table = ({ news: "news", events: "events", gallery: "gallery" })[key];
+    if (!client || !table) {
+      renderRecords(fallback);
+      return;
+    }
+    const orderColumn = key === "events" ? "starts_at" : key === "news" ? "published_at" : "display_order";
+    const query = client.from(table).select("*").eq("status", "published")
+      .order(orderColumn, { ascending: key === "gallery", nullsFirst: false }).limit(60);
+    const { data, error } = await query;
+    if (error) throw error;
+    renderRecords(data || []);
+  } catch (error) {
+    console.warn("Published records could not be loaded.", error);
+    renderRecords(fallback);
+  }
+}
+
+["#record-search", "#category-filter", "#status-filter"].forEach((selector) => {
+  $(selector)?.addEventListener("input", loadPageRecords);
+});
+loadPageRecords();
+
+const homeNews = $("#home-news");
+if (homeNews) {
+  (async () => {
+    try {
+      const client = await getClient();
+      if (!client) return;
+      const { data, error } = await client.from("news")
+        .select("title,slug,excerpt,published_at")
+        .eq("status", "published")
+        .order("published_at", { ascending: false, nullsFirst: false }).limit(3);
+      if (error) throw error;
+      if (data?.length) {
+        homeNews.innerHTML = data.map((item) =>
+          '<article class="record-card"><div class="record-meta"><span>News</span><span>' +
+          (item.published_at ? esc(new Date(item.published_at).toLocaleDateString("en-GB", { timeZone: "Africa/Lagos" })) : "") +
+          '</span></div><h3>' + esc(item.title) + '</h3><p>' + esc(item.excerpt || "") +
+          '</p><a class="text-link" href="news.html#' + encodeURIComponent(item.slug || "") + '">Read update ↗</a></article>'
+        ).join("");
+      }
+    } catch (error) {
+      console.warn("Homepage news could not be loaded.", error);
+    }
+  })();
+}
+
+const contactForm = $("#contact-form");
+if (contactForm) {
+  const submit = contactForm.querySelector('button[type="submit"]');
+  if (submit) submit.disabled = true;
+  const status = $("#form-status");
+  if (status) status.textContent = "Online enquiry submission is not enabled yet. Please use an authorised contact channel.";
+}
