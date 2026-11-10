@@ -214,3 +214,70 @@
 .profile-portrait-frame img{width:100%;aspect-ratio:4/5;height:auto;object-fit:contain;object-position:center;background:#e8e5df}
 @media(max-width:1000px){.profile-hub-hero{grid-template-columns:minmax(0,1fr) minmax(350px,.95fr)}.profile-hub-portrait{width:min(100%,430px);margin-top:100px}}
 @media(max-width:760px){.profile-hub-hero{grid-template-columns:1fr}.profile-hub-portrait{width:min(100%,440px);margin:0 auto;justify-self:center}.profile-portrait-frame img{width:100%;height:auto;aspect-ratio:4/5;object-fit:contain}.profile-portrait-caption{padding:17px 18px}.profile-portrait-caption strong{font-size:14px}}
+
+/* FINAL PROFILE HERO PLACEMENT — heading at the top edge; portrait hangs from the lower rule */
+.profile-hub-hero{
+ display:grid;
+ grid-template-columns:minmax(0,1fr) minmax(380px,500px);
+ align-items:start;
+ column-gap:clamp(28px,5vw,68px);
+ row-gap:0;
+ padding-top:26px;
+ min-height:760px;
+}
+.profile-hub-copy{
+ align-self:start;
+ display:flex;
+ align-items:flex-start;
+ justify-content:flex-start;
+ min-height:0;
+ padding:0;
+ margin:0;
+}
+.official-profile-divider{
+ width:min(100%,650px);
+ padding:0;
+ margin:0;
+ gap:13px;
+}
+.official-profile-divider>strong{
+ font-size:clamp(25px,3.5vw,43px);
+ line-height:1.08;
+}
+.profile-hub-portrait{
+ align-self:start;
+ justify-self:end;
+ width:min(100%,500px);
+ margin:76px 0 0;
+}
+.profile-portrait-frame{padding:11px}
+.profile-portrait-frame img{
+ display:block;
+ width:100%;
+ height:auto;
+ aspect-ratio:4/5;
+ object-fit:contain;
+ object-position:center;
+}
+@media(max-width:1000px) and (min-width:761px){
+ .profile-hub-hero{grid-template-columns:minmax(0,1fr) minmax(340px,440px);min-height:680px;padding-top:26px}
+ .profile-hub-portrait{width:min(100%,440px);margin-top:76px}
+}
+@media(max-width:760px){
+ .profile-hub-hero{
+  grid-template-columns:minmax(0,1fr);
+  min-height:0;
+  padding:24px 6vw 74px;
+  row-gap:0;
+ }
+ .profile-hub-copy{min-height:0}
+ .official-profile-divider{width:100%;gap:10px}
+ .official-profile-divider>strong{font-size:clamp(21px,6vw,30px)}
+ .profile-hub-portrait{
+  justify-self:center;
+  align-self:start;
+  width:min(100%,440px);
+  margin:9px auto 0;
+ }
+ .profile-portrait-frame img{width:100%;height:auto;aspect-ratio:4/5;object-fit:contain}
+}
