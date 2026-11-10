@@ -19,7 +19,7 @@ async function getClient() {
     clientPromise = import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/+esm")
       .then(({ createClient }) => createClient(cfg.SUPABASE_URL, cfg.SUPABASE_PUBLISHABLE_KEY, {
         db: { schema: "arise_site" },
-        auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+        auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: true }
       }));
   }
   return clientPromise;
