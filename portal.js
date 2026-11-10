@@ -68,9 +68,13 @@ function renderRecords(records, mode = "standard") {
     return '<article class="record-card">' + image +
       '<div class="record-meta"><span>' + esc(record.category || "Public information") + '</span><span class="status-pill">' + esc(record.status || "Published") + '</span></div>' +
       '<h3>' + esc(record.title) + '</h3>' +
-      (record.venue ? '<p class="record-location">' + esc(record.venue) + '</p>' : "") +
+      (record.venue || record.location ? '<p class="record-location">' + esc(record.venue || record.location) + '</p>' : "") +
       (dateLabel ? '<small>' + esc(dateLabel) + '</small>' : "") +
-      (summary ? '<p>' + esc(summary) + '</p>' : "") + link + '</article>';
+      (record.verification_status ? '<p class="verification-label">' + esc(record.verification_status) + '</p>' : "") +
+      (summary ? '<p>' + esc(summary) + '</p>' : "") +
+      (record.source_url ? '<p><a class="text-link" href="' + esc(record.source_url) + '" target="_blank" rel="noopener noreferrer">Primary source ↗</a></p>' : "") +
+      (record.evidence_url ? '<p><a class="text-link" href="' + esc(record.evidence_url) + '" target="_blank" rel="noopener noreferrer">Supporting evidence ↗</a></p>' : "") +
+      link + '</article>';
   }).join("");
   const select = $("#category-filter");
   if (select && select.options.length <= 1) {
