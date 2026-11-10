@@ -52,7 +52,7 @@ function renderRecords(records, mode = "standard") {
       record.category, record.venue, record.caption, record.alt_text].join(" ").toLowerCase();
     return (!query || searchable.includes(query)) &&
       (!category || record.category === category) &&
-      (!status || (record.status || record.verification_status || "") === status);
+      (!status || (record.verification_status || record.status || "") === status);
   });
   if (!filtered.length) {
     box.innerHTML = '<div class="empty-state">No published records are available in this section yet.</div>';
