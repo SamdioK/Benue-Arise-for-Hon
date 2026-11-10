@@ -65,3 +65,12 @@
 }
 @media(max-width:760px){.welcome-ticker{min-height:46px}.ticker-label{width:132px;max-width:132px;padding:0 10px;font-size:8px;letter-spacing:.04em}.ticker-item{min-height:43px;padding:0 28px 0 14px;font-size:10px}.ticker-item:before{margin-right:9px}.ticker-more{padding:0 10px;font-size:9px}}
 @media(prefers-reduced-motion:reduce){.ticker-track,.ticker-label,.ticker-label:after{animation:none;transform:none;opacity:1}.ticker-label{width:auto;max-width:none;padding:0 18px}.ticker-window{overflow-x:auto}.ticker-content{width:auto}.ticker-item{white-space:normal}}
+
+@media(max-width:760px){
+ @keyframes benueLabelAppear{
+  0%,4%{width:0;max-width:0;padding-left:0;padding-right:0;opacity:0;transform:translateX(-10px)}
+  9%,24%{width:132px;max-width:132px;padding-left:10px;padding-right:10px;opacity:1;transform:translateX(0)}
+  27%,94%{width:0;max-width:0;padding-left:0;padding-right:0;opacity:0;transform:translateX(-4px)}
+  100%{width:132px;max-width:132px;padding-left:10px;padding-right:10px;opacity:1;transform:translateX(0)}
+ }
+}
