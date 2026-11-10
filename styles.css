@@ -206,3 +206,11 @@
 .profile-portrait-caption small{font-size:11px}
 @media(max-width:1000px){.profile-hub-hero{grid-template-columns:minmax(0,1fr) minmax(300px,.85fr);min-height:680px}.profile-hub-portrait{width:min(100%,390px);margin-top:100px}.profile-portrait-frame img{aspect-ratio:4/5}}
 @media(max-width:760px){.profile-hub-hero{grid-template-columns:1fr;min-height:0;gap:24px;padding:28px 6vw 74px}.profile-hub-copy{min-height:0}.profile-hub-portrait{width:min(88%,390px);margin:0 auto;justify-self:center}.profile-portrait-frame img{width:100%;height:auto;aspect-ratio:4/5;object-fit:contain}.profile-portrait-caption{padding:15px 16px}.profile-portrait-caption strong{font-size:13px}.profile-portrait-caption small{font-size:10px}}
+
+/* Stronger portrait emphasis: let the photograph occupy a substantial share of the hero */
+.profile-hub-hero{grid-template-columns:minmax(0,1fr) minmax(410px,1fr);gap:clamp(30px,5vw,70px)}
+.profile-hub-portrait{width:min(100%,500px);margin-top:clamp(100px,10vw,132px)}
+.profile-portrait-frame{padding:11px}
+.profile-portrait-frame img{width:100%;aspect-ratio:4/5;height:auto;object-fit:contain;object-position:center;background:#e8e5df}
+@media(max-width:1000px){.profile-hub-hero{grid-template-columns:minmax(0,1fr) minmax(350px,.95fr)}.profile-hub-portrait{width:min(100%,430px);margin-top:100px}}
+@media(max-width:760px){.profile-hub-hero{grid-template-columns:1fr}.profile-hub-portrait{width:min(100%,440px);margin:0 auto;justify-self:center}.profile-portrait-frame img{width:100%;height:auto;aspect-ratio:4/5;object-fit:contain}.profile-portrait-caption{padding:17px 18px}.profile-portrait-caption strong{font-size:14px}}
