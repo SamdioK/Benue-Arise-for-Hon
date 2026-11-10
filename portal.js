@@ -114,6 +114,34 @@ async function loadPageRecords() {
 });
 loadPageRecords();
 
+const tickerTrack = $("#welcome-ticker-track");
+const tickerWelcome = "WELCOME TO BENUE ARISE FOR HON! This is the official campaign website of the 2027 SDP Gubernatorial Candidate in Benue State, Prof. (Chief) Sebastine Tartenger Hon, SAN, FCIArb, DSSRS, Sema-Wan u Tiv. Explore our vision, follow our activities and join the movement for a peaceful, prosperous and progressive Benue State. Together, let us rescue and rebuild Benue in 2027.";
+if (tickerTrack) {
+  (async () => {
+    try {
+      const client = await getClient();
+      let items = '<span class="ticker-item welcome-message">' + esc(tickerWelcome) + '</span>';
+      if (client) {
+        const { data, error } = await client.from("news")
+          .select("title,slug,published_at")
+          .eq("status", "published")
+          .order("published_at", { ascending: false, nullsFirst: false })
+          .limit(12);
+        if (error) throw error;
+        (data || []).forEach((item) => {
+          const href = "news.html" + (item.slug ? "#" + encodeURIComponent(item.slug) : "");
+          items += '<span class="ticker-item ticker-headline"><a href="' + esc(href) + '">' +
+            esc(item.title) + '</a></span>';
+        });
+      }
+      // Duplicate the content for a seamless continuous loop.
+      tickerTrack.innerHTML = '<div class="ticker-content">' + items + '</div><div class="ticker-content" aria-hidden="true">' + items + '</div>';
+    } catch (error) {
+      console.warn("Campaign ticker headlines could not be loaded; welcome message remains visible.", error);
+    }
+  })();
+}
+
 const homeNews = $("#home-news");
 if (homeNews) {
   (async () => {
