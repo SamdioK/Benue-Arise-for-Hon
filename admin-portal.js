@@ -30,6 +30,16 @@ const modules = {
       ["section_type","Section type","select",true,["vision","mission"]],["title","Title","text",true],
       ["content_text","Content","textarea",true],["published","Published","select",true,["false","true"]],
       ["display_order","Display order","number"]
+    ] },
+  profile_records: { label: "Profile, projects & evidence", table: "profile_records", id: "id", order: "updated_at",
+    fields: [
+      ["section_key","Website section","select",true,["biography","legal_academic","public_service","scholarships","philanthropy","achievements","projects","evidence"]],
+      ["title","Title","text",true],["slug","URL slug","text",true],["category","Category","text"],
+      ["excerpt","Short summary","textarea"],["body","Full content","textarea"],["location","Location / LGA","text"],
+      ["source_url","Primary source URL","url"],["evidence_url","Supporting evidence URL","url"],
+      ["verification_status","Verification status","select",true,["Under Verification","Verified","Official Record","Campaign Statement"]],
+      ["status","Publication status","select",true,["draft","published","archived"]],
+      ["published_at","Publication date and time","datetime-local"]
     ] }
 };
 
@@ -159,7 +169,7 @@ async function saveRecord(event) {
       if (name.endsWith("_at") && value) value = new Date(value).toISOString();
       if (value !== "" && value !== null) payload[name] = value;
     }
-    if (activeModule.table === "news" && payload.status === "published" && !payload.published_at) payload.published_at = new Date().toISOString();
+    if (["news","profile_records"].includes(activeModule.table) && payload.status === "published" && !payload.published_at) payload.published_at = new Date().toISOString();
     const result = activeId
       ? await client.from(activeModule.table).update(payload).eq(activeModule.id, activeId).select(activeModule.id).single()
       : await client.from(activeModule.table).insert(payload).select(activeModule.id).single();
