@@ -50,3 +50,10 @@ Privacy and editorial safeguards:
 Deployment:
 - Publish from the implementation branch only after review and merge.
 - See PHASE-1-IMPLEMENTATION-MANUAL.md and PHASE-2-PROFILE-CMS-MANUAL.md for the workflows, safeguards and current limitations.
+
+
+Phase 4 — Welcome and news ticker:
+- Continuous welcome note appears immediately below the main site header.
+- Published news titles are dynamically included from arise_site.news; drafts are excluded.
+- Mobile and reduced-motion accessibility behaviour included.
+- See PHASE-4-WELCOME-NEWS-TICKER-MANUAL.md.
