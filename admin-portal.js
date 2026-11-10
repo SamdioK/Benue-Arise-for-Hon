@@ -193,4 +193,59 @@ async function deleteRecord() {
   activeId = null; clearEditor(); say("Record deleted."); await loadList();
 }
 
+
+async function loadSiteAssets() {
+  const box = $("#site-assets-list");
+  if (!box || !client || $("#cms-panel").hidden) return;
+  const { data, error } = await client.storage.from("site-assets").list("", { limit: 100, sortBy: { column: "name", order: "asc" } });
+  if (error) { box.textContent = "Storage listing unavailable: " + error.message; return; }
+  const files = (data || []).filter(item => item.name && !item.id?.endsWith("/"));
+  if (!files.length) { box.innerHTML = "<p>No permanent site assets uploaded yet.</p>"; return; }
+  box.innerHTML = files.map(item => {
+    const path = item.name;
+    const { data: urlData } = client.storage.from("site-assets").getPublicUrl(path);
+    return '<div class="admin-record"><strong>' + esc(path) + '</strong><small><a href="' + esc(urlData.publicUrl) + '" target="_blank" rel="noopener">Open asset</a></small><button type="button" class="admin-delete" data-asset-delete="' + esc(path) + '">Delete</button></div>';
+  }).join("");
+  box.querySelectorAll("[data-asset-delete]").forEach(button => button.addEventListener("click", async () => {
+    if (!window.confirm("Permanently delete this Supabase Storage asset?")) return;
+    const { error: removeError } = await client.storage.from("site-assets").remove([button.dataset.assetDelete]);
+    if (removeError) { $("#site-assets-status").textContent = removeError.message; return; }
+    $("#site-assets-status").textContent = "Asset deleted from Supabase Storage.";
+    await loadSiteAssets();
+  }));
+}
+
+async function uploadSiteAssets() {
+  const input = $("#site-assets-files");
+  const status = $("#site-assets-status");
+  const button = $("#upload-site-assets");
+  if (!input?.files?.length) { status.textContent = "Choose one or more image files first."; return; }
+  const allowed = new Set(["image/jpeg", "image/png", "image/webp", "image/svg+xml"]);
+  button.disabled = true;
+  const completed = [];
+  try {
+    for (const file of Array.from(input.files)) {
+      if (!allowed.has(file.type)) throw new Error("Unsupported file type: " + file.name);
+      if (file.size > 10 * 1024 * 1024) throw new Error(file.name + " exceeds the 10 MB limit.");
+      const safeName = file.name.normalize("NFKD").replace(/[^a-zA-Z0-9._-]+/g, "-").replace(/^-+|-+$/g, "");
+      const path = "campaign/" + safeName;
+      const { error } = await client.storage.from("site-assets").upload(path, file, {
+        cacheControl: "3600", contentType: file.type, upsert: true
+      });
+      if (error) throw error;
+      const { data } = client.storage.from("site-assets").getPublicUrl(path);
+      completed.push({ name: safeName, url: data.publicUrl });
+    }
+    status.textContent = completed.length + " asset(s) uploaded to Supabase Storage. Copy the URLs below when updating the public image references.";
+    input.value = "";
+    await loadSiteAssets();
+  } catch (error) {
+    status.textContent = error.message || "Upload failed.";
+  } finally {
+    button.disabled = false;
+  }
+}
+
+$("#upload-site-assets")?.addEventListener("click", uploadSiteAssets);
+
 initialise();
