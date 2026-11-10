@@ -105,6 +105,7 @@ async function checkAuth() {
   $("#auth-panel").hidden = true; $("#cms-panel").hidden = false;
   $("#signed-in-as").textContent = "Signed in as " + (user.email || "authorised administrator") + " · " + data.role;
   await loadList();
+  await loadSiteAssets();
 }
 
 function renderFields(record = {}) {
@@ -197,12 +198,12 @@ async function deleteRecord() {
 async function loadSiteAssets() {
   const box = $("#site-assets-list");
   if (!box || !client || $("#cms-panel").hidden) return;
-  const { data, error } = await client.storage.from("site-assets").list("", { limit: 100, sortBy: { column: "name", order: "asc" } });
+  const { data, error } = await client.storage.from("site-assets").list("campaign", { limit: 100, sortBy: { column: "name", order: "asc" } });
   if (error) { box.textContent = "Storage listing unavailable: " + error.message; return; }
   const files = (data || []).filter(item => item.name && !item.id?.endsWith("/"));
   if (!files.length) { box.innerHTML = "<p>No permanent site assets uploaded yet.</p>"; return; }
   box.innerHTML = files.map(item => {
-    const path = item.name;
+    const path = "campaign/" + item.name;
     const { data: urlData } = client.storage.from("site-assets").getPublicUrl(path);
     return '<div class="admin-record"><strong>' + esc(path) + '</strong><small><a href="' + esc(urlData.publicUrl) + '" target="_blank" rel="noopener">Open asset</a></small><button type="button" class="admin-delete" data-asset-delete="' + esc(path) + '">Delete</button></div>';
   }).join("");
