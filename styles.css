@@ -38,7 +38,7 @@
 
 /* Continuous welcome, news and announcements ticker */
 .welcome-ticker{width:100%;min-height:48px;display:flex;align-items:stretch;gap:0;background:#063e28;color:#fff;border-top:1px solid #ffffff20;border-bottom:3px solid #ed7917;overflow:hidden;position:relative;z-index:4}
-.ticker-label{position:relative;isolation:isolate;flex:0 0 auto;display:flex;align-items:center;justify-content:center;width:34px;max-width:34px;min-width:0;overflow:hidden;padding:0 8px;background:#ed7917;color:#075333;font-size:9px;font-weight:1000;font-style:normal;letter-spacing:.015em;line-height:1.15;text-align:center;white-space:normal;transform-origin:left center;animation:benueLabelAppear 20s linear infinite}
+.ticker-label{position:relative;isolation:isolate;flex:0 0 auto;display:flex;align-items:center;justify-content:center;width:96px;max-width:96px;min-width:0;overflow:hidden;padding:0 4px;background:#ed7917;color:#075333;font-size:9px;font-weight:1000;font-style:normal;letter-spacing:.015em;line-height:1.15;text-align:center;white-space:normal;transform-origin:left center;animation:benueLabelAppear 20s linear infinite}
 .ticker-label:after{content:"";position:absolute;z-index:2;top:-35%;bottom:-35%;left:-65%;width:38%;pointer-events:none;background:linear-gradient(105deg,transparent 0%,#ffffff22 28%,#ffffffde 48%,#fff8 55%,transparent 78%);transform:skewX(-22deg);opacity:0;animation:benueCrystalShine 20s linear infinite}
 
 
@@ -48,13 +48,13 @@
 .ticker-item{display:inline-flex;align-items:center;min-height:45px;padding:0 42px 0 24px;font-size:12px;line-height:1.5;font-weight:650;letter-spacing:.015em;white-space:nowrap;color:#fff}
 .ticker-item:before{content:"◆";font-size:9px;color:#f3a13f;margin-right:15px}
 .ticker-item a{color:#fff;text-decoration:underline;text-underline-offset:3px}
-.ticker-more{flex:0 0 auto;display:flex;align-items:center;padding:0 8px;background:#54218a;color:#fff;font-size:10px;font-weight:900;letter-spacing:.08em;white-space:nowrap}
+.ticker-more{flex:0 0 54px;width:54px;min-width:54px;max-width:54px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;padding:0 3px;background:#54218a;color:#fff;font-size:10px;font-weight:900;letter-spacing:.08em;white-space:nowrap}
 .welcome-ticker:hover .ticker-track,.welcome-ticker:focus-within .ticker-track{animation-play-state:paused}
 @keyframes benueTickerScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @keyframes benueLabelAppear{
-  0%,19%{flex-basis:34px;width:34px;max-width:34px;min-width:34px;padding-left:1px;padding-right:1px;opacity:1;transform:translateX(0);background-color:#ed7917}
+  0%,19%{flex-basis:96px;width:96px;max-width:96px;min-width:96px;padding-left:4px;padding-right:4px;opacity:1;transform:translateX(0);background-color:#ed7917}
   20%,94%{flex-basis:0;width:0;max-width:0;min-width:0;padding-left:0;padding-right:0;opacity:0;transform:translateX(0);background-color:transparent}
-  95%,100%{flex-basis:112px;width:112px;max-width:112px;min-width:112px;padding-left:8px;padding-right:8px;opacity:1;transform:translateX(0);background-color:#ed7917}
+  95%,100%{flex-basis:96px;width:96px;max-width:96px;min-width:96px;padding-left:4px;padding-right:4px;opacity:1;transform:translateX(0);background-color:#ed7917}
 }
 @keyframes benueCrystalShine{
   0%,93%{left:-65%;opacity:0}
@@ -62,13 +62,13 @@
   98%{left:125%;opacity:1}
   100%{left:125%;opacity:0}
 }
-@media(max-width:760px){.welcome-ticker{min-height:46px}.ticker-label{width:34px;max-width:34px;min-width:0;padding:0 1px;font-size:9px;font-weight:1000;font-style:normal;letter-spacing:.015em}.ticker-item{min-height:43px;padding:0 28px 0 14px;font-size:10px}.ticker-item:before{margin-right:9px}.ticker-more{padding:0 5px;font-size:8px}}
-@media(prefers-reduced-motion:reduce){.ticker-track,.ticker-label,.ticker-label:after{animation:none;transform:none;opacity:1}.ticker-label{width:68px;max-width:68px;min-width:0;padding:0 3px}.ticker-window{overflow-x:auto}.ticker-content{width:auto}.ticker-item{white-space:normal}}
+@media(max-width:760px){.welcome-ticker{min-height:46px}.ticker-label{width:96px;max-width:96px;min-width:0;padding:0 4px;font-size:9px;font-weight:1000;font-style:normal;letter-spacing:.015em}.ticker-item{min-height:43px;padding:0 28px 0 14px;font-size:10px}.ticker-item:before{margin-right:9px}.ticker-more{flex:0 0 54px;width:54px;min-width:54px;max-width:54px;padding:0 3px;font-size:8px}}
+@media(prefers-reduced-motion:reduce){.ticker-track,.ticker-label,.ticker-label:after{animation:none;transform:none;opacity:1}.ticker-label{width:96px;max-width:96px;min-width:0;padding:0 4px}.ticker-window{overflow-x:auto}.ticker-content{width:auto}.ticker-item{white-space:normal}}
 
 @media(max-width:760px){
  @keyframes benueLabelAppear{
-  0%,19%{flex-basis:68px;width:68px;max-width:68px;min-width:68px;padding-left:3px;padding-right:3px;opacity:1;transform:translateX(0);background-color:#ed7917}
+  0%,19%{flex-basis:96px;width:96px;max-width:96px;min-width:96px;padding-left:4px;padding-right:4px;opacity:1;transform:translateX(0);background-color:#ed7917}
   20%,94%{flex-basis:0;width:0;max-width:0;min-width:0;padding-left:0;padding-right:0;opacity:0;transform:translateX(0);background-color:transparent}
-  95%,100%{flex-basis:104px;width:104px;max-width:104px;min-width:104px;padding-left:6px;padding-right:6px;opacity:1;transform:translateX(0);background-color:#ed7917}
+  95%,100%{flex-basis:96px;width:96px;max-width:96px;min-width:96px;padding-left:4px;padding-right:4px;opacity:1;transform:translateX(0);background-color:#ed7917}
  }
 }
