@@ -23,6 +23,12 @@ Live public content integration:
 - profile_records: biography, legal and academic career, public service, scholarships, philanthropy, achievements, projects and evidence records.
 - Profile pages read only their matching published section from profile_records. Pages with no approved records retain cautious placeholders.
 
+Homepage experience:
+- Campaign-style responsive homepage with hero, quick links, news, upcoming events, gallery and support/get-involved panels.
+- Homepage news, events and gallery panels read published records from arise_site.
+- Candidate portrait and authorised original SDP logo remain pending separate approved assets; no unverified likeness is used.
+- See PHASE-3-HOMEPAGE-REDESIGN-MANUAL.md.
+
 Administrator CMS:
 - admin.html uses Supabase Auth email/password.
 - Access is checked against arise_site.admins and protected again by database RLS.
