@@ -7,7 +7,7 @@ function say(message) { if (status) status.textContent = message; }
 function safeText(value="") { return String(value).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]); }
 if (cfg.SUPABASE_URL && cfg.SUPABASE_PUBLISHABLE_KEY) {
   const { createClient } = await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm");
-  client = createClient(cfg.SUPABASE_URL, cfg.SUPABASE_PUBLISHABLE_KEY, { db:{schema:"arise_site"}, auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true} });
+  client = createClient(cfg.SUPABASE_URL, cfg.SUPABASE_PUBLISHABLE_KEY, { db:{schema:"arise_site"}, auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:true} });
 } else say("Supabase is not configured. Add the project URL and publishable key in config.js first.");
 async function checkAdmin() {
   if (!client) return;
