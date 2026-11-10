@@ -20,7 +20,8 @@ Live public content integration:
 - events: published public engagement events.
 - gallery: published gallery captions and metadata.
 - vision_mission_content: published vision and mission content on the manifesto page.
-- Other profile pages currently retain clearly labelled placeholders pending approved records and a reviewed content model.
+- profile_records: biography, legal and academic career, public service, scholarships, philanthropy, achievements, projects and evidence records.
+- Profile pages read only their matching published section from profile_records. Pages with no approved records retain cautious placeholders.
 
 Administrator CMS:
 - admin.html uses Supabase Auth email/password.
@@ -42,4 +43,4 @@ Privacy and editorial safeguards:
 
 Deployment:
 - Publish from the implementation branch only after review and merge.
-- See PHASE-1-IMPLEMENTATION-MANUAL.md for the phase workflow and current limitations.
+- See PHASE-1-IMPLEMENTATION-MANUAL.md and PHASE-2-PROFILE-CMS-MANUAL.md for the workflows, safeguards and current limitations.
