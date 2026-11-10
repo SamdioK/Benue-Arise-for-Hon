@@ -57,7 +57,7 @@ async function initialise() {
   const { createClient } = await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/+esm");
   client = createClient(cfg.SUPABASE_URL, cfg.SUPABASE_PUBLISHABLE_KEY, {
     db: { schema: "arise_site" },
-    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+    auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: true }
   });
   client.auth.onAuthStateChange(() => setTimeout(checkAuth, 0));
   $("#login-form").addEventListener("submit", login);
