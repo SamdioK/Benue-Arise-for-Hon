@@ -139,6 +139,60 @@ if (homeNews) {
   })();
 }
 
+
+const homeEvents = $("#home-events");
+if (homeEvents) {
+  (async () => {
+    try {
+      const client = await getClient();
+      if (!client) return;
+      const { data, error } = await client.from("events").select("title,description,venue,starts_at")
+        .eq("status", "published").gte("starts_at", new Date().toISOString())
+        .order("starts_at", { ascending: true }).limit(3);
+      if (error) throw error;
+      if (!data?.length) {
+        homeEvents.innerHTML = '<div class="home-empty">No upcoming events have been published yet.</div>';
+        return;
+      }
+      homeEvents.innerHTML = data.map((item) => {
+        const date = item.starts_at ? new Date(item.starts_at) : null;
+        const month = date ? date.toLocaleDateString("en-GB", { month: "short", timeZone: "Africa/Lagos" }).toUpperCase() : "";
+        const day = date ? date.toLocaleDateString("en-GB", { day: "2-digit", timeZone: "Africa/Lagos" }) : "";
+        const detail = [item.venue, date ? date.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Africa/Lagos" }) : ""].filter(Boolean).join(" · ");
+        return '<article class="home-event-item"><div class="home-event-date">' + esc(month) + '<b>' + esc(day) + '</b></div><div><h3>' + esc(item.title) + '</h3><p>' + esc(detail || item.description || "Public engagement") + '</p></div></article>';
+      }).join("");
+    } catch (error) {
+      console.warn("Homepage events could not be loaded.", error);
+      homeEvents.innerHTML = '<div class="home-empty">Events are temporarily unavailable. Visit the events page for updates.</div>';
+    }
+  })();
+}
+
+const homeGallery = $("#home-gallery");
+if (homeGallery) {
+  (async () => {
+    try {
+      const client = await getClient();
+      if (!client) return;
+      const { data, error } = await client.from("gallery").select("title,caption,alt_text,storage_path")
+        .eq("status", "published").order("display_order", { ascending: true }).limit(3);
+      if (error) throw error;
+      if (!data?.length) {
+        homeGallery.innerHTML = '<div class="home-empty">No approved gallery items have been published yet.</div>';
+        return;
+      }
+      homeGallery.innerHTML = data.map((item) => {
+        const imageUrl = /^https?:\/\//i.test(item.storage_path || "") ? item.storage_path : "";
+        const image = imageUrl ? '<img class="record-image" src="' + esc(imageUrl) + '" alt="' + esc(item.alt_text || item.title || "Campaign media") + '" loading="lazy">' : "";
+        return '<article class="record-card">' + image + '<div class="record-meta"><span>Media gallery</span></div><h3>' + esc(item.title || "Campaign media") + '</h3><p>' + esc(item.caption || item.alt_text || "Approved campaign media item") + '</p><a class="text-link" href="gallery.html">View gallery →</a></article>';
+      }).join("");
+    } catch (error) {
+      console.warn("Homepage gallery could not be loaded.", error);
+      homeGallery.innerHTML = '<div class="home-empty">Gallery items are temporarily unavailable.</div>';
+    }
+  })();
+}
+
 const contactForm = $("#contact-form");
 if (contactForm) {
   const submit = contactForm.querySelector('button[type="submit"]');
