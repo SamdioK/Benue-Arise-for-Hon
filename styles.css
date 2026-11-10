@@ -306,3 +306,29 @@
   text-align:left;
  }
 }
+
+/* Profile introduction: detailed eight-module guide, 12px justified */
+.profile-hub-copy .profile-hub-intro{
+ display:block;
+ width:100%;
+ max-width:none;
+ margin:0;
+ color:#e5efe8;
+ font-family:'Manrope',Arial,sans-serif;
+ font-size:12px;
+ font-weight:500;
+ line-height:1.9;
+ text-align:justify;
+ text-justify:inter-word;
+ letter-spacing:0;
+}
+@media(max-width:760px){
+ .profile-hub-copy .profile-hub-intro{
+  width:100%;
+  max-width:none;
+  font-size:12px;
+  line-height:1.8;
+  text-align:justify;
+  text-justify:inter-word;
+ }
+}
