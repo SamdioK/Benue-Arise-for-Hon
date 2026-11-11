@@ -17,3 +17,9 @@
 #profile-manager-status{min-height:18px;color:#375a43;font-size:12px}
 .profile-manager-users .admin-record{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 @media(max-width:760px){.profile-manager-users form{grid-template-columns:1fr}}
+
+
+/* Ensure hidden authentication panels remain hidden despite component display rules. */
+[hidden] { display: none !important; }
+#forgot-password { border: 0; background: transparent; color: var(--green, #176b48); font: inherit; font-weight: 700; padding: .5rem 0; text-decoration: underline; cursor: pointer; }
+#recovery-form { margin-top: 1.25rem; }
