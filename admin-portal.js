@@ -46,6 +46,8 @@ const modules = {
 let client;
 let activeId = null;
 let activeModule = modules.news;
+let currentUser = null;
+let currentRole = null;
 const say = (message) => { const node = $("#cms-status"); if (node) node.textContent = message; };
 const authSay = (message) => { const node = $("#auth-status"); if (node) node.textContent = message; };
 
@@ -68,6 +70,7 @@ async function initialise() {
   $("#reset-record").addEventListener("click", () => { activeId = null; clearEditor(); });
   $("#record-form").addEventListener("submit", saveRecord);
   $("#delete-record").addEventListener("click", deleteRecord);
+  $("#profile-manager-form")?.addEventListener("submit", assignProfileManager);
   await checkAuth();
 }
 
@@ -96,16 +99,38 @@ async function checkAuth() {
   if (!client) return;
   const { data: { user } } = await client.auth.getUser();
   if (!user) { $("#auth-panel").hidden = false; $("#cms-panel").hidden = true; return; }
-  const { data, error } = await client.from("admins").select("user_id,role").eq("user_id", user.id).maybeSingle();
-  if (error || !data) {
+  currentUser = user;
+  const [{ data: admin, error: adminError }, { data: manager, error: managerError }] = await Promise.all([
+    client.from("admins").select("user_id,role").eq("user_id", user.id).maybeSingle(),
+    client.from("profile_managers").select("user_id,display_name,email").eq("user_id", user.id).maybeSingle()
+  ]);
+  if (adminError || managerError || (!admin && !manager)) {
     $("#auth-panel").hidden = false; $("#cms-panel").hidden = true;
     authSay("This signed-in account is not authorised to administer this portal.");
     return;
   }
+  currentRole = admin ? admin.role : "profile_manager";
   $("#auth-panel").hidden = true; $("#cms-panel").hidden = false;
-  $("#signed-in-as").textContent = "Signed in as " + (user.email || "authorised administrator") + " · " + data.role;
+  $("#signed-in-as").textContent = "Signed in as " + (user.email || "authorised user") + " · " + (admin ? admin.role : "Profile Manager");
+  const isManager = !admin && !!manager;
+  $("#profile-manager-users").hidden = isManager;
+  $("#site-assets-manager").hidden = isManager;
+  $("#content-type").disabled = isManager;
+  if (isManager) {
+    $("#content-type").value = "profile_records";
+    activeModule = modules.profile_records;
+    $("#new-record").textContent = "+ New profile record";
+    $("#cms-panel .cms-top h2").textContent = "Profile Manager workspace";
+    $("#cms-panel .admin-note").textContent = "Profile Manager access: manage the candidate’s profile records only. Save content as Draft until it has been checked and approved for publication.";
+  } else {
+    $("#new-record").textContent = "+ New record";
+    $("#cms-panel .cms-top h2").textContent = "Manage portal content";
+  }
   await loadList();
-  await loadSiteAssets();
+  if (!isManager) {
+    await loadSiteAssets();
+    await loadProfileManagers();
+  }
 }
 
 function renderFields(record = {}) {
@@ -194,6 +219,47 @@ async function deleteRecord() {
   activeId = null; clearEditor(); say("Record deleted."); await loadList();
 }
 
+
+async function loadProfileManagers() {
+  const box = $("#profile-manager-list");
+  if (!box || currentRole === "profile_manager") return;
+  const { data, error } = await client.from("profile_managers").select("user_id,display_name,email,created_at").order("created_at", {ascending:false});
+  if (error) { box.textContent = "Could not load Profile Managers: " + error.message; return; }
+  if (!data?.length) { box.innerHTML = "<p>No Profile Managers assigned yet.</p>"; return; }
+  box.innerHTML = data.map(row => '<div class="admin-record"><strong>' + esc(row.display_name) + '</strong><small>' + esc(row.email) + '<br>' + esc(row.user_id) + '</small><button type="button" class="admin-delete" data-manager-remove="' + esc(row.user_id) + '">Revoke access</button></div>').join("");
+  box.querySelectorAll("[data-manager-remove]").forEach(button => button.addEventListener("click", async () => {
+    if (!window.confirm("Revoke this user's Profile Manager access?")) return;
+    const { error: removeError } = await client.from("profile_managers").delete().eq("user_id", button.dataset.managerRemove);
+    $("#profile-manager-status").textContent = removeError ? removeError.message : "Profile Manager access revoked.";
+    if (!removeError) await loadProfileManagers();
+  }));
+}
+
+async function assignProfileManager(event) {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const button = $("#assign-profile-manager");
+  const status = $("#profile-manager-status");
+  button.disabled = true;
+  status.textContent = "Assigning access…";
+  try {
+    const values = new FormData(form);
+    const payload = {
+      user_id: String(values.get("user_id") || "").trim(),
+      display_name: String(values.get("display_name") || "").trim(),
+      email: String(values.get("email") || "").trim().toLowerCase()
+    };
+    const { error } = await client.from("profile_managers").insert(payload);
+    if (error) throw error;
+    status.textContent = "Profile Manager access assigned. The user can now sign in with the existing Auth account.";
+    form.reset();
+    await loadProfileManagers();
+  } catch (error) {
+    status.textContent = error.message || "Could not assign Profile Manager access.";
+  } finally {
+    button.disabled = false;
+  }
+}
 
 async function loadSiteAssets() {
   const box = $("#site-assets-list");
