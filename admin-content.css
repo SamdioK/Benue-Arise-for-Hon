@@ -7,3 +7,13 @@
 .site-assets-manager .admin-record{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .site-assets-manager .admin-record small a{color:#126b43;font-weight:800}
 #site-assets-status{min-height:18px;color:#375a43}
+
+.profile-manager-users{margin:18px 0;padding:20px;border:1px solid #dce6dc;border-radius:12px;background:#fbfdfb;display:grid;gap:12px}
+.profile-manager-users h3{margin:0;color:#15583b;font-size:18px}
+.profile-manager-users p{margin:0;color:#68766c;font-size:11px;line-height:1.7}
+.profile-manager-users form{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:end}
+.profile-manager-users label{display:grid;gap:7px;font-size:11px;font-weight:800}
+.profile-manager-users input{min-width:0;width:100%;padding:11px;border:1px solid #d5e0d4;background:#fff;border-radius:7px;font-size:12px}
+#profile-manager-status{min-height:18px;color:#375a43;font-size:12px}
+.profile-manager-users .admin-record{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+@media(max-width:760px){.profile-manager-users form{grid-template-columns:1fr}}
