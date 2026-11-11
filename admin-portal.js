@@ -135,7 +135,7 @@ async function checkAuth() {
 
 function renderFields(record = {}) {
   const target = $("#record-fields");
-  target.innerHTML = activeModule.fields.map(([name,label,type,required,options]) => {
+  target.innerHTML = activeModule.fields.filter(([name]) => !(currentRole === "profile_manager" && name === "status")).map(([name,label,type,required,options]) => {
     const value = record[name] ?? (name === "status" ? "draft" : name === "published" ? "false" : "");
     const req = required ? " required" : "";
     if (type === "textarea") return '<label>' + esc(label) + '<textarea name="' + name + '" rows="5"' + req + '>' + esc(value) + '</textarea></label>';
@@ -171,6 +171,7 @@ async function loadList() {
 async function loadRecord(id) {
   const { data, error } = await client.from(activeModule.table).select("*").eq(activeModule.id, id).maybeSingle();
   if (error || !data) { say(error?.message || "Record not found."); return; }
+  if (currentRole === "profile_manager" && data.status !== "draft") { say("Published and archived records are read-only for Profile Managers. Ask an Administrator to return the record to Draft before editing."); return; }
   activeId = id;
   renderFields(data);
   $("#form-heading").textContent = "Edit " + activeModule.label;
