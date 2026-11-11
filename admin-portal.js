@@ -34,7 +34,7 @@ const modules = {
   profile_records: { label: "Profile, projects & evidence", table: "profile_records", id: "id", order: "updated_at",
     fields: [
       ["section_key","Website section","select",true,["biography","legal_academic","public_service","scholarships","philanthropy","achievements","projects","evidence"]],
-      ["title","Title","text",true],["slug","URL slug","text",true],["category","Category","text"],
+      ["title","Title","text",true],["slug","URL slug","text",true],["category","Subsection / category (use exact Personal Profile subsection name)","text"],
       ["excerpt","Short summary","textarea"],["body","Full content","textarea"],["image_url","Photograph URL (Supabase Storage)","url"],["image_alt","Photograph description (accessibility)","text"],["milestone_date","Milestone date","date"],["display_order","Display order","number"],["location","Location / LGA","text"],
       ["source_url","Primary source URL","url"],["evidence_url","Supporting evidence URL","url"],
       ["verification_status","Verification status","select",true,["Under Verification","Verified","Official Record","Campaign Statement"]],
