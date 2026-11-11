@@ -48,6 +48,7 @@ let activeId = null;
 let activeModule = modules.news;
 let currentUser = null;
 let currentRole = null;
+let recoveryMode = new URLSearchParams(window.location.hash.slice(1)).get("type") === "recovery";
 const say = (message) => { const node = $("#cms-status"); if (node) node.textContent = message; };
 const authSay = (message) => { const node = $("#auth-status"); if (node) node.textContent = message; };
 
@@ -61,7 +62,7 @@ async function initialise() {
     db: { schema: "arise_site" },
     auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: true }
   });
-  client.auth.onAuthStateChange((event) => setTimeout(() => { if (event === "PASSWORD_RECOVERY") showPasswordRecovery(); else checkAuth(); }, 0));
+  client.auth.onAuthStateChange((event) => setTimeout(() => { if (event === "PASSWORD_RECOVERY") { recoveryMode = true; showPasswordRecovery(); } else if (!recoveryMode) checkAuth(); }, 0));
   $("#login-form").addEventListener("submit", login);
   $("#forgot-password").addEventListener("click", requestPasswordReset);
   $("#recovery-form").addEventListener("submit", completePasswordRecovery);
@@ -73,10 +74,12 @@ async function initialise() {
   $("#record-form").addEventListener("submit", saveRecord);
   $("#delete-record").addEventListener("click", deleteRecord);
   $("#profile-manager-form")?.addEventListener("submit", assignProfileManager);
-  await checkAuth();
+  if (recoveryMode) showPasswordRecovery();
+  else await checkAuth();
 }
 
 function showPasswordRecovery() {
+  recoveryMode = true;
   $("#auth-panel").hidden = false;
   $("#cms-panel").hidden = true;
   $("#login-form").hidden = true;
@@ -115,6 +118,7 @@ async function completePasswordRecovery(event) {
   try {
     const { error } = await client.auth.updateUser({ password });
     if (error) throw error;
+    recoveryMode = false;
     await client.auth.signOut();
     form.reset();
     form.hidden = true;
