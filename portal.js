@@ -111,7 +111,7 @@ function renderPersonalProfileRecords(records) {
   const used = new Set();
   const sections = personalSections.map((section) => {
     const items = groups.get(section.key) || [];
-    if (!items.length) return "";
+    
     used.add(section.key);
     return renderPersonalSection(section, items);
   }).join("");
@@ -122,7 +122,7 @@ function renderPersonalProfileRecords(records) {
 }
 
 function renderPersonalSection(section, records) {
-  const cards = records.map((record) => {
+  const cards = records.length ? records.map((record) => {
     const imageUrl = /^https:\/\//i.test(record.image_url || "") ? record.image_url : "";
     const image = imageUrl ? '<figure class="personal-record-image"><img src="' + esc(imageUrl) + '" alt="' + esc(record.image_alt || record.title || "Personal profile photograph") + '" loading="lazy"></figure>' : "";
     const date = record.milestone_date ? new Date(record.milestone_date + "T12:00:00").toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"}) : "";
@@ -138,7 +138,7 @@ function renderPersonalSection(section, records) {
       (record.source_url ? '<a class="text-link" href="' + esc(record.source_url) + '" target="_blank" rel="noopener noreferrer">Primary source ↗</a>' : "") +
       (record.evidence_url ? '<a class="text-link" href="' + esc(record.evidence_url) + '" target="_blank" rel="noopener noreferrer">Supporting record ↗</a>' : "") +
       '</div></div></article>';
-  }).join("");
+  }).join("") : '<article class="personal-subsection-empty"><span>✦</span><p>Approved information for this subsection will be added after review and verification.</p></article>';
   return '<section class="personal-record-group" id="' + esc(section.id) + '"><div class="personal-record-group-heading"><span class="personal-record-number">PROFILE THEME</span><h2>' + esc(section.title) + '</h2><p>' + esc(section.intro) + '</p></div><div class="personal-record-cards">' + cards + '</div></section>';
 }
 
