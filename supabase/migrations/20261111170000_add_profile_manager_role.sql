@@ -19,7 +19,16 @@ on arise_site.profile_managers for select to authenticated
 using (user_id = (select auth.uid()));
 grant select, insert, delete on arise_site.profile_managers to authenticated;
 drop policy if exists "Admins can manage profile records" on arise_site.profile_records;
-create policy "Admins and profile managers can manage profile records"
+create policy "Admins can manage profile records"
 on arise_site.profile_records for all to authenticated
-using ((select arise_site.is_admin()) or (select arise_site.is_profile_manager()))
-with check ((select arise_site.is_admin()) or (select arise_site.is_profile_manager()));
+using ((select arise_site.is_admin())) with check ((select arise_site.is_admin()));
+create policy "Profile managers can create drafts"
+on arise_site.profile_records for insert to authenticated
+with check ((select arise_site.is_profile_manager()) and status = 'draft');
+create policy "Profile managers can update drafts"
+on arise_site.profile_records for update to authenticated
+using ((select arise_site.is_profile_manager()) and status = 'draft')
+with check ((select arise_site.is_profile_manager()) and status = 'draft');
+create policy "Profile managers can read draft records"
+on arise_site.profile_records for select to authenticated
+using ((select arise_site.is_profile_manager()) and status = 'draft');
