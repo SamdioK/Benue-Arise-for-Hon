@@ -48,7 +48,7 @@ let activeId = null;
 let activeModule = modules.news;
 let currentUser = null;
 let currentRole = null;
-let recoveryMode = new URLSearchParams(window.location.hash.slice(1)).get("type") === "recovery";
+let recoveryMode = new URLSearchParams(window.location.hash.slice(1)).get("type") === "recovery" || new URLSearchParams(window.location.search).get("type") === "recovery" || new URLSearchParams(window.location.search).has("code");
 const say = (message) => { const node = $("#cms-status"); if (node) node.textContent = message; };
 const authSay = (message) => { const node = $("#auth-status"); if (node) node.textContent = message; };
 
@@ -60,7 +60,7 @@ async function initialise() {
   const { createClient } = await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/+esm");
   client = createClient(cfg.SUPABASE_URL, cfg.SUPABASE_PUBLISHABLE_KEY, {
     db: { schema: "arise_site" },
-    auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: true }
+    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, flowType: "pkce" }
   });
   client.auth.onAuthStateChange((event) => setTimeout(() => { if (event === "PASSWORD_RECOVERY") { recoveryMode = true; showPasswordRecovery(); } else if (!recoveryMode) checkAuth(); }, 0));
   $("#login-form").addEventListener("submit", login);
@@ -74,8 +74,17 @@ async function initialise() {
   $("#record-form").addEventListener("submit", saveRecord);
   $("#delete-record").addEventListener("click", deleteRecord);
   $("#profile-manager-form")?.addEventListener("submit", assignProfileManager);
-  if (recoveryMode) showPasswordRecovery();
-  else await checkAuth();
+  if (recoveryMode) {
+    const { data: { session }, error } = await client.auth.getSession();
+    if (session) showPasswordRecovery();
+    else {
+      recoveryMode = false;
+      $("#recovery-form").hidden = true;
+      $("#login-form").hidden = false;
+      authSay(error?.message || "This recovery link is expired, already used, or could not be verified. Request a fresh password-reset email.");
+      await checkAuth();
+    }
+  } else await checkAuth();
 }
 
 function showPasswordRecovery() {
