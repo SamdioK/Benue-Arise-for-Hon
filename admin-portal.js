@@ -61,8 +61,10 @@ async function initialise() {
     db: { schema: "arise_site" },
     auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: true }
   });
-  client.auth.onAuthStateChange(() => setTimeout(checkAuth, 0));
+  client.auth.onAuthStateChange((event) => setTimeout(() => { if (event === "PASSWORD_RECOVERY") showPasswordRecovery(); else checkAuth(); }, 0));
   $("#login-form").addEventListener("submit", login);
+  $("#forgot-password").addEventListener("click", requestPasswordReset);
+  $("#recovery-form").addEventListener("submit", completePasswordRecovery);
   $("#signout").addEventListener("click", async () => { await client.auth.signOut(); });
   $("#content-type").addEventListener("change", () => { activeModule = modules[$("#content-type").value]; activeId = null; clearEditor(); loadList(); });
   $("#admin-search").addEventListener("input", loadList);
@@ -72,6 +74,56 @@ async function initialise() {
   $("#delete-record").addEventListener("click", deleteRecord);
   $("#profile-manager-form")?.addEventListener("submit", assignProfileManager);
   await checkAuth();
+}
+
+function showPasswordRecovery() {
+  $("#auth-panel").hidden = false;
+  $("#cms-panel").hidden = true;
+  $("#login-form").hidden = true;
+  $("#recovery-form").hidden = false;
+  authSay("Recovery link verified. Enter and confirm your new password below.");
+}
+
+async function requestPasswordReset() {
+  const email = String(new FormData($("#login-form")).get("email") || "").trim();
+  if (!email) { authSay("Enter your administrator email address first."); $("#login-form [name=email]").focus(); return; }
+  const button = $("#forgot-password");
+  button.disabled = true;
+  authSay("Sending password recovery email…");
+  try {
+    const redirectTo = "https://samdiok.github.io/Benue-Arise-for-Hon/admin.html";
+    const { error } = await client.auth.resetPasswordForEmail(email, { redirectTo });
+    if (error) throw error;
+    authSay("If this email belongs to an account, a fresh recovery link has been sent. Check your inbox and spam folder.");
+  } catch (error) {
+    authSay(error.message || "Could not send the recovery email.");
+  } finally { button.disabled = false; }
+}
+
+async function completePasswordRecovery(event) {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const values = new FormData(form);
+  const password = String(values.get("password") || "");
+  const confirm = String(values.get("confirm_password") || "");
+  const status = $("#recovery-status");
+  const button = form.querySelector('button[type="submit"]');
+  if (password.length < 10) { status.textContent = "Use at least 10 characters."; return; }
+  if (password !== confirm) { status.textContent = "The passwords do not match."; return; }
+  button.disabled = true;
+  status.textContent = "Updating password…";
+  try {
+    const { error } = await client.auth.updateUser({ password });
+    if (error) throw error;
+    await client.auth.signOut();
+    form.reset();
+    form.hidden = true;
+    $("#login-form").hidden = false;
+    authSay("Password updated successfully. Sign in with your new password.");
+    if (window.location.hash) history.replaceState(null, "", window.location.pathname + window.location.search);
+  } catch (error) {
+    status.textContent = error.message || "Password update failed. Request a fresh recovery link and try again.";
+  } finally { button.disabled = false; }
 }
 
 async function login(event) {
