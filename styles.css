@@ -435,3 +435,94 @@
  .profile-portrait-caption strong{font-size:14px;letter-spacing:.02em}
  .profile-portrait-caption small{font-size:10px;line-height:1.5}
 }
+
+/* Mobile-first portrait and nameplate refinement: balanced scale, no oversized plaque */
+.profile-hub-page{overflow-x:hidden}
+.profile-hub-hero{overflow:hidden}
+.profile-hub-portrait{
+ width:min(100%,420px);
+ margin-left:auto;
+ margin-right:auto;
+}
+.profile-portrait-frame{
+ padding:7px 7px 0;
+ background:#fff;
+ border-radius:8px 8px 0 0;
+ box-shadow:0 14px 34px #001e1430;
+}
+.profile-portrait-frame img{
+ display:block;
+ width:100%;
+ height:auto;
+ aspect-ratio:4/5;
+ object-fit:contain;
+ object-position:center;
+ background:#e8e5df;
+}
+.profile-portrait-caption{
+ display:grid;
+ grid-template-columns:1fr;
+ gap:4px;
+ padding:12px 16px 13px;
+ background:linear-gradient(135deg,#fbfaf6 0%,#eeeee6 100%);
+ border-bottom:3px solid #e47b22;
+ box-shadow:0 9px 22px #001e1420;
+}
+.profile-portrait-caption span{
+ color:#98703b;
+ font-size:9px;
+ letter-spacing:.14em;
+}
+.profile-portrait-caption strong{
+ color:#104b34;
+ font-size:15px;
+ font-weight:800;
+ line-height:1.25;
+ letter-spacing:.015em;
+}
+.profile-portrait-caption small{
+ color:#657168;
+ font-size:10px;
+ font-weight:600;
+ line-height:1.4;
+}
+@media(max-width:760px){
+ .profile-hub-hero{
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+  min-height:0;
+  padding:24px 6vw 38px;
+  gap:18px;
+ }
+ .profile-hub-copy{width:100%;min-height:0}
+ .profile-hub-portrait{
+  width:min(100%,340px);
+  max-width:340px;
+  margin:0 auto;
+ }
+ .profile-portrait-frame{padding:6px 6px 0;border-radius:7px 7px 0 0}
+ .profile-portrait-frame img{
+  width:100%;
+  height:auto;
+  aspect-ratio:4/5;
+  object-fit:contain;
+ }
+ .profile-portrait-caption{padding:10px 13px 11px;gap:3px}
+ .profile-portrait-caption span{font-size:8px}
+ .profile-portrait-caption strong{font-size:13px;line-height:1.3;letter-spacing:0}
+ .profile-portrait-caption small{font-size:9px;line-height:1.4}
+ .profile-module-grid{
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  width:100%;
+  max-width:100%;
+  gap:12px;
+ }
+ .profile-module-card{width:100%;min-width:0;box-sizing:border-box}
+ .profile-modules-section{padding-left:5vw;padding-right:5vw}
+}
+@media(min-width:761px){
+ .profile-hub-portrait{width:min(100%,420px)}
+ .profile-portrait-caption strong{font-size:15px}
+}
