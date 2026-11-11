@@ -83,6 +83,65 @@ function renderRecords(records, mode = "standard") {
   }
 }
 
+
+const personalSections = [
+  { key: "Background & Origins", id: "origins", title: "Background & Origins", intro: "Family background, place of origin and the roots of his personal story." },
+  { key: "Early Life & Upbringing", id: "early-life", title: "Early Life & Upbringing", intro: "Childhood experiences, upbringing and formative years." },
+  { key: "Formative Influences", id: "influences", title: "Formative Influences", intro: "People, events and experiences that helped shape his outlook." },
+  { key: "Personal Formation", id: "education", title: "Personal Formation", intro: "The wider experiences and learning that contributed to his development." },
+  { key: "Values & Philosophy", id: "values", title: "Values & Philosophy", intro: "Personal principles, convictions and approach to life." },
+  { key: "Life Milestones", id: "milestones", title: "Life Milestones", intro: "Significant moments and turning points in his personal journey." },
+  { key: "Community & Cultural Roots", id: "community", title: "Community & Cultural Roots", intro: "Community connections, cultural identity and sense of belonging." },
+  { key: "Beyond Public Life", id: "interests", title: "Beyond Public Life", intro: "Personal interests and pursuits shared with approval." }
+];
+
+function renderPersonalProfileRecords(records) {
+  const box = $("#record-list");
+  if (!box) return;
+  if (!records.length) {
+    box.innerHTML = '<section class="personal-empty-state"><span>✦</span><p class="eyebrow">PERSONAL PROFILE RECORDS</p><h2>The story is being carefully prepared.</h2><p>Approved biographical information, photographs and supporting records will appear here as they are supplied and verified. No personal details are assumed or invented.</p></section>';
+    return;
+  }
+  const groups = new Map();
+  records.forEach((record) => {
+    const key = (record.category || "").trim();
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(record);
+  });
+  const used = new Set();
+  const sections = personalSections.map((section) => {
+    const items = groups.get(section.key) || [];
+    if (!items.length) return "";
+    used.add(section.key);
+    return renderPersonalSection(section, items);
+  }).join("");
+  const extras = [...groups.entries()].filter(([key]) => !used.has(key)).map(([key, items]) =>
+    renderPersonalSection({id:"additional-records",title:key || "Additional Personal Records",intro:"Further approved information within the Personal Profile."},items)
+  ).join("");
+  box.innerHTML = sections + extras;
+}
+
+function renderPersonalSection(section, records) {
+  const cards = records.map((record) => {
+    const imageUrl = /^https:\/\//i.test(record.image_url || "") ? record.image_url : "";
+    const image = imageUrl ? '<figure class="personal-record-image"><img src="' + esc(imageUrl) + '" alt="' + esc(record.image_alt || record.title || "Personal profile photograph") + '" loading="lazy"></figure>' : "";
+    const date = record.milestone_date ? new Date(record.milestone_date + "T12:00:00").toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"}) : "";
+    const body = String(record.body || "").trim().split(/\n{2,}/).map(part => '<p>' + esc(part).replace(/\n/g,"<br>") + '</p>').join("");
+    return '<article class="personal-record-card">' + image + '<div class="personal-record-copy">' +
+      (date ? '<p class="personal-record-date">' + esc(date) + '</p>' : "") +
+      '<h3>' + esc(record.title) + '</h3>' +
+      (record.excerpt ? '<p class="personal-record-excerpt">' + esc(record.excerpt) + '</p>' : "") +
+      body +
+      (record.location ? '<p class="personal-record-location">' + esc(record.location) + '</p>' : "") +
+      '<div class="personal-record-sources">' +
+      (record.verification_status ? '<span class="verification-label">' + esc(record.verification_status) + '</span>' : "") +
+      (record.source_url ? '<a class="text-link" href="' + esc(record.source_url) + '" target="_blank" rel="noopener noreferrer">Primary source ↗</a>' : "") +
+      (record.evidence_url ? '<a class="text-link" href="' + esc(record.evidence_url) + '" target="_blank" rel="noopener noreferrer">Supporting record ↗</a>' : "") +
+      '</div></div></article>';
+  }).join("");
+  return '<section class="personal-record-group" id="' + esc(section.id) + '"><div class="personal-record-group-heading"><span class="personal-record-number">PROFILE THEME</span><h2>' + esc(section.title) + '</h2><p>' + esc(section.intro) + '</p></div><div class="personal-record-cards">' + cards + '</div></section>';
+}
+
 async function loadPageRecords() {
   const key = pageKey();
   const box = $("#record-list");
@@ -96,13 +155,13 @@ async function loadPageRecords() {
       renderRecords(fallback);
       return;
     }
-    const orderColumn = profileSection || key === "news" ? "published_at" : key === "events" ? "starts_at" : "display_order";
+    const orderColumn = key === "biography" ? "display_order" : profileSection || key === "news" ? "published_at" : key === "events" ? "starts_at" : "display_order";
     let query = client.from(table).select("*");
     query = profileSection ? query.eq("section_key", profileSection).eq("status", "published") : key === "manifesto" ? query.eq("published", true) : query.eq("status", "published");
     query = query.order(orderColumn, { ascending: key !== "news", nullsFirst: false }).limit(60);
     const { data, error } = await query;
     if (error) throw error;
-    renderRecords(data || []);
+    if (key === "biography") renderPersonalProfileRecords(data || []); else renderRecords(data || []);
   } catch (error) {
     console.warn("Published records could not be loaded.", error);
     renderRecords(fallback);
