@@ -376,3 +376,62 @@
  }
  .profile-intro-rule{margin-top:1px}
 }
+
+/* Refined candidate portrait nameplate — aligned, legible and typographically ordered */
+.profile-hub-portrait{width:min(100%,500px)}
+.profile-portrait-frame{padding:9px 9px 0;background:#fff;border-radius:5px;box-shadow:0 18px 44px #001e143d;overflow:hidden}
+.profile-portrait-frame img{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:contain;object-position:center;background:#e8e5df}
+.profile-portrait-caption{
+ display:flex;
+ flex-direction:column;
+ align-items:flex-start;
+ gap:5px;
+ width:100%;
+ margin:0;
+ padding:17px 20px 18px;
+ background:#f7f5ef;
+ color:#173e2d;
+ border:0;
+ border-bottom:3px solid #e47b22;
+ border-radius:0;
+ box-shadow:0 12px 26px #001e1426;
+ text-align:left;
+}
+.profile-portrait-caption span{
+ display:block;
+ margin:0;
+ color:#a36d2d;
+ font-family:'Manrope',Arial,sans-serif;
+ font-size:10px;
+ font-weight:800;
+ line-height:1.35;
+ letter-spacing:.16em;
+}
+.profile-portrait-caption strong{
+ display:block;
+ margin:0;
+ color:#104b34;
+ font-family:'Manrope',Arial,sans-serif;
+ font-size:clamp(14px,1.45vw,17px);
+ font-weight:800;
+ line-height:1.35;
+ letter-spacing:.035em;
+}
+.profile-portrait-caption small{
+ display:block;
+ margin:1px 0 0;
+ color:#5d6c62;
+ font-family:'Manrope',Arial,sans-serif;
+ font-size:11px;
+ font-weight:600;
+ line-height:1.55;
+ letter-spacing:.015em;
+}
+@media(max-width:760px){
+ .profile-hub-portrait{width:min(100%,440px)}
+ .profile-portrait-frame{padding:8px 8px 0}
+ .profile-portrait-caption{padding:14px 15px 15px;gap:4px}
+ .profile-portrait-caption span{font-size:9px}
+ .profile-portrait-caption strong{font-size:14px;letter-spacing:.02em}
+ .profile-portrait-caption small{font-size:10px;line-height:1.5}
+}
