@@ -686,3 +686,7 @@
  .personal-record-copy h3{font-size:24px}
  .personal-empty-state{padding:30px 20px}
 }
+
+.personal-subsection-empty{padding:20px 22px;background:#ffffffa8;border:1px dashed #d8d5ca;border-radius:10px;color:#788279}
+.personal-subsection-empty span{display:block;margin-bottom:5px;color:#b17a35;font-size:17px}
+.personal-subsection-empty p{margin:0;font:400 12px/1.7 Manrope,Arial,sans-serif}
