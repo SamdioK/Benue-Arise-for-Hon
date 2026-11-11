@@ -98,10 +98,6 @@ const personalSections = [
 function renderPersonalProfileRecords(records) {
   const box = $("#record-list");
   if (!box) return;
-  if (!records.length) {
-    box.innerHTML = '<section class="personal-empty-state"><span>✦</span><p class="eyebrow">PERSONAL PROFILE RECORDS</p><h2>The story is being carefully prepared.</h2><p>Approved biographical information, photographs and supporting records will appear here as they are supplied and verified. No personal details are assumed or invented.</p></section>';
-    return;
-  }
   const groups = new Map();
   records.forEach((record) => {
     const key = (record.category || "").trim();
