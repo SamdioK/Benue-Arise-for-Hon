@@ -22,7 +22,7 @@ A unique constraint prevents duplicate slugs within the same section. Check cons
 - RLS is enabled.
 - Anonymous and authenticated users may select only rows with status `published`.
 - Authenticated administrators may manage rows when `arise_site.is_admin()` returns true.
-- Assigned Profile Managers may manage `profile_records` only when `arise_site.is_profile_manager()` returns true. They receive no access to other CMS modules or site assets.
+- Assigned Profile Managers may create and edit **Draft** `profile_records` only when `arise_site.is_profile_manager()` returns true. They cannot publish, edit published or archived records, delete records, manage other CMS modules or access site assets. An Administrator reviews and publishes approved profile content.
 - Explicit Data API grants are present: SELECT to anon/authenticated; INSERT, UPDATE and DELETE to authenticated.
 - Schema USAGE is granted to anon and authenticated.
 - Do not add service_role or secret keys to browser code.
@@ -33,7 +33,7 @@ Supabase Data API schema exposure is a separate dashboard setting. Confirm `aris
 
 The Administrator dashboard supports a separate **Profile Manager** role. An administrator first creates the person’s Auth account in Supabase Authentication, then assigns that existing user from the **Profile Manager users** section using the Auth user UUID, full name and email. The dashboard lists assigned managers and allows an administrator to revoke access.
 
-A Profile Manager signs in through the same `admin.html` page. The workspace is restricted to `profile_records`; the content-module selector and site-assets manager are disabled or hidden. The database enforces this separation through RLS: Profile Managers can manage profile records only and cannot manage news, events, gallery, vision/mission content or manager assignments. Access is removed by revoking the assignment; the Auth account itself is not deleted.
+A Profile Manager signs in through the same `admin.html` page. The workspace is restricted to `profile_records`; the content-module selector and site-assets manager are disabled or hidden. The database enforces this separation through RLS: Profile Managers can create and edit Draft profile records only. They cannot publish, edit published or archived records, delete records, manage news, events, gallery, vision/mission content or manager assignments. An Administrator reviews and publishes approved records. Access is removed by revoking the assignment; the Auth account itself is not deleted.
 
 ## Administrator workflow
 1. Open `admin.html` and sign in with an authorised administrator account.
@@ -75,6 +75,7 @@ Public pages query only the matching section and published status. They display 
 - [ ] Sign in as that user and confirm only profile records are available.
 - [ ] Confirm the site-assets manager and Profile Manager user controls are hidden for the Profile Manager.
 - [ ] Attempt direct Data API writes to news, events, gallery and vision/mission as Profile Manager; each must be denied by RLS.
+- [ ] Confirm a Profile Manager cannot publish, edit published/archived records or delete profile records; the Administrator performs publication.
 - [ ] Revoke the assignment and confirm the user can no longer enter the CMS.
 - [ ] Confirm `arise_site.profile_records` exists.
 - [ ] Confirm RLS is enabled and the two policies are present.
