@@ -307,7 +307,18 @@ async function createMuxBroadcastStream(channelType) {
     output.append(wrap);
     status.textContent = "Mux Development test stream created successfully. The public playback URL has been saved to Supabase.";
   } catch (error) {
-    status.textContent = error?.message || "Could not create the Mux stream. Check the function logs and administrator access.";
+    let message = error?.message || "Could not create the Mux stream.";
+    // Supabase FunctionsHttpError keeps the function's JSON response in error.context.
+    // Surface the provider's safe diagnostic without exposing credentials or stream keys.
+    if (error?.context && typeof error.context.json === "function") {
+      const detail = await error.context.json().catch(() => null);
+      if (detail?.provider_message) {
+        message = "Mux API (" + (detail.provider_status || "error") + "): " + detail.provider_message;
+      } else if (detail?.error) {
+        message = detail.error;
+      }
+    }
+    status.textContent = message;
   } finally {
     button.disabled = false;
   }
