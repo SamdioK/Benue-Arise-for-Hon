@@ -89,3 +89,5 @@
 .mux-stream-result label{font-size:10px;font-weight:800;color:#435b49}
 .mux-stream-result input{width:100%;min-width:0;padding:10px;border:1px solid #d8e2d8;border-radius:7px;background:#f8faf7;color:#263f30;font:11px ui-monospace,monospace}
 @media(max-width:600px){.mux-stream-actions{display:grid}.mux-stream-actions button{width:100%}}
+
+.mux-stream-controls[hidden]{display:none!important}
