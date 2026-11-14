@@ -107,7 +107,9 @@ async function initialise() {
   $("#playlist-select")?.addEventListener("change", loadPlaylistSongOptions);
   $("#save-playlist-tracks")?.addEventListener("click", savePlaylistTracks);
   $("#delete-record").addEventListener("click", deleteRecord);
-  $("#profile-manager-form")?.addEventListener("submit", assignProfileManager);\n  $("#create-mux-audio")?.addEventListener("click", () => createMuxBroadcastStream("audio"));\n  $("#create-mux-video")?.addEventListener("click", () => createMuxBroadcastStream("video"));
+  $("#profile-manager-form")?.addEventListener("submit", assignProfileManager);
+  $("#create-mux-audio")?.addEventListener("click", () => createMuxBroadcastStream("audio"));
+  $("#create-mux-video")?.addEventListener("click", () => createMuxBroadcastStream("video"));
   if (recoveryMode) {
     const { data: { session }, error } = await client.auth.getSession();
     if (session) showPasswordRecovery();
