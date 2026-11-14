@@ -40,8 +40,27 @@ const modules = {
       ["verification_status","Verification status","select",true,["Under Verification","Verified","Official Record","Campaign Statement"]],
       ["status","Publication status","select",true,["draft","published","archived"]],
       ["published_at","Publication date and time","datetime-local"]
+    ] ,
+  campaign_songs: { label: "Campaign Songs", table: "campaign_songs", id: "id", order: "created_at",
+    fields: [
+      ["title","Song title","text",true],["slug","URL slug","text",true],["artist","Artist / performer","text",true],
+      ["contributors","Other contributors","text"],["description","Song description","textarea"],["lyrics","Lyrics (approved text only)","textarea"],
+      ["campaign_level","Campaign level","select",true,["governorship","senate","house_of_representatives","house_of_assembly"]],
+      ["language","Language","text",true],["constituency","Constituency / district (if applicable)","text"],
+      ["audio_path","Audio storage path (upload in Campaign Audio Studio)","text",true],["artwork_path","Cover artwork storage path","text"],
+      ["duration_seconds","Duration in seconds (optional)","number"],["featured","Featured song","select",true,["false","true"]],
+      ["allow_download","Allow public download","select",true,["false","true"]],
+      ["status","Publication status","select",true,["draft","pending","approved","published","archived"]],
+      ["published_at","Publication date and time","datetime-local"]
+    ] },
+  campaign_playlists: { label: "Campaign Playlists", table: "campaign_playlists", id: "id", order: "display_order",
+    fields: [
+      ["title","Playlist title","text",true],["slug","URL slug","text",true],["description","Description","textarea"],
+      ["campaign_level","Campaign level (optional)","select",false,["governorship","senate","house_of_representatives","house_of_assembly"]],
+      ["artwork_path","Artwork storage path","text"],["featured","Featured playlist","select",true,["false","true"]],
+      ["status","Publication status","select",true,["draft","published","archived"]],["display_order","Display order","number"]
     ] }
-};
+};};
 
 let client;
 let activeId = null;
@@ -257,7 +276,7 @@ async function saveRecord(event) {
       let value = form.get(name);
       if (typeof value === "string") value = value.trim();
       if (name === "display_order") value = Number(value || 0);
-      if (name === "published") value = value === "true";
+      if (["published","featured","allow_download"].includes(name)) value = value === "true";
       if (name.endsWith("_at") && value) value = new Date(value).toISOString();
       if (value !== "" && value !== null) payload[name] = value;
     }
@@ -379,6 +398,35 @@ async function uploadSiteAssets() {
   }
 }
 
-$("#upload-site-assets")?.addEventListener("click", uploadSiteAssets);
+$("#upload-site-assets")?.addEventListener("click", uploadSiteAssets);\n
+async function uploadCampaignAsset(kind) {
+  const audio = kind === "audio";
+  const input = audio ? $("#campaign-audio-file") : $("#campaign-artwork-file");
+  const status = $("#campaign-audio-status");
+  const button = audio ? $("#upload-campaign-audio") : $("#upload-campaign-artwork");
+  const file = input?.files?.[0];
+  if (!file) { status.textContent = audio ? "Choose an audio recording first." : "Choose cover artwork first."; return; }
+  const allowed = audio
+    ? new Set(["audio/mpeg","audio/mp4","audio/aac","audio/ogg","audio/wav","audio/x-wav","audio/flac","audio/webm"])
+    : new Set(["image/jpeg","image/png","image/webp"]);
+  const max = audio ? 50*1024*1024 : 8*1024*1024;
+  if (!allowed.has(file.type)) { status.textContent = "This file format is not supported."; return; }
+  if (file.size > max) { status.textContent = "The selected file exceeds the allowed size."; return; }
+  button.disabled = true;
+  status.textContent = "Uploading to Supabase Storage…";
+  try {
+    const safe = file.name.normalize("NFKD").replace(/[^a-zA-Z0-9._-]+/g,"-").replace(/^-+|-+$/g,"");
+    const path = (audio ? "songs/" : "artwork/") + Date.now() + "-" + safe;
+    const { error } = await client.storage.from("campaign-audio").upload(path,file,{cacheControl:"3600",contentType:file.type,upsert:false});
+    if (error) throw error;
+    const { data } = client.storage.from("campaign-audio").getPublicUrl(path);
+    status.textContent = "Upload successful. Storage path: " + path + " · Public URL: " + data.publicUrl + " · Copy the storage path into the matching record.";
+    input.value = "";
+  } catch (error) { status.textContent = error.message || "Upload failed."; }
+  finally { button.disabled = false; }
+}
+$("#upload-campaign-audio")?.addEventListener("click", () => uploadCampaignAsset("audio"));
+$("#upload-campaign-artwork")?.addEventListener("click", () => uploadCampaignAsset("artwork"));
+
 
 initialise();
