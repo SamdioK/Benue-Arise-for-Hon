@@ -107,7 +107,7 @@ async function initialise() {
   $("#playlist-select")?.addEventListener("change", loadPlaylistSongOptions);
   $("#save-playlist-tracks")?.addEventListener("click", savePlaylistTracks);
   $("#delete-record").addEventListener("click", deleteRecord);
-  $("#profile-manager-form")?.addEventListener("submit", assignProfileManager);
+  $("#profile-manager-form")?.addEventListener("submit", assignProfileManager);\n  $("#create-mux-audio")?.addEventListener("click", () => createMuxBroadcastStream("audio"));\n  $("#create-mux-video")?.addEventListener("click", () => createMuxBroadcastStream("video"));
   if (recoveryMode) {
     const { data: { session }, error } = await client.auth.getSession();
     if (session) showPasswordRecovery();
@@ -232,6 +232,82 @@ async function checkAuth() {
     await loadSiteAssets();
     await loadProfileManagers();
     await loadPlaylistComposer();
+  }
+}
+
+
+function updateMuxBroadcastControls() {
+  const panel = $("#mux-stream-controls");
+  if (!panel) return;
+  const allowed = currentRole !== "profile_manager" && activeModule.table === "broadcast_events" && !!activeId;
+  panel.hidden = !allowed;
+  if (!allowed) {
+    const output = $("#mux-stream-output");
+    if (output) output.replaceChildren();
+    const status = $("#mux-stream-status");
+    if (status) status.textContent = "";
+  }
+}
+
+async function createMuxBroadcastStream(channelType) {
+  if (!activeId || activeModule.table !== "broadcast_events" || currentRole === "profile_manager") {
+    say("Select a saved broadcast event as an authorised administrator first.");
+    return;
+  }
+  const button = channelType === "audio" ? $("#create-mux-audio") : $("#create-mux-video");
+  const status = $("#mux-stream-status");
+  const output = $("#mux-stream-output");
+  button.disabled = true;
+  status.textContent = "Requesting a secure Mux test stream…";
+  output.replaceChildren();
+  try {
+    const { data, error } = await client.functions.invoke("mux-create-broadcast-stream", {
+      body: { event_id: activeId, channel_type: channelType }
+    });
+    if (error) throw error;
+    if (!data?.success) throw new Error(data?.error || "Mux stream creation failed.");
+    const wrap = document.createElement("div");
+    wrap.className = "mux-stream-result";
+    const heading = document.createElement("strong");
+    heading.textContent = channelType === "audio" ? "On-Air audio stream created" : "Live video stream created";
+    const warning = document.createElement("p");
+    warning.textContent = "Copy the stream key now. It is not saved in the database and cannot be retrieved from this screen after you leave.";
+    const ingestLabel = document.createElement("label");
+    ingestLabel.textContent = "RTMPS server";
+    const ingest = document.createElement("input");
+    ingest.readOnly = true;
+    ingest.value = data.ingest_url;
+    const keyLabel = document.createElement("label");
+    keyLabel.textContent = "Private stream key";
+    const key = document.createElement("input");
+    key.readOnly = true;
+    key.type = "text";
+    key.autocomplete = "off";
+    key.spellcheck = false;
+    key.value = data.stream_key;
+    const playback = document.createElement("p");
+    playback.textContent = "Public playback URL saved to the event: " + data.playback_url;
+    const copyServer = document.createElement("button");
+    copyServer.type = "button";
+    copyServer.textContent = "Copy RTMPS server";
+    copyServer.addEventListener("click", async () => {
+      try { await navigator.clipboard.writeText(ingest.value); copyServer.textContent = "Copied"; }
+      catch { ingest.select(); document.execCommand("copy"); copyServer.textContent = "Copy attempted"; }
+    });
+    const copyKey = document.createElement("button");
+    copyKey.type = "button";
+    copyKey.textContent = "Copy stream key";
+    copyKey.addEventListener("click", async () => {
+      try { await navigator.clipboard.writeText(key.value); copyKey.textContent = "Copied"; }
+      catch { key.select(); document.execCommand("copy"); copyKey.textContent = "Copy attempted"; }
+    });
+    wrap.append(heading, warning, ingestLabel, ingest, copyServer, keyLabel, key, copyKey, playback);
+    output.append(wrap);
+    status.textContent = "Mux Development test stream created successfully. The public playback URL has been saved to Supabase.";
+  } catch (error) {
+    status.textContent = error?.message || "Could not create the Mux stream. Check the function logs and administrator access.";
+  } finally {
+    button.disabled = false;
   }
 }
 
