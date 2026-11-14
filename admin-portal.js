@@ -90,7 +90,9 @@ async function initialise() {
   $("#admin-search").addEventListener("input", loadList);
   $("#new-record").addEventListener("click", () => { activeId = null; clearEditor(); $("#form-heading").textContent = "New " + activeModule.label; });
   $("#reset-record").addEventListener("click", () => { activeId = null; clearEditor(); });
-  $("#record-form").addEventListener("submit", saveRecord);\n  $("#playlist-select")?.addEventListener("change", loadPlaylistSongOptions);\n  $("#save-playlist-tracks")?.addEventListener("click", savePlaylistTracks);
+  $("#record-form").addEventListener("submit", saveRecord);
+  $("#playlist-select")?.addEventListener("change", loadPlaylistSongOptions);
+  $("#save-playlist-tracks")?.addEventListener("click", savePlaylistTracks);
   $("#delete-record").addEventListener("click", deleteRecord);
   $("#profile-manager-form")?.addEventListener("submit", assignProfileManager);
   if (recoveryMode) {
@@ -198,7 +200,9 @@ async function checkAuth() {
   $("#signed-in-as").textContent = "Signed in as " + (user.email || "authorised user") + " · " + (admin ? admin.role : "Profile Manager");
   const isManager = !admin && !!manager;
   $("#profile-manager-users").hidden = isManager;
-  $("#site-assets-manager").hidden = isManager;\n  $("#campaign-audio-manager").hidden = isManager;\n  $("#playlist-track-manager").hidden = isManager;
+  $("#site-assets-manager").hidden = isManager;
+  $("#campaign-audio-manager").hidden = isManager;
+  $("#playlist-track-manager").hidden = isManager;
   $("#content-type").disabled = isManager;
   if (isManager) {
     $("#content-type").value = "profile_records";
@@ -213,7 +217,8 @@ async function checkAuth() {
   await loadList();
   if (!isManager) {
     await loadSiteAssets();
-    await loadProfileManagers();\n    await loadPlaylistComposer();
+    await loadProfileManagers();
+    await loadPlaylistComposer();
   }
 }
 
@@ -385,7 +390,8 @@ async function savePlaylistTracks() {
   }catch(error){status.textContent=error.message||"Could not save playlist."}
   finally{button.disabled=false}
 }
-\nasync function loadSiteAssets() {
+
+async function loadSiteAssets() {
   const box = $("#site-assets-list");
   if (!box || !client || $("#cms-panel").hidden) return;
   const { data, error } = await client.storage.from("site-assets").list("campaign", { limit: 100, sortBy: { column: "name", order: "asc" } });
@@ -437,7 +443,8 @@ async function uploadSiteAssets() {
   }
 }
 
-$("#upload-site-assets")?.addEventListener("click", uploadSiteAssets);\n
+$("#upload-site-assets")?.addEventListener("click", uploadSiteAssets);
+
 async function uploadCampaignAsset(kind) {
   const audio = kind === "audio";
   const input = audio ? $("#campaign-audio-file") : $("#campaign-artwork-file");
