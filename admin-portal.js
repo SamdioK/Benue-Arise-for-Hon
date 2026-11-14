@@ -90,7 +90,7 @@ async function initialise() {
   $("#admin-search").addEventListener("input", loadList);
   $("#new-record").addEventListener("click", () => { activeId = null; clearEditor(); $("#form-heading").textContent = "New " + activeModule.label; });
   $("#reset-record").addEventListener("click", () => { activeId = null; clearEditor(); });
-  $("#record-form").addEventListener("submit", saveRecord);
+  $("#record-form").addEventListener("submit", saveRecord);\n  $("#playlist-select")?.addEventListener("change", loadPlaylistSongOptions);\n  $("#save-playlist-tracks")?.addEventListener("click", savePlaylistTracks);
   $("#delete-record").addEventListener("click", deleteRecord);
   $("#profile-manager-form")?.addEventListener("submit", assignProfileManager);
   if (recoveryMode) {
@@ -198,7 +198,7 @@ async function checkAuth() {
   $("#signed-in-as").textContent = "Signed in as " + (user.email || "authorised user") + " · " + (admin ? admin.role : "Profile Manager");
   const isManager = !admin && !!manager;
   $("#profile-manager-users").hidden = isManager;
-  $("#site-assets-manager").hidden = isManager;
+  $("#site-assets-manager").hidden = isManager;\n  $("#campaign-audio-manager").hidden = isManager;\n  $("#playlist-track-manager").hidden = isManager;
   $("#content-type").disabled = isManager;
   if (isManager) {
     $("#content-type").value = "profile_records";
@@ -213,7 +213,7 @@ async function checkAuth() {
   await loadList();
   if (!isManager) {
     await loadSiteAssets();
-    await loadProfileManagers();
+    await loadProfileManagers();\n    await loadPlaylistComposer();
   }
 }
 
@@ -346,7 +346,46 @@ async function assignProfileManager(event) {
   }
 }
 
-async function loadSiteAssets() {
+
+async function loadPlaylistComposer() {
+  const panel = $("#playlist-track-manager");
+  if (!panel || !client || currentRole === "profile_manager") return;
+  const [{data: playlists,error:pError},{data:songs,error:sError}] = await Promise.all([
+    client.from("campaign_playlists").select("id,title").order("title"),
+    client.from("campaign_songs").select("id,title,artist").order("title")
+  ]);
+  if (pError || sError) { $("#playlist-track-status").textContent = (pError || sError).message; return; }
+  const select = $("#playlist-select");
+  const previous = select.value;
+  select.innerHTML = '<option value="">Select a playlist</option>' + (playlists||[]).map(p=>'<option value="'+esc(p.id)+'">'+esc(p.title)+'</option>').join("");
+  if (playlists?.some(p=>p.id===previous)) select.value=previous;
+  panel.dataset.songs = JSON.stringify(songs||[]);
+  await loadPlaylistSongOptions();
+}
+async function loadPlaylistSongOptions() {
+  const box=$("#playlist-song-options"),playlistId=$("#playlist-select")?.value;
+  if (!box) return;
+  const songs=JSON.parse($("#playlist-track-manager").dataset.songs||"[]");
+  if (!playlistId) { box.innerHTML="<p>Select a playlist to manage its songs.</p>"; return; }
+  const {data:links,error}=await client.from("campaign_playlist_songs").select("song_id,display_order").eq("playlist_id",playlistId).order("display_order");
+  if(error){box.textContent=error.message;return}
+  const selected=new Map((links||[]).map((x,i)=>[x.song_id,x.display_order??i]));
+  box.innerHTML=songs.map(s=>'<label class="playlist-song-option"><input type="checkbox" value="'+esc(s.id)+'" '+(selected.has(s.id)?"checked":"")+'><span><strong>'+esc(s.title)+'</strong><small>'+esc(s.artist)+'</small></span></label>').join("")||"<p>No songs created yet.</p>";
+}
+async function savePlaylistTracks() {
+  const playlistId=$("#playlist-select").value,status=$("#playlist-track-status"),button=$("#save-playlist-tracks");
+  if(!playlistId){status.textContent="Choose a playlist first.";return}
+  const selected=Array.from($("#playlist-song-options").querySelectorAll('input[type="checkbox"]:checked')).map(x=>x.value);
+  button.disabled=true;status.textContent="Saving playlist order…";
+  try{
+    const {error:delError}=await client.from("campaign_playlist_songs").delete().eq("playlist_id",playlistId);
+    if(delError)throw delError;
+    if(selected.length){const {error}=await client.from("campaign_playlist_songs").insert(selected.map((song_id,i)=>({playlist_id:playlistId,song_id,display_order:i+1})));if(error)throw error}
+    status.textContent="Playlist saved with "+selected.length+" song(s).";
+  }catch(error){status.textContent=error.message||"Could not save playlist."}
+  finally{button.disabled=false}
+}
+\nasync function loadSiteAssets() {
   const box = $("#site-assets-list");
   if (!box || !client || $("#cms-panel").hidden) return;
   const { data, error } = await client.storage.from("site-assets").list("campaign", { limit: 100, sortBy: { column: "name", order: "asc" } });
