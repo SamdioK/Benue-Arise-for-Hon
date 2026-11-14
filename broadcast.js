@@ -1,6 +1,7 @@
 const cfg=window.ARISE_CONFIG||{},$=s=>document.querySelector(s),esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=d=>d?new Intl.DateTimeFormat("en-GB",{dateStyle:"medium",timeStyle:"short"}).format(new Date(d)):"Time to be announced";
 const dateBits=d=>{if(!d)return{day:"--",month:"TBA"};const x=new Date(d);return{day:x.toLocaleDateString("en-GB",{day:"2-digit"}),month:x.toLocaleDateString("en-GB",{month:"short"}).toUpperCase()}};
+const menuButton=$(".menu-toggle"),siteNav=$(".home-nav");menuButton?.addEventListener("click",()=>{const open=siteNav.classList.toggle("nav-open");menuButton.setAttribute("aria-expanded",String(open))});
 async function boot(){const status=$("#broadcast-status"),list=$("#broadcast-event-list"),player=$("#broadcast-player");if(!cfg.SUPABASE_URL||!cfg.SUPABASE_PUBLISHABLE_KEY){status.textContent="Broadcast service configuration is unavailable.";return}
 try{const{createClient}=await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/+esm");const db=createClient(cfg.SUPABASE_URL,cfg.SUPABASE_PUBLISHABLE_KEY,{db:{schema:"arise_site"},auth:{persistSession:false,autoRefreshToken:false}});
 const{data,error}=await db.from("broadcast_events").select("id,title,slug,description,venue,location,event_type,speaker,starts_at,ends_at,status,audio_playback_url,video_playback_url,recording_url,poster_path,enable_on_air,enable_live_video").eq("is_published",true).in("status",["scheduled","live","ended"]).order("starts_at",{ascending:true}).limit(50);
