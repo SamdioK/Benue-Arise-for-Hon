@@ -275,12 +275,12 @@ async function saveRecord(event) {
     for (const [name] of activeModule.fields) {
       let value = form.get(name);
       if (typeof value === "string") value = value.trim();
-      if (name === "display_order") value = Number(value || 0);
+      if (["display_order","duration_seconds"].includes(name)) value = Number(value || 0);
       if (["published","featured","allow_download"].includes(name)) value = value === "true";
       if (name.endsWith("_at") && value) value = new Date(value).toISOString();
       if (value !== "" && value !== null) payload[name] = value;
     }
-    if (["news","profile_records"].includes(activeModule.table) && payload.status === "published" && !payload.published_at) payload.published_at = new Date().toISOString();
+    if (["news","profile_records","campaign_songs"].includes(activeModule.table) && payload.status === "published" && !payload.published_at) payload.published_at = new Date().toISOString();
     const result = activeId
       ? await client.from(activeModule.table).update(payload).eq(activeModule.id, activeId).select(activeModule.id).single()
       : await client.from(activeModule.table).insert(payload).select(activeModule.id).single();
