@@ -4,3 +4,27 @@
 .playlist-song-option{display:flex!important;align-items:center;gap:12px;padding:11px 4px;border-bottom:1px solid #e9eee8;font-size:12px!important}.playlist-song-option input{width:auto!important}.playlist-song-option strong,.playlist-song-option small{display:block}.playlist-song-option small{font-size:10px;color:#78847a}
 
 .featured-song-panel{position:relative;display:grid;grid-template-columns:220px minmax(0,1fr);align-items:center;gap:28px;margin:0 8vw;padding:25px 30px;background:linear-gradient(110deg,#fff,#f1eadb);border:1px solid #e6dcc6;border-radius:14px;overflow:hidden}.featured-song-panel[hidden]{display:none}.featured-song-art{width:220px;aspect-ratio:1;display:grid;place-items:center;background:linear-gradient(145deg,#d6ad5e,#124c35);color:white;font-size:60px;border-radius:9px;overflow:hidden}.featured-song-art img{width:100%;height:100%;object-fit:cover}.featured-song-copy{position:relative;z-index:1}.featured-song-copy h2{margin:0 0 8px;color:#133e2c;font-size:clamp(27px,4vw,42px);letter-spacing:-.04em}.featured-song-copy p:not(.audio-kicker){font-size:12px;color:#758177;line-height:1.7}.featured-song-copy .audio-primary{border:0;cursor:pointer}.featured-watermark{position:absolute;right:25px;bottom:-65px;color:#164b3520;font-size:180px;font-weight:900;letter-spacing:-.1em}@media(max-width:760px){.featured-song-panel{grid-template-columns:95px minmax(0,1fr);gap:15px;margin:0 6vw;padding:15px}.featured-song-art{width:95px}.featured-song-copy h2{font-size:24px}.featured-song-copy p:not(.audio-kicker){font-size:10px}.featured-watermark{font-size:100px;bottom:-40px;right:8px}}
+
+
+/* Live playback motion: animated campaign sound visualisation */
+.art-soundwave i{transform-origin:center;transition:height .2s ease}
+body.audio-playing .audio-art-ring{animation:audio-ring-breathe 3.2s ease-in-out infinite}
+body.audio-playing .audio-art-card{animation:audio-card-float 4.8s ease-in-out infinite}
+body.audio-playing .art-soundwave i{animation:campaign-equalizer .82s ease-in-out infinite alternate}
+body.audio-playing .art-soundwave i:nth-child(2n){animation-duration:.58s;animation-delay:-.31s}
+body.audio-playing .art-soundwave i:nth-child(3n){animation-duration:1.04s;animation-delay:-.62s}
+body.audio-playing .art-soundwave i:nth-child(4n){animation-duration:.7s;animation-delay:-.18s}
+.featured-song-art{position:relative}
+.featured-art-visualizer{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;gap:4px;width:75%;height:32px;padding:5px 12px;border:1px solid #ffffff45;border-radius:30px;background:#092d20a8;backdrop-filter:blur(8px);opacity:0;transition:opacity .25s ease}
+.featured-art-visualizer i{width:3px;height:6px;border-radius:5px;background:#f4d68e}
+body.audio-playing .featured-art-visualizer{opacity:1}
+body.audio-playing .featured-art-visualizer i{animation:campaign-equalizer .72s ease-in-out infinite alternate}
+body.audio-playing .featured-art-visualizer i:nth-child(2n){animation-duration:.48s;animation-delay:-.24s}
+body.audio-playing .featured-art-visualizer i:nth-child(3n){animation-duration:1s;animation-delay:-.53s}
+body.audio-playing .player-cover{animation:cover-pulse 2.4s ease-in-out infinite;box-shadow:0 0 0 2px #d9ad5870,0 0 18px #d9ad5850}
+body.audio-playing .player-play{box-shadow:0 0 0 5px #d9ad5824}
+@keyframes campaign-equalizer{0%{transform:scaleY(.35);opacity:.65}100%{transform:scaleY(1.45);opacity:1}}
+@keyframes audio-ring-breathe{0%,100%{transform:scale(1);opacity:.75}50%{transform:scale(1.035);opacity:1}}
+@keyframes audio-card-float{0%,100%{translate:0 0;rotate:5deg}50%{translate:0 -8px;rotate:3deg}}
+@keyframes cover-pulse{0%,100%{box-shadow:0 0 0 2px #d9ad5870,0 0 10px #d9ad5830}50%{box-shadow:0 0 0 4px #d9ad5890,0 0 22px #d9ad5870}}
+@media(prefers-reduced-motion:reduce){body.audio-playing .audio-art-ring,body.audio-playing .audio-art-card,body.audio-playing .art-soundwave i,body.audio-playing .featured-art-visualizer i,body.audio-playing .player-cover{animation:none!important}body.audio-playing .featured-art-visualizer i{height:12px}}
