@@ -41,7 +41,7 @@ RLS is enabled. Anonymous visitors can read only published scheduled/live/ended 
 - On-Air selects the published live event with On-Air enabled and an audio playback URL.
 - Live selects the published live event with video enabled and a video playback URL.
 - If no matching live event is configured, each page clearly displays Off Air and lists upcoming published events.
-- The Live page supports native HLS where available and HLS.js where required.
+- The Live page supports native HLS where available and HLS.js where required. The On-Air page also supports HLS audio playback through HLS.js on browsers without native HLS support, including compatible Android browsers.
 - Playback is user-initiated; no unexpected autoplay is attempted.
 
 ## 7. Important implementation boundary
