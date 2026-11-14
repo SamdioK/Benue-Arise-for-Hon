@@ -60,7 +60,7 @@ const modules = {
       ["artwork_path","Artwork storage path","text"],["featured","Featured playlist","select",true,["false","true"]],
       ["status","Publication status","select",true,["draft","published","archived"]],["display_order","Display order","number"]
     ] }
-};};
+};
 
 let client;
 let activeId = null;
