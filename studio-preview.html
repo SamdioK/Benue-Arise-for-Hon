@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#073b2b">
+<meta name="description" content="Demonstration preview of the Benue Arise broadcast studio interface.">
+<link rel="icon" href="https://atstsekevoozausbiqbi.supabase.co/storage/v1/object/public/site-assets/campaign/sdp-logo.jpg">
+<link rel="stylesheet" href="studio-preview.css?v=20261114-1">
+<title>Broadcast Studio Design Preview | Benue Arise for Hon</title>
+</head>
+<body class="studio-preview-page">
+<header class="sp-topbar">
+  <a class="sp-brand" href="admin.html"><img src="https://atstsekevoozausbiqbi.supabase.co/storage/v1/object/public/site-assets/campaign/sdp-logo.jpg" alt="SDP logo"><span><strong>BENUE ARISE FOR HON</strong><small>MEDIA BROADCAST STUDIO</small></span></a>
+  <div class="sp-top-actions"><span class="sp-demo-pill"><i></i> DESIGN PREVIEW · DEMO DATA</span><a href="admin.html">← Administrator</a></div>
+</header>
+<main class="sp-shell">
+  <section class="sp-intro">
+    <div><p class="sp-kicker">BENUE ARISE MEDIA · STUDIO CONCEPT</p><h1>Broadcast <em>Control Room</em></h1><p>Review the proposed audio and video studio interface before enabling real broadcasts. All indicators and activity below are demonstrations only.</p></div>
+    <div class="sp-intro-seal"><span>BA</span><small>MEDIA<br>STUDIO</small></div>
+  </section>
+  <section class="sp-safety"><span>DEMO MODE</span><p>No live stream is connected. Controls on this page change the preview only; they do not create streams, expose stream keys or write to Supabase.</p></section>
+  <nav class="sp-tabs" aria-label="Studio preview modes">
+    <button class="sp-tab is-active" type="button" data-mode="audio">♫ <span>Audio studio</span></button>
+    <button class="sp-tab" type="button" data-mode="video">▣ <span>Video studio</span></button>
+  </nav>
+  <section class="sp-studio" id="audio-studio" data-studio="audio">
+    <div class="sp-studio-head"><div><p class="sp-kicker">CHANNEL 01 · AUDIO</p><h2>Benue Arise On-Air</h2><p>Live audio broadcast operations and programme monitoring</p></div><span class="sp-state sp-state-off"><i></i> OFF AIR · DEMO</span></div>
+    <div class="sp-audio-layout">
+      <article class="sp-panel sp-audio-console">
+        <div class="sp-panel-head"><div><small>PROGRAMME MONITOR</small><h3>Audio transmission</h3></div><span class="sp-live-chip">● DEMO SIGNAL</span></div>
+        <div class="sp-audio-screen">
+          <div class="sp-vinyl">♫</div><p class="sp-screen-label">BENUE ARISE · ON-AIR STUDIO</p><h3 id="audio-programme">Campaign Update & Public Affairs</h3><p id="audio-presenter">Studio Presenter · Demonstration</p>
+          <div class="sp-wave" aria-label="Decorative demonstration audio waveform"><i style="--bar:19px"></i><i style="--bar:38px"></i><i style="--bar:19px"></i><i style="--bar:38px"></i><i style="--bar:19px"></i><i style="--bar:38px"></i><i style="--bar:19px"></i><i style="--bar:38px"></i><i style="--bar:19px"></i><i style="--bar:38px"></i><i style="--bar:19px"></i><i style="--bar:38px"></i><i style="--bar:19px"></i><i style="--bar:38px"></i><i style="--bar:19px"></i><i style="--bar:38px"></i><i style="--bar:19px"></i><i style="--bar:38px"></i><i style="--bar:19px"></i><i style="--bar:38px"></i><i style="--bar:19px"></i><i style="--bar:38px"></i><i style="--bar:19px"></i><i style="--bar:38px"></i><i style="--bar:19px"></i><i style="--bar:38px"></i><i style="--bar:19px"></i><i style="--bar:38px"></i><i style="--bar:19px"></i><i style="--bar:38px"></i><i style="--bar:19px"></i><i style="--bar:38px"></i><i style="--bar:19px"></i><i style="--bar:38px"></i><i style="--bar:19px"></i><i style="--bar:38px"></i><i style="--bar:19px"></i><i style="--bar:38px"></i><i style="--bar:19px"></i><i style="--bar:38px"></i><i style="--bar:19px"></i><i style="--bar:38px"></i><i style="--bar:19px"></i><i style="--bar:38px"></i><i style="--bar:19px"></i><i style="--bar:38px"></i><i style="--bar:19px"></i><i style="--bar:38px"></i></div>
+          <div class="sp-progress"><span></span></div><div class="sp-track-time"><span>00:42</span><span>DEMO CLIP · 03:15</span></div>
+          <div class="sp-audio-controls"><button type="button" id="audio-play" class="sp-round-control" aria-label="Play demonstration">▶</button><div><strong id="audio-play-label">Preview paused</strong><small>Simulated studio monitor</small></div><button type="button" id="audio-mute" class="sp-utility">🔊 <span>Sound</span></button></div>
+        </div>
+        <div class="sp-meter-row"><div class="sp-meter-title"><span>INPUT LEVEL</span><b id="audio-meter-value">−∞ dB</b></div><div class="sp-meter"><i id="audio-meter"></i></div><small>Illustrative level meter · no microphone connected</small></div>
+      </article>
+      <div class="sp-side-stack">
+        <article class="sp-panel"><div class="sp-panel-head"><div><small>TRANSMISSION STATUS</small><h3>Channel overview</h3></div><span class="sp-mini-icon">♫</span></div><div class="sp-stat-grid"><div><small>Listeners</small><strong>1,284</strong><em>Demo figure</em></div><div><small>Stream health</small><strong class="sp-green-text">Excellent</strong><em>Simulated</em></div><div><small>Bitrate</small><strong>128 kbps</strong><em>AAC · Demo</em></div><div><small>Latency</small><strong>2.4 sec</strong><em>Illustrative</em></div></div></article>
+        <article class="sp-panel"><div class="sp-panel-head"><div><small>STUDIO SETTINGS</small><h3>Audio quality</h3></div></div><label class="sp-field">Output quality<select id="audio-quality"><option>Standard · 128 kbps</option><option>High · 192 kbps</option><option>Low bandwidth · 64 kbps</option></select></label><div class="sp-toggle-row"><span><b>Programme recording</b><small>Preview setting only</small></span><button type="button" class="sp-switch is-on" aria-pressed="true" data-toggle="recording"><i></i></button></div><div class="sp-toggle-row"><span><b>Public listener chat</b><small>Moderation concept</small></span><button type="button" class="sp-switch" aria-pressed="false" data-toggle="chat"><i></i></button></div></article>
+      </div>
+    </div>
+    <div class="sp-lower-grid">
+      <article class="sp-panel"><div class="sp-panel-head"><div><small>PROGRAMME MANAGEMENT</small><h3>Broadcast schedule</h3></div><span class="sp-demo-tag">SAMPLE</span></div><div class="sp-schedule"><div><time>09:00</time><span><b>Morning briefing</b><small>News & public information</small></span><em>Completed</em></div><div class="is-current"><time>12:30</time><span><b>Campaign Update & Public Affairs</b><small>Studio Presenter · Demonstration</small></span><em>Preview</em></div><div><time>16:00</time><span><b>Community Voices</b><small>Interviews & engagement</small></span><em>Upcoming</em></div></div></article>
+      <article class="sp-panel"><div class="sp-panel-head"><div><small>RECORDED PROGRAMMES</small><h3>Recording library</h3></div><span class="sp-demo-tag">SAMPLE</span></div><div class="sp-record"><span class="sp-record-icon">♫</span><span><b>Benue Weekly Briefing</b><small>14 Nov 2026 · 18 min</small></span><button type="button" class="sp-preview-action" data-preview="recording">Preview</button></div><div class="sp-record"><span class="sp-record-icon">♫</span><span><b>Voices from the Communities</b><small>12 Nov 2026 · 26 min</small></span><button type="button" class="sp-preview-action" data-preview="recording">Preview</button></div><p class="sp-inline-note" id="audio-record-note">Sample recordings are placeholders for design review.</p></article>
+    </div>
+  </section>
+  <section class="sp-studio" id="video-studio" data-studio="video" hidden>
+    <div class="sp-studio-head"><div><p class="sp-kicker">CHANNEL 02 · VIDEO</p><h2>Benue Arise Live</h2><p>Video broadcast production, stream health and event operations</p></div><span class="sp-state sp-state-off"><i></i> OFF AIR · DEMO</span></div>
+    <div class="sp-video-layout">
+      <article class="sp-panel sp-video-console"><div class="sp-panel-head"><div><small>PROGRAMME OUTPUT MONITOR</small><h3>Live video preview</h3></div><span class="sp-live-chip">● STANDBY</span></div>
+        <div class="sp-video-screen"><div class="sp-video-frame"><div class="sp-camera-mark">▶</div><span class="sp-frame-brand">BENUE ARISE FOR HON</span><div class="sp-frame-lower"><small>LIVE BROADCAST PREVIEW</small><b>Benue Arise · Community Engagement</b><span>BENUE STATE · DEMONSTRATION SCENE</span></div><span class="sp-video-time">00:42:18</span></div><div class="sp-video-caption"><span><i></i> PREVIEW MONITOR · NO CAMERA CONNECTED</span><span>16:9 · HD DESIGN</span></div></div>
+        <div class="sp-video-controls"><button type="button" id="video-preview" class="sp-primary-action">▶ Start preview simulation</button><label class="sp-field">Output quality<select id="video-quality"><option>HD · 720p</option><option>Full HD · 1080p</option><option>Standard · 480p</option></select></label><button type="button" class="sp-secondary-action" id="video-record">Start recording preview</button></div>
+      </article>
+      <div class="sp-side-stack">
+        <article class="sp-panel"><div class="sp-panel-head"><div><small>STREAM DIAGNOSTICS</small><h3>Connection health</h3></div><span class="sp-health-orb">✓</span></div><div class="sp-health-list"><div><span>Encoder status</span><b>Standby · Demo</b></div><div><span>Ingest connection</span><b class="sp-muted-text">Not connected</b></div><div><span>Video bitrate</span><b>3.5 Mbps <small>sample</small></b></div><div><span>Frame rate</span><b>30 FPS <small>sample</small></b></div><div><span>Packet loss</span><b class="sp-green-text">0.0% <small>sample</small></b></div></div></article>
+        <article class="sp-panel"><div class="sp-panel-head"><div><small>VIEWER ANALYTICS</small><h3>Audience overview</h3></div></div><div class="sp-viewers"><strong>2,486</strong><span>Concurrent viewers · illustrative</span><div class="sp-viewer-bars"><i style="--v:35%"></i><i style="--v:52%"></i><i style="--v:43%"></i><i style="--v:65%"></i><i style="--v:58%"></i><i style="--v:82%"></i><i style="--v:72%"></i><i style="--v:95%"></i><i style="--v:76%"></i><i style="--v:100%"></i><i style="--v:86%"></i><i style="--v:91%"></i></div><small>Sample audience trend · not actual analytics</small></div></article>
+      </div>
+    </div>
+    <div class="sp-lower-grid">
+      <article class="sp-panel"><div class="sp-panel-head"><div><small>EVENT OPERATIONS</small><h3>Upcoming broadcast</h3></div><span class="sp-demo-tag">SAMPLE</span></div><div class="sp-event-card"><div class="sp-event-date"><b>18</b><small>NOV</small></div><div><b>Benue Community Dialogue</b><small>Makurdi · 10:00 WAT</small><p>Public engagement and questions from community representatives.</p></div></div><div class="sp-event-actions"><button type="button" class="sp-secondary-action" data-preview="schedule">View run sheet</button><button type="button" class="sp-secondary-action" data-preview="schedule">Manage schedule</button></div></article>
+      <article class="sp-panel"><div class="sp-panel-head"><div><small>PRODUCTION SAFETY</small><h3>Moderation & notices</h3></div><span class="sp-demo-tag">CONCEPT</span></div><div class="sp-notice"><b>Emergency broadcast notice</b><p>Prepared notices can be reviewed by an authorised operator before publication.</p><button type="button" class="sp-secondary-action" data-preview="notice">Preview notice</button></div><div class="sp-toggle-row"><span><b>Comment moderation</b><small>Review before display</small></span><button type="button" class="sp-switch is-on" aria-pressed="true" data-toggle="moderation"><i></i></button></div><div class="sp-toggle-row"><span><b>Recording archive</b><small>Demo preference</small></span><button type="button" class="sp-switch is-on" aria-pressed="true" data-toggle="archive"><i></i></button></div></article>
+    </div>
+  </section>
+  <section class="sp-activity sp-panel"><div class="sp-panel-head"><div><small>OPERATIONS TRACE</small><h3>Studio activity log</h3></div><span class="sp-demo-tag">LOCAL DEMO ONLY</span></div><div id="sp-activity-list" class="sp-activity-list"><div><time>20:15:02</time><span>Studio design preview opened</span><b>INFO</b></div><div><time>20:15:03</time><span>Demo environment verified · no provider connection</span><b>SAFE</b></div><div><time>20:15:04</time><span>Sample schedule and monitoring values loaded</span><b>DEMO</b></div></div></section>
+  <footer class="sp-footer"><span>BENUE ARISE FOR HON · RESCUE · REBUILD · RESTORE</span><span>DESIGN REVIEW BUILD · NOT A BROADCAST SERVICE</span></footer>
+</main>
+<div class="sp-toast" id="sp-toast" role="status" aria-live="polite"></div>
+<script src="studio-preview.js?v=20261114-1"></script>
+</body></html>
