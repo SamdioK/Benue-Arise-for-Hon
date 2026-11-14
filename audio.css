@@ -64,3 +64,87 @@ body.audio-playing .player-play{box-shadow:0 0 0 5px #d9ad5824}
 .now-library-play{color:#e4c27c;font-size:15px}
 .now-library-empty{padding:22px 10px;color:#b7c9bd;font-size:12px;line-height:1.6}
 @media(max-width:520px){.now-library-toggle{top:12px;left:12px;padding:9px 10px}.now-share-icons{gap:8px}.now-share-icons button,.now-share-icons a{width:42px;height:42px}.now-artist-line strong{font-size:13px}}
+
+
+/* Wider-screen Now Playing layout.
+   The existing <=520px Android layout is deliberately left unchanged. */
+@media (min-width:700px) {
+  .now-playing-overlay{
+    padding:clamp(34px,5vh,64px) clamp(34px,6vw,100px);
+    align-items:center;
+    justify-items:center;
+  }
+  .now-playing-content{
+    width:min(1120px,100%);
+    max-width:1120px;
+    padding:18px 22px 24px;
+    display:grid;
+    grid-template-columns:minmax(0,.95fr) minmax(360px,1.05fr);
+    grid-template-areas:
+      "eyebrow eyebrow"
+      "art copy"
+      "art progress"
+      "art controls"
+      "art reactions"
+      "art share"
+      "art download";
+    column-gap:clamp(36px,6vw,88px);
+    row-gap:clamp(14px,2vh,22px);
+    align-items:center;
+    justify-items:stretch;
+  }
+  .now-eyebrow{grid-area:eyebrow;text-align:center;font-size:11px;margin:0 0 8px;letter-spacing:.22em}
+  .now-art-wrap{
+    grid-area:art;
+    width:min(100%, min(43vw,500px));
+    max-width:500px;
+    margin:0 auto;
+    border-radius:22px;
+    box-shadow:0 30px 90px #0008,0 0 0 1px #e7c47755;
+  }
+  .now-song-copy{grid-area:copy;width:100%;align-self:end;padding-top:12px}
+  .now-song-badges{justify-content:flex-start;margin-bottom:16px;gap:10px}
+  .now-song-badges span{font-size:10px;min-height:31px;padding:7px 14px}
+  .now-song-copy h2{font-size:clamp(30px,3.2vw,48px);line-height:1.08;max-width:620px;letter-spacing:-.035em;margin:10px 0 12px}
+  .now-artist-line{justify-content:flex-start!important;gap:12px}
+  .now-artist-line .artist-label{font-size:10px;padding:7px 11px}
+  .now-artist-line strong{font-size:16px}
+  .now-progress{grid-area:progress;width:100%;gap:14px;margin:2px 0 0;font-size:12px}
+  .now-progress input{height:8px;cursor:pointer}
+  .now-controls{grid-area:controls;gap:44px;justify-content:center;padding:0 0 2px}
+  .now-controls button{font-size:25px;padding:8px}
+  .now-controls #now-play{width:68px;height:68px;font-size:23px;box-shadow:0 8px 26px #0003}
+  .now-reactions{grid-area:reactions;width:100%;margin:8px 0 0;text-align:center}
+  .now-reactions>span,.now-share>span{font-size:10px;letter-spacing:.2em}
+  .now-reaction-buttons,#now-reaction-buttons{gap:12px;margin-top:14px}
+  .now-reactions button{min-width:76px;padding:12px 15px;font-size:16px}
+  .now-reactions button b{font-size:12px}
+  .now-share{grid-area:share;width:100%;margin:8px 0 0;text-align:center}
+  .now-share-icons{max-width:100%;gap:11px;margin-top:15px}
+  .now-share-icons button,.now-share-icons a{width:49px;height:49px;border-radius:14px;padding:11px}
+  .now-share-icons svg{width:25px;height:25px}
+  .now-download{grid-area:download;justify-self:center;margin-top:4px;padding:14px 22px;font-size:13px}
+  .now-library-toggle{top:24px;left:clamp(24px,4vw,58px);padding:13px 17px;font-size:20px}
+  .now-library-toggle span{font-size:10px}
+  .now-close{top:24px;right:clamp(24px,4vw,58px);width:50px;height:50px;font-size:30px}
+  .now-library-drawer{width:min(390px,42vw);padding:26px 20px}
+  .now-library-song{gap:14px;padding:13px 9px}
+  .now-library-art{width:56px;height:56px}
+  .now-library-copy strong{font-size:13px}
+  .now-library-copy small{font-size:11px}
+}
+@media (min-width:700px) and (max-width:900px) {
+  .now-playing-overlay{padding:72px 24px 30px}
+  .now-playing-content{grid-template-columns:minmax(0,.88fr) minmax(320px,1.12fr);column-gap:28px;row-gap:13px;padding:10px}
+  .now-art-wrap{width:100%;border-radius:16px}
+  .now-song-copy h2{font-size:clamp(27px,4vw,36px)}
+  .now-share-icons{gap:7px}
+  .now-share-icons button,.now-share-icons a{width:43px;height:43px}
+}
+@media (min-width:901px) and (max-height:760px) {
+  .now-playing-content{grid-template-columns:minmax(0,.85fr) minmax(360px,1.15fr);column-gap:48px;row-gap:10px}
+  .now-art-wrap{width:min(100%, min(39vw,390px))}
+  .now-song-copy h2{font-size:clamp(28px,2.8vw,40px)}
+  .now-reactions,.now-share{margin-top:2px}
+  .now-share-icons{margin-top:9px}
+}
