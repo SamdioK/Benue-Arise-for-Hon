@@ -98,11 +98,11 @@ async function initialise() {
   $("#forgot-password").addEventListener("click", requestPasswordReset);
   $("#recovery-form").addEventListener("submit", completePasswordRecovery);
   $("#signout").addEventListener("click", async () => { await client.auth.signOut(); });
-  $("#content-type").addEventListener("change", () => { activeModule = modules[$("#content-type").value]; activeId = null; clearEditor(); loadList(); });
+  $("#content-type").addEventListener("change", () => { activeModule = modules[$("#content-type").value]; activeId = null; clearEditor(); updateMuxBroadcastControls(); loadList(); });
   $("#open-broadcast-events")?.addEventListener("click",()=>{$("#content-type").value="broadcast_events";$("#content-type").dispatchEvent(new Event("change",{bubbles:true}));$("#content-type").scrollIntoView({behavior:"smooth",block:"center"})});
   $("#admin-search").addEventListener("input", loadList);
-  $("#new-record").addEventListener("click", () => { activeId = null; clearEditor(); $("#form-heading").textContent = "New " + activeModule.label; });
-  $("#reset-record").addEventListener("click", () => { activeId = null; clearEditor(); });
+  $("#new-record").addEventListener("click", () => { activeId = null; clearEditor(); updateMuxBroadcastControls(); $("#form-heading").textContent = "New " + activeModule.label; });
+  $("#reset-record").addEventListener("click", () => { activeId = null; clearEditor(); updateMuxBroadcastControls(); });
   $("#record-form").addEventListener("submit", saveRecord);
   $("#playlist-select")?.addEventListener("change", loadPlaylistSongOptions);
   $("#save-playlist-tracks")?.addEventListener("click", savePlaylistTracks);
@@ -353,6 +353,7 @@ async function loadRecord(id) {
   if (error || !data) { say(error?.message || "Record not found."); return; }
   if (currentRole === "profile_manager" && data.status !== "draft") { say("Published and archived records are read-only for Profile Managers. Ask an Administrator to return the record to Draft before editing."); return; }
   activeId = id;
+  updateMuxBroadcastControls();
   renderFields(data);
   $("#form-heading").textContent = "Edit " + activeModule.label;
   $("#record-id-label").textContent = id;
@@ -382,6 +383,7 @@ async function saveRecord(event) {
       : await client.from(activeModule.table).insert(payload).select(activeModule.id).single();
     if (result.error) throw result.error;
     activeId = result.data.id;
+    updateMuxBroadcastControls();
     say("Saved successfully. Check the public page after publishing.");
     await loadList();
     $("#record-id-label").textContent = activeId;
@@ -397,7 +399,7 @@ async function deleteRecord() {
   if (!activeId || !window.confirm("Permanently delete this record?")) return;
   const { error } = await client.from(activeModule.table).delete().eq(activeModule.id, activeId);
   if (error) { say(error.message); return; }
-  activeId = null; clearEditor(); say("Record deleted."); await loadList();
+  activeId = null; clearEditor(); updateMuxBroadcastControls(); say("Record deleted."); await loadList();
 }
 
 
