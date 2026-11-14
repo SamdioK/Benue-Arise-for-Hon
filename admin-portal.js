@@ -53,6 +53,18 @@ const modules = {
       ["status","Publication status","select",true,["draft","pending","approved","published","archived"]],
       ["published_at","Publication date and time","datetime-local"]
     ] },
+  broadcast_events: { label: "Broadcast Events & Schedule", table: "broadcast_events", id: "id", order: "starts_at",
+    fields: [
+      ["title","Broadcast / event title","text",true],["slug","URL slug","text",true],["description","Event description","textarea"],
+      ["venue","Venue / event site","text"],["location","Location / LGA","text"],["event_type","Event type","select",true,["campaign_event","rally","town_hall","press_conference","interview","community_meeting","other"]],
+      ["speaker","Speaker / host","text"],["starts_at","Scheduled start","datetime-local"],["ends_at","Scheduled end","datetime-local"],
+      ["status","Broadcast status","select",true,["draft","scheduled","live","ended","cancelled"]],
+      ["is_published","Publish event details","select",true,["false","true"]],
+      ["enable_on_air","Show on Benue Arise On-Air","select",true,["true","false"]],
+      ["enable_live_video","Show on Benue Arise Live","select",true,["true","false"]],
+      ["audio_playback_url","Public audio playback URL (HTTPS only)","url"],["video_playback_url","Public video playback URL (HTTPS only)","url"],
+      ["recording_url","Public recording URL (HTTPS only)","url"],["poster_path","Event poster image path or URL","text"]
+    ] },
   campaign_playlists: { label: "Campaign Playlists", table: "campaign_playlists", id: "id", order: "display_order",
     fields: [
       ["title","Playlist title","text",true],["slug","URL slug","text",true],["description","Description","textarea"],
@@ -281,7 +293,7 @@ async function saveRecord(event) {
       let value = form.get(name);
       if (typeof value === "string") value = value.trim();
       if (["display_order","duration_seconds"].includes(name)) value = Number(value || 0);
-      if (["published","featured","allow_download"].includes(name)) value = value === "true";
+      if (["published","featured","allow_download","is_published","enable_on_air","enable_live_video"].includes(name)) value = value === "true";
       if (name.endsWith("_at") && value) value = new Date(value).toISOString();
       if (value !== "" && value !== null) payload[name] = value;
     }
