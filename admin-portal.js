@@ -40,7 +40,7 @@ const modules = {
       ["verification_status","Verification status","select",true,["Under Verification","Verified","Official Record","Campaign Statement"]],
       ["status","Publication status","select",true,["draft","published","archived"]],
       ["published_at","Publication date and time","datetime-local"]
-    ] ,
+    ] },
   campaign_songs: { label: "Campaign Songs", table: "campaign_songs", id: "id", order: "created_at",
     fields: [
       ["title","Song title","text",true],["slug","URL slug","text",true],["artist","Artist / performer","text",true],
