@@ -23,3 +23,54 @@
 [hidden] { display: none !important; }
 #forgot-password { border: 0; background: transparent; color: var(--green, #176b48); font: inherit; font-weight: 700; padding: .5rem 0; text-decoration: underline; cursor: pointer; }
 #recovery-form { margin-top: 1.25rem; }
+
+
+/* Campaign Audio Studio — polished, responsive administrator workspace */
+.audio-studio-panel,.playlist-studio-panel{margin:22px 0;padding:clamp(18px,3vw,30px);border:1px solid #dce7dd;border-radius:18px;background:linear-gradient(145deg,#fff 0%,#f7faf6 100%);box-shadow:0 12px 35px #173d2b0c;min-width:0}
+.studio-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:22px}
+.studio-heading h3{margin:3px 0 7px;color:#123f2c;font-size:clamp(20px,3vw,27px);letter-spacing:-.035em}
+.studio-heading p:not(.studio-kicker){margin:0;max-width:620px;color:#6b796f;font-size:12px;line-height:1.7}
+.studio-kicker{margin:0;color:#b1853d;font-size:9px;font-weight:900;letter-spacing:.16em}
+.studio-storage,.playlist-count{display:inline-flex;align-items:center;gap:8px;padding:9px 12px;border-radius:30px;background:#edf5ef;color:#286344;font-size:10px;font-weight:800;white-space:nowrap}
+.studio-storage span{width:7px;height:7px;border-radius:50%;background:#29975b;box-shadow:0 0 0 4px #29975b1c}
+.studio-guidance{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 18px;padding:13px 15px;border-radius:10px;background:#f2f5ef;color:#5d6d61;font-size:10px}
+.studio-guidance strong{color:#174a32;margin-right:5px}
+.studio-guidance span{padding:5px 8px;border-radius:5px;background:#fff}
+.studio-upload-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.studio-upload-card{display:grid;grid-template-columns:46px minmax(0,1fr);gap:9px 13px;align-items:center;padding:18px;border:1px solid #e1e9e1;border-radius:13px;background:#fff;min-width:0}
+.studio-file-icon{grid-row:span 2;width:44px;height:44px;display:grid;place-items:center;border-radius:12px;background:#eaf3ec;color:#176343;font-size:24px}
+.studio-file-icon.artwork-icon{background:#f7f0df;color:#a47a30}
+.studio-upload-card h4{margin:0 0 4px;color:#1d4531;font-size:14px}
+.studio-upload-card p{margin:0;color:#7a867d;font-size:10px;line-height:1.6}
+.studio-file-label{grid-column:1/-1;display:block;padding:12px;border:1px dashed #cbd9cc;border-radius:8px;background:#f9fbf8;color:#355d43;text-align:center;font-size:11px;font-weight:750;cursor:pointer}
+.studio-upload-card input[type=file]{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.studio-upload-card .btn{grid-column:1/-1;width:100%;min-height:42px}
+.studio-status{margin-top:16px;padding:13px 15px;border:1px solid #e5eadf;border-radius:9px;background:#f8faf6;color:#607064;font-size:11px;line-height:1.7;overflow-wrap:anywhere}
+.studio-upload-result{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid #e1e9e1}
+.studio-upload-result span{color:#237044;font-size:9px;font-weight:900;letter-spacing:.1em}
+.studio-upload-result code{flex:1;min-width:150px;padding:8px;border-radius:6px;background:#edf3ed;color:#234c34;font-size:10px;overflow-wrap:anywhere}
+.studio-copy-path{border:1px solid #d5e1d6;border-radius:6px;padding:8px 11px;background:white;color:#20583a;font-size:10px;font-weight:800;cursor:pointer}
+.playlist-studio-panel[hidden]{display:none!important}
+.studio-select-label{display:block;margin-bottom:7px;color:#334f3d;font-size:11px;font-weight:800}
+#playlist-select{width:100%;max-width:560px;min-height:46px;padding:11px 13px;border:1px solid #d6e2d6;border-radius:9px;background:#fff;color:#274533;font-size:12px}
+.playlist-composer-help{margin:15px 0 9px;color:#78847b;font-size:10px;line-height:1.6}
+.playlist-track-list{display:grid;gap:7px;max-height:480px;overflow:auto;padding:2px}
+.playlist-empty{padding:25px 18px;border:1px dashed #d4dfd4;border-radius:10px;background:#fafcf9;color:#748177;text-align:center;font-size:11px;line-height:1.7}
+.playlist-track-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 12px;border:1px solid #e6ece5;border-radius:9px;background:#fff;min-width:0}
+.playlist-track-row.is-selected{border-color:#c9dfcd;background:#f5faf5}
+.playlist-track-check{display:flex;align-items:center;gap:11px;min-width:0;flex:1;cursor:pointer}
+.playlist-track-check input{width:17px;height:17px;flex:0 0 auto;accent-color:#176b43}
+.playlist-track-check span{display:block;min-width:0}
+.playlist-track-check strong,.playlist-track-check small{display:block;overflow-wrap:anywhere}
+.playlist-track-check strong{color:#244b34;font-size:11px}
+.playlist-track-check small{margin-top:3px;color:#819086;font-size:9px}
+.track-order-controls{display:flex;align-items:center;gap:5px;flex:0 0 auto}
+.track-order-controls span{min-width:20px;color:#9a773b;font-size:10px;font-weight:900;text-align:center}
+.track-order-controls button{width:30px;height:30px;border:1px solid #dce6dc;border-radius:7px;background:#fff;color:#28563a;font-size:15px;cursor:pointer}
+.track-order-controls button:disabled{opacity:.3;cursor:not-allowed}
+.track-add-hint{color:#9aa49b;font-size:9px;white-space:nowrap}
+.playlist-save-row{display:flex;align-items:center;gap:15px;flex-wrap:wrap;margin-top:17px}
+.playlist-save-row .btn{min-width:190px;min-height:44px}
+#playlist-track-status{margin:0;color:#376447;font-size:11px;line-height:1.6}
+@media(max-width:650px){.studio-heading{display:block}.studio-storage,.playlist-count{margin-top:13px}.studio-upload-grid{grid-template-columns:1fr}.studio-guidance{align-items:flex-start;flex-direction:column;gap:7px}.studio-guidance strong{margin:0}.audio-studio-panel,.playlist-studio-panel{padding:17px;border-radius:13px;margin:16px 0}.playlist-track-row{padding:10px 9px}.track-order-controls button{width:28px;height:28px}.playlist-save-row{align-items:stretch;flex-direction:column}.playlist-save-row .btn{width:100%}}
+@media(max-width:380px){.playlist-track-check{gap:7px}.playlist-track-check strong{font-size:10px}.playlist-track-check small{font-size:8px}.track-add-hint{display:none}}
