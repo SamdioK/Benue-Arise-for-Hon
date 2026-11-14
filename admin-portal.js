@@ -99,6 +99,7 @@ async function initialise() {
   $("#recovery-form").addEventListener("submit", completePasswordRecovery);
   $("#signout").addEventListener("click", async () => { await client.auth.signOut(); });
   $("#content-type").addEventListener("change", () => { activeModule = modules[$("#content-type").value]; activeId = null; clearEditor(); loadList(); });
+  $("#open-broadcast-events")?.addEventListener("click",()=>{$("#content-type").value="broadcast_events";$("#content-type").dispatchEvent(new Event("change",{bubbles:true}));$("#cms-panel").scrollIntoView({behavior:"smooth",block:"start"})});
   $("#admin-search").addEventListener("input", loadList);
   $("#new-record").addEventListener("click", () => { activeId = null; clearEditor(); $("#form-heading").textContent = "New " + activeModule.label; });
   $("#reset-record").addEventListener("click", () => { activeId = null; clearEditor(); });
