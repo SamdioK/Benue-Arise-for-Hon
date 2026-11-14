@@ -62,7 +62,7 @@ Open `campaign-songs.html` from the website's Campaign Songs navigation. Visitor
 - Obtain performer/producer credits and any required consent before publication.
 - Lyrics must be approved before they are entered.
 - Use factual artist, language, constituency and campaign-level metadata.
-- The current playlist CMS manages playlist records; playlist-song assignment and dedicated playlist playback are a subsequent enhancement.
+- Playlist Composer manages playlist-song assignments and ordering. Published playlists can be played as a queue on the public audio page.
 - Listening events are collected for platform analytics. Do not use them to identify individual listeners.
 - Test playback on Android Chrome and at least one desktop browser after the site deployment updates.
 
@@ -76,6 +76,6 @@ The changes are committed to the `implementation/brand-and-foundation` branch. T
 - [ ] A song can be saved as Draft without appearing publicly.
 - [ ] A published song with a valid audio path appears publicly.
 - [ ] Playback, seeking, queue, shuffle, repeat and volume work.
-- [ ] Play events increment the database play count.
+- [ ] Play events increment the database play count.\n- [ ] Playlist Composer saves song membership and ordering.\n- [ ] Published playlists play their assigned published songs.
 - [ ] Public visitors cannot create or edit song records.
 - [ ] Unapproved recordings are not published.
