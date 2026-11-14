@@ -19,12 +19,12 @@ The existing **Media → Photo & Video Gallery** remains intact. On-Air and Live
 - `gallery.html` — preserves the existing gallery and adds the Media submenu.
 - `campaign-songs.html` — preserves the Campaign Songs page and its existing radio card position; renames the radio card to **Benue Arise Songs 24/7** and adds Media submenu navigation.
 - `styles.css` — responsive dropdown styling.
-- `admin.html` and `admin-portal.js` — add the Broadcast Events & Schedule CMS module.
+- `admin.html`, `admin-portal.js` and `admin-content.css` — add the Broadcast Control Centre shortcut and Broadcast Events & Schedule CMS module.
 
 ## 4. Database
-The migration `20261114150000_create_broadcast_events.sql` creates `arise_site.broadcast_events` with event title, slug, description, venue, location, event type, speaker, scheduled times, status, publication flag, public audio/video playback URLs, recording URL, poster path and channel visibility flags.
+The migrations `20261114150000_create_broadcast_events.sql` and `20261114160000_harden_broadcast_event_constraints.sql` create and harden `arise_site.broadcast_events` with event title, slug, description, venue, location, event type, speaker, scheduled times, status, publication flag, public audio/video playback URLs, recording URL, poster path and channel visibility flags.
 
-RLS is enabled. Anonymous visitors can read only published scheduled/live/ended event records. Authenticated administrators can manage all records through the existing `arise_site.is_admin()` check. Explicit Data API grants are included because table exposure and row policies are separate controls.
+RLS is enabled. Anonymous visitors can read only published scheduled/live/ended event records. Authenticated administrators can manage all records through the existing `arise_site.is_admin()` check. Explicit Data API grants are included because table exposure and row policies are separate controls. Integrity checks prevent an end time earlier than the start time and prevent an event being marked Live without at least one enabled public playback URL. An update trigger maintains `updated_at`.
 
 ## 5. Administrator workflow
 1. Sign in at `admin.html`.
