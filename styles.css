@@ -690,3 +690,14 @@
 .personal-subsection-empty{padding:20px 22px;background:#ffffffa8;border:1px dashed #d8d5ca;border-radius:10px;color:#788279}
 .personal-subsection-empty span{display:block;margin-bottom:5px;color:#b17a35;font-size:17px}
 .personal-subsection-empty p{margin:0;font:400 12px/1.7 Manrope,Arial,sans-serif}
+
+/* Expandable Media navigation: preserves the existing Photo & Video Gallery. */
+.nav-dropdown{position:relative;display:block;color:inherit}
+.nav-dropdown>summary{list-style:none;cursor:pointer;font-size:inherit;font-weight:750;white-space:nowrap}
+.nav-dropdown>summary::-webkit-details-marker{display:none}
+.nav-dropdown[open]>summary{color:var(--green)}
+.nav-submenu{display:none;position:absolute;top:calc(100% + 10px);left:-12px;min-width:230px;padding:8px;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 16px 40px #102d201c;z-index:60}
+.nav-dropdown[open] .nav-submenu{display:grid;gap:3px}
+.nav-submenu a{display:block;padding:11px 12px;border-radius:7px;text-decoration:none;color:var(--text,#254438);font-size:.82rem}
+.nav-submenu a:hover{background:#f2f5ef;color:var(--green)}
+@media(max-width:760px){.nav-dropdown{width:100%}.nav-dropdown>summary{padding:12px 0}.nav-submenu{position:static;box-shadow:none;border:0;border-left:2px solid var(--gold,#d9b35d);border-radius:0;margin:0 0 6px 10px;padding:4px 0 4px 10px}.nav-submenu a{padding:10px 12px}}
