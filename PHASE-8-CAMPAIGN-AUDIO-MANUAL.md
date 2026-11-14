@@ -76,6 +76,8 @@ The changes are committed to the `implementation/brand-and-foundation` branch. T
 - [ ] A song can be saved as Draft without appearing publicly.
 - [ ] A published song with a valid audio path appears publicly.
 - [ ] Playback, seeking, queue, shuffle, repeat and volume work.
-- [ ] Play events increment the database play count.\n- [ ] Playlist Composer saves song membership and ordering.\n- [ ] Published playlists play their assigned published songs.
+- [ ] Play events increment the database play count.
+- [ ] Playlist Composer saves song membership and ordering.
+- [ ] Published playlists play their assigned published songs.
 - [ ] Public visitors cannot create or edit song records.
 - [ ] Unapproved recordings are not published.
