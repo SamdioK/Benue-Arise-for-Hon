@@ -353,41 +353,66 @@ async function assignProfileManager(event) {
 
 
 async function loadPlaylistComposer() {
-  const panel = $("#playlist-track-manager");
-  if (!panel || !client || currentRole === "profile_manager") return;
-  const [{data: playlists,error:pError},{data:songs,error:sError}] = await Promise.all([
+  const panel=$("#playlist-track-manager");
+  if(!panel||!client||currentRole==="profile_manager")return;
+  const [{data:playlists,error:pError},{data:songs,error:sError}]=await Promise.all([
     client.from("campaign_playlists").select("id,title").order("title"),
-    client.from("campaign_songs").select("id,title,artist").order("title")
+    client.from("campaign_songs").select("id,title,artist,status").order("title")
   ]);
-  if (pError || sError) { $("#playlist-track-status").textContent = (pError || sError).message; return; }
-  const select = $("#playlist-select");
-  const previous = select.value;
-  select.innerHTML = '<option value="">Select a playlist</option>' + (playlists||[]).map(p=>'<option value="'+esc(p.id)+'">'+esc(p.title)+'</option>').join("");
-  if (playlists?.some(p=>p.id===previous)) select.value=previous;
-  panel.dataset.songs = JSON.stringify(songs||[]);
-  await loadPlaylistSongOptions();
+  if(pError||sError){$("#playlist-track-status").textContent=(pError||sError).message;return}
+  const select=$("#playlist-select"),previous=select.value;
+  select.innerHTML='<option value="">Select a playlist</option>'+(playlists||[]).map(p=>'<option value="'+esc(p.id)+'">'+esc(p.title)+'</option>').join("");
+  if(playlists?.some(p=>p.id===previous))select.value=previous;
+  panel.dataset.songs=JSON.stringify(songs||[]);
+  if(!playlists?.length)$("#playlist-song-options").innerHTML='<div class="playlist-empty">No playlists yet. Create one using the Campaign Playlists module, then return here to add its tracks.</div>';
+  else await loadPlaylistSongOptions();
 }
-async function loadPlaylistSongOptions() {
+async function loadPlaylistSongOptions(){
   const box=$("#playlist-song-options"),playlistId=$("#playlist-select")?.value;
-  if (!box) return;
+  if(!box)return;
   const songs=JSON.parse($("#playlist-track-manager").dataset.songs||"[]");
-  if (!playlistId) { box.innerHTML="<p>Select a playlist to manage its songs.</p>"; return; }
+  if(!playlistId){box.innerHTML='<div class="playlist-empty">Choose a playlist above to view and arrange its songs.</div>';$("#playlist-song-count").textContent="0 tracks selected";return}
   const {data:links,error}=await client.from("campaign_playlist_songs").select("song_id,display_order").eq("playlist_id",playlistId).order("display_order");
   if(error){box.textContent=error.message;return}
-  const selected=new Map((links||[]).map((x,i)=>[x.song_id,x.display_order??i]));
-  box.innerHTML=songs.map(s=>'<label class="playlist-song-option"><input type="checkbox" value="'+esc(s.id)+'" '+(selected.has(s.id)?"checked":"")+'><span><strong>'+esc(s.title)+'</strong><small>'+esc(s.artist)+'</small></span></label>').join("")||"<p>No songs created yet.</p>";
+  const order=(links||[]).map(x=>x.song_id),byId=new Map(songs.map(s=>[s.id,s]));
+  const selected=order.map(id=>byId.get(id)).filter(Boolean),remaining=songs.filter(s=>!order.includes(s.id));
+  const render=(s,isSelected,index)=>'<div class="playlist-track-row '+(isSelected?"is-selected":"")+'" data-track="'+esc(s.id)+'"><label class="playlist-track-check"><input type="checkbox" value="'+esc(s.id)+'" '+(isSelected?"checked":"")+'><span><strong>'+esc(s.title)+'</strong><small>'+esc(s.artist||"Artist not specified")+' · '+esc(s.status||"draft")+'</small></span></label>'+(isSelected?'<div class="track-order-controls"><span>'+(index+1)+'</span><button type="button" data-move="-1" aria-label="Move '+esc(s.title)+' up" '+(index===0?"disabled":"")+'>↑</button><button type="button" data-move="1" aria-label="Move '+esc(s.title)+' down" '+(index===selected.length-1?"disabled":"")+'>↓</button></div>':'<span class="track-add-hint">Available to add</span>')+'</div>';
+  box.innerHTML=(selected.map((s,i)=>render(s,true,i)).join("")||"")+(remaining.map(s=>render(s,false,-1)).join("")||"");
+  $("#playlist-song-count").textContent=selected.length+" track"+(selected.length===1?"":"s")+" selected";
+  box.querySelectorAll('input[type="checkbox"]').forEach(input=>input.addEventListener("change",async()=>{
+    const chosen=Array.from(box.querySelectorAll('input[type="checkbox"]:checked')).map(x=>x.value);
+    const currentOrder=Array.from(box.querySelectorAll(".playlist-track-row.is-selected")).map(x=>x.dataset.track);
+    const nextOrder=currentOrder.filter(id=>chosen.includes(id));
+    chosen.forEach(id=>{if(!nextOrder.includes(id))nextOrder.push(id)});
+    await renderPlaylistSelection(nextOrder);
+  }));
+  box.querySelectorAll("[data-move]").forEach(button=>button.addEventListener("click",async()=>{
+    const rows=Array.from(box.querySelectorAll(".playlist-track-row.is-selected")),ids=rows.map(x=>x.dataset.track),row=button.closest(".playlist-track-row"),from=ids.indexOf(row.dataset.track),to=from+Number(button.dataset.move);
+    if(to<0||to>=ids.length)return;
+    [ids[from],ids[to]]=[ids[to],ids[from]];
+    await renderPlaylistSelection(ids);
+  }));
 }
-async function savePlaylistTracks() {
+async function renderPlaylistSelection(ids){
+  const box=$("#playlist-song-options"),songs=JSON.parse($("#playlist-track-manager").dataset.songs||"[]"),byId=new Map(songs.map(s=>[s.id,s]));
+  const ordered=ids.map(id=>byId.get(id)).filter(Boolean),remaining=songs.filter(s=>!ids.includes(s.id));
+  const render=(s,isSelected,index)=>'<div class="playlist-track-row '+(isSelected?"is-selected":"")+'" data-track="'+esc(s.id)+'"><label class="playlist-track-check"><input type="checkbox" value="'+esc(s.id)+'" '+(isSelected?"checked":"")+'><span><strong>'+esc(s.title)+'</strong><small>'+esc(s.artist||"Artist not specified")+' · '+esc(s.status||"draft")+'</small></span></label>'+(isSelected?'<div class="track-order-controls"><span>'+(index+1)+'</span><button type="button" data-move="-1" aria-label="Move track up" '+(index===0?"disabled":"")+'>↑</button><button type="button" data-move="1" aria-label="Move track down" '+(index===ordered.length-1?"disabled":"")+'>↓</button></div>':'<span class="track-add-hint">Available to add</span>')+'</div>';
+  box.innerHTML=ordered.map((s,i)=>render(s,true,i)).join("")+remaining.map(s=>render(s,false,-1)).join("");
+  $("#playlist-song-count").textContent=ordered.length+" track"+(ordered.length===1?"":"s")+" selected";
+  box.querySelectorAll('input[type="checkbox"]').forEach(input=>input.addEventListener("change",()=>{const current=Array.from(box.querySelectorAll(".playlist-track-row.is-selected")).map(x=>x.dataset.track);const next=current.filter(id=>id!==input.value);if(input.checked)next.push(input.value);renderPlaylistSelection(next)}));
+  box.querySelectorAll("[data-move]").forEach(button=>button.addEventListener("click",()=>{const current=Array.from(box.querySelectorAll(".playlist-track-row.is-selected")).map(x=>x.dataset.track),row=button.closest(".playlist-track-row"),from=current.indexOf(row.dataset.track),to=from+Number(button.dataset.move);if(to<0||to>=current.length)return;[current[from],current[to]]=[current[to],current[from]];renderPlaylistSelection(current)}));
+}
+async function savePlaylistTracks(){
   const playlistId=$("#playlist-select").value,status=$("#playlist-track-status"),button=$("#save-playlist-tracks");
-  if(!playlistId){status.textContent="Choose a playlist first.";return}
-  const selected=Array.from($("#playlist-song-options").querySelectorAll('input[type="checkbox"]:checked')).map(x=>x.value);
-  button.disabled=true;status.textContent="Saving playlist order…";
+  if(!playlistId){status.textContent="Choose a playlist before saving.";return}
+  const selected=Array.from($("#playlist-song-options").querySelectorAll(".playlist-track-row.is-selected")).map(x=>x.dataset.track);
+  button.disabled=true;status.textContent="Saving the selected track order…";
   try{
     const {error:delError}=await client.from("campaign_playlist_songs").delete().eq("playlist_id",playlistId);
     if(delError)throw delError;
     if(selected.length){const {error}=await client.from("campaign_playlist_songs").insert(selected.map((song_id,i)=>({playlist_id:playlistId,song_id,display_order:i+1})));if(error)throw error}
-    status.textContent="Playlist saved with "+selected.length+" song(s).";
-  }catch(error){status.textContent=error.message||"Could not save playlist."}
+    status.textContent="Saved successfully · "+selected.length+" track(s) in playback order.";
+  }catch(error){status.textContent=error.message||"Could not save playlist order."}
   finally{button.disabled=false}
 }
 
@@ -445,31 +470,25 @@ async function uploadSiteAssets() {
 
 $("#upload-site-assets")?.addEventListener("click", uploadSiteAssets);
 
-async function uploadCampaignAsset(kind) {
-  const audio = kind === "audio";
-  const input = audio ? $("#campaign-audio-file") : $("#campaign-artwork-file");
-  const status = $("#campaign-audio-status");
-  const button = audio ? $("#upload-campaign-audio") : $("#upload-campaign-artwork");
-  const file = input?.files?.[0];
-  if (!file) { status.textContent = audio ? "Choose an audio recording first." : "Choose cover artwork first."; return; }
-  const allowed = audio
-    ? new Set(["audio/mpeg","audio/mp4","audio/aac","audio/ogg","audio/wav","audio/x-wav","audio/flac","audio/webm"])
-    : new Set(["image/jpeg","image/png","image/webp"]);
-  const max = audio ? 50*1024*1024 : 8*1024*1024;
-  if (!allowed.has(file.type)) { status.textContent = "This file format is not supported."; return; }
-  if (file.size > max) { status.textContent = "The selected file exceeds the allowed size."; return; }
-  button.disabled = true;
-  status.textContent = "Uploading to Supabase Storage…";
-  try {
-    const safe = file.name.normalize("NFKD").replace(/[^a-zA-Z0-9._-]+/g,"-").replace(/^-+|-+$/g,"");
-    const path = (audio ? "songs/" : "artwork/") + Date.now() + "-" + safe;
-    const { error } = await client.storage.from("campaign-audio").upload(path,file,{cacheControl:"3600",contentType:file.type,upsert:false});
-    if (error) throw error;
-    const { data } = client.storage.from("campaign-audio").getPublicUrl(path);
-    status.textContent = "Upload successful. Storage path: " + path + " · Public URL: " + data.publicUrl + " · Copy the storage path into the matching record.";
-    input.value = "";
-  } catch (error) { status.textContent = error.message || "Upload failed."; }
-  finally { button.disabled = false; }
+async function uploadCampaignAsset(kind){
+  const audio=kind==="audio",input=audio?$("#campaign-audio-file"):$("#campaign-artwork-file"),status=$("#campaign-audio-status"),button=audio?$("#upload-campaign-audio"):$("#upload-campaign-artwork"),file=input?.files?.[0];
+  if(!file){status.textContent=audio?"Choose an audio recording first.":"Choose cover artwork first.";return}
+  const allowed=audio?new Set(["audio/mpeg","audio/mp4","audio/aac","audio/ogg","audio/wav","audio/x-wav","audio/flac","audio/webm"]):new Set(["image/jpeg","image/png","image/webp"]),max=audio?50*1024*1024:8*1024*1024;
+  if(!allowed.has(file.type)){status.textContent="This file format is not supported. Choose an approved audio or image format.";return}
+  if(file.size>max){status.textContent="The selected file exceeds the "+(audio?"50 MB":"8 MB")+" upload limit.";return}
+  button.disabled=true;button.textContent="Uploading…";status.textContent="Uploading securely to Supabase Storage…";
+  try{
+    const safe=file.name.normalize("NFKD").replace(/[^a-zA-Z0-9._-]+/g,"-").replace(/^-+|-+$/g,""),path=(audio?"songs/":"artwork/")+Date.now()+"-"+safe;
+    const {error}=await client.storage.from("campaign-audio").upload(path,file,{cacheControl:"3600",contentType:file.type,upsert:false});
+    if(error)throw error;
+    const field=audio?"audio_path":"artwork_path",target=document.querySelector('#record-fields [name="'+field+'"]');
+    if(target){target.value=path;target.dispatchEvent(new Event("input",{bubbles:true}));status.textContent="Upload complete. The "+(audio?"audio":"artwork")+" path has been inserted into the open Campaign Song record. Save that record to keep the link."}
+    else status.textContent="Upload complete. Storage path: "+path+". Open Campaign Songs, create or select the matching song, then paste this path into its "+(audio?"Audio storage path":"Cover artwork storage path")+" field.";
+    const result=document.createElement("div");result.className="studio-upload-result";result.innerHTML='<span>UPLOAD COMPLETE</span><code></code><button type="button" class="studio-copy-path">Copy path</button>';
+    result.querySelector("code").textContent=path;result.querySelector("button").addEventListener("click",async()=>{try{await navigator.clipboard.writeText(path);status.textContent="Storage path copied to clipboard."}catch{status.textContent="Select and copy the storage path shown above."}});
+    status.appendChild(result);input.value="";
+  }catch(error){status.textContent=error.message||"Upload failed."}
+  finally{button.disabled=false;button.textContent=audio?"Upload recording":"Upload artwork"}
 }
 $("#upload-campaign-audio")?.addEventListener("click", () => uploadCampaignAsset("audio"));
 $("#upload-campaign-artwork")?.addEventListener("click", () => uploadCampaignAsset("artwork"));
