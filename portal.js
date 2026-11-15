@@ -5,6 +5,42 @@ const esc = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({
 }[char]));
 document.querySelectorAll("[data-year]").forEach((node) => node.textContent = new Date().getFullYear());
 
+/* Multilingual campaign mantra: timed text changes, never a scrolling ticker. */
+const mantraText = document.getElementById("home-slogan-text");
+const mantraLanguage = document.querySelector(".home-slogan-language");
+if (mantraText && mantraLanguage) {
+  const mantras = [
+    { language: "TIV", text: "Chan u ya Chan" },
+    { language: "PIDGIN", text: "Na Poverty go Suffer" },
+    { language: "IDOMA", text: "Eha ge m’owe" },
+    { language: "IGEDE", text: "Ebiahi a ka y’ebiahi le" },
+    { language: "HAUSA", text: "Talauci zai sha wahala" },
+    { language: "IGBO", text: "Ịda ogbenye ga-ata ahụhụ" },
+    { language: "YORUBA", text: "Oṣiṣẹ́ yóò jìyà" }
+  ];
+  let mantraIndex = 0;
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const showNextMantra = () => {
+    const current = mantras[mantraIndex];
+    mantraText.classList.add("is-changing");
+    window.setTimeout(() => {
+      mantraLanguage.textContent = current.language;
+      mantraText.textContent = current.text;
+      mantraText.classList.remove("is-changing");
+      mantraIndex = (mantraIndex + 1) % mantras.length;
+      const duration = Math.min(5200, Math.max(3000, 2200 + current.text.length * 75));
+      window.setTimeout(showNextMantra, duration);
+    }, reducedMotion ? 0 : 220);
+  };
+  if (!reducedMotion) {
+    const firstDuration = Math.min(5200, Math.max(3000, 2200 + mantras[0].text.length * 75));
+    window.setTimeout(showNextMantra, firstDuration);
+  } else {
+    window.setTimeout(showNextMantra, 4000);
+  }
+}
+
+
 const toggle = $(".menu-toggle");
 const nav = $(".nav");
 toggle?.addEventListener("click", () => {
