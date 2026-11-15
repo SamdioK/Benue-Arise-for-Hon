@@ -89,8 +89,9 @@ function renderRecords(records, mode = "standard") {
       record.category, record.venue, record.caption, record.alt_text].join(" ").toLowerCase();
     const mediaPath = record.storage_path || "";
     const isVideoRecord = record.media_type === "video" || /\.(mp4|webm|mov)(?:[?#].*)?$/i.test(mediaPath);
+    const isPhotoRecord = record.media_type === "photo" || /\.(jpe?g|png|webp|gif|avif)(?:[?#].*)?$/i.test(mediaPath) || /^images\//i.test(mediaPath);
     const galleryCategoryMatch = currentPageKey !== "gallery" || !category || category === "all" ||
-      (category === "video" && isVideoRecord) || (category === "photo" && !isVideoRecord);
+      (category === "video" && isVideoRecord) || (category === "photo" && isPhotoRecord);
     return (!query || searchable.includes(query)) &&
       galleryCategoryMatch &&
       (!status || (record.verification_status || record.status || "") === status);
@@ -111,7 +112,7 @@ function renderRecords(records, mode = "standard") {
       ? '<video class="record-image record-video" controls playsinline preload="metadata" aria-label="' + esc(record.title || "Campaign gallery video") + '"><source src="' + esc(mediaUrl) + '"></video>'
       : '<img class="record-image" src="' + esc(mediaUrl) + '" alt="' + esc(record.alt_text || record.title || "Campaign gallery image") + '" loading="lazy">') : "";
     const link = record.registration_url ? '<p><a class="text-link" href="' + esc(record.registration_url) + '" target="_blank" rel="noopener noreferrer">Event information ↗</a></p>' : "";
-    return '<article class="record-card">' + media +
+    return '<article class="record-card"' + (currentPageKey === "gallery" ? ' id="media-' + esc(record.id || "") + '"' : "") + '>' + media +
       '<div class="record-meta"><span>' + esc(record.category || "Public information") + '</span><span class="status-pill">' + esc(record.status || "Published") + '</span></div>' +
       '<h3>' + esc(record.title) + '</h3>' +
       (record.venue || record.location ? '<p class="record-location">' + esc(record.venue || record.location) + '</p>' : "") +
@@ -125,7 +126,7 @@ function renderRecords(records, mode = "standard") {
   }).join("");
   if (currentPageKey === "gallery") bindGalleryEngagement(box);
   const select = $("#category-filter");
-  if (select && key !== "gallery" && select.options.length <= 1) {
+  if (select && currentPageKey !== "gallery" && select.options.length <= 1) {
     [...new Set(records.map((record) => record.category).filter(Boolean))].sort()
       .forEach((value) => select.add(new Option(value, value)));
   }
