@@ -83,12 +83,13 @@ function renderRecords(records, mode = "standard") {
   const query = ($("#record-search")?.value || "").trim().toLowerCase();
   const category = $("#category-filter")?.value || "";
   const status = $("#status-filter")?.value || "";
+  const currentPageKey = pageKey();
   const filtered = records.filter((record) => {
     const searchable = [record.title, record.description, record.content, record.content_text, record.body, record.excerpt,
       record.category, record.venue, record.caption, record.alt_text].join(" ").toLowerCase();
     const mediaPath = record.storage_path || "";
     const isVideoRecord = record.media_type === "video" || /\.(mp4|webm|mov)(?:[?#].*)?$/i.test(mediaPath);
-    const galleryCategoryMatch = key !== "gallery" || !category || category === "all" ||
+    const galleryCategoryMatch = currentPageKey !== "gallery" || !category || category === "all" ||
       (category === "video" && isVideoRecord) || (category === "photo" && !isVideoRecord);
     return (!query || searchable.includes(query)) &&
       galleryCategoryMatch &&
@@ -117,15 +118,113 @@ function renderRecords(records, mode = "standard") {
       (dateLabel ? '<small>' + esc(dateLabel) + '</small>' : "") +
       (record.verification_status ? '<p class="verification-label">' + esc(record.verification_status) + '</p>' : "") +
       (summary ? '<p class="record-description gallery-caption">'+esc(summary)+'</p>' : "") +
+      (currentPageKey === "gallery" ? galleryEngagementMarkup(record) : "") +
       (record.source_url ? '<p><a class="text-link" href="' + esc(record.source_url) + '" target="_blank" rel="noopener noreferrer">Primary source ↗</a></p>' : "") +
       (record.evidence_url ? '<p><a class="text-link" href="' + esc(record.evidence_url) + '" target="_blank" rel="noopener noreferrer">Supporting evidence ↗</a></p>' : "") +
       link + '</article>';
   }).join("");
+  if (currentPageKey === "gallery") bindGalleryEngagement(box);
   const select = $("#category-filter");
   if (select && key !== "gallery" && select.options.length <= 1) {
     [...new Set(records.map((record) => record.category).filter(Boolean))].sort()
       .forEach((value) => select.add(new Option(value, value)));
   }
+}
+
+
+const galleryVisitorId = globalThis.crypto?.randomUUID?.() || null;
+function galleryEngagementMarkup(record) {
+  if (!record.id) return "";
+  return '<section class="gallery-engagement" data-gallery-id="' + esc(record.id) + '">' +
+    '<div class="gallery-action-row"><button type="button" data-gallery-like aria-pressed="false">♡ Like <b data-like-count>0</b></button><button type="button" data-gallery-share>↗ Share</button><button type="button" data-comment-toggle>▤ Comment</button></div>' +
+    '<div class="gallery-comments" data-comments hidden><div data-comment-list class="gallery-comment-list">Loading comments…</div>' +
+    '<form data-comment-form class="gallery-comment-form"><input name="author_name" maxlength="80" placeholder="Your name (optional)"><textarea name="comment_text" maxlength="2000" required placeholder="Write a comment…"></textarea><button type="submit">Post comment</button><p data-comment-feedback role="status"></p></form></div></section>';
+}
+function bindGalleryEngagement(box) {
+  if (box.dataset.socialBound) return;
+  box.dataset.socialBound = "1";
+  box.addEventListener("click", async (event) => {
+    const card = event.target.closest(".gallery-engagement");
+    if (!card) return;
+    const client = await getClient();
+    if (!client) return;
+    const id = card.dataset.galleryId;
+    if (event.target.closest("[data-gallery-like]")) {
+      const button = card.querySelector("[data-gallery-like]");
+      if (!galleryVisitorId) return;
+      button.disabled = true;
+      try {
+        const {data: own, error: readError} = await client.from("gallery_likes").select("id").eq("gallery_id", id).eq("visitor_id", galleryVisitorId).maybeSingle();
+        if (readError) throw readError;
+        if (own) {
+          const {error} = await client.from("gallery_likes").delete().eq("id", own.id);
+          if (error) throw error;
+          button.setAttribute("aria-pressed", "false");
+        } else {
+          const {error} = await client.from("gallery_likes").insert({gallery_id:id, visitor_id:galleryVisitorId});
+          if (error) throw error;
+          button.setAttribute("aria-pressed", "true");
+        }
+        await updateGalleryLikeCount(client, card, id);
+      } catch (error) { console.warn("Gallery like failed", error); }
+      finally { button.disabled = false; }
+    }
+    if (event.target.closest("[data-gallery-share]")) {
+      const title = card.closest(".record-card")?.querySelector("h3")?.textContent || "Benue Arise for Hon media";
+      const url = location.origin + location.pathname + "#media-" + id;
+      try {
+        if (navigator.share) await navigator.share({title, text:title + " — Benue Arise for Hon", url});
+        else if (navigator.clipboard?.writeText) { await navigator.clipboard.writeText(url); event.target.closest("[data-gallery-share]").textContent = "✓ Link copied"; }
+        else window.prompt("Copy this gallery link:", url);
+      } catch (error) { if (error.name !== "AbortError") console.warn(error); }
+    }
+    if (event.target.closest("[data-comment-toggle]")) {
+      const panel = card.querySelector("[data-comments]");
+      panel.hidden = !panel.hidden;
+      if (!panel.hidden) await loadGalleryComments(client, card, id);
+    }
+  });
+  box.addEventListener("submit", async (event) => {
+    const form = event.target.closest("[data-comment-form]");
+    if (!form) return;
+    event.preventDefault();
+    const card = form.closest(".gallery-engagement");
+    const feedback = form.querySelector("[data-comment-feedback]");
+    const button = form.querySelector("button[type=submit]");
+    const fields = new FormData(form);
+    const comment = String(fields.get("comment_text") || "").trim();
+    if (!comment) return;
+    button.disabled = true;
+    feedback.textContent = "Posting…";
+    try {
+      const client = await getClient();
+      const {error} = await client.from("gallery_comments").insert({gallery_id:card.dataset.galleryId, author_name:String(fields.get("author_name") || "").trim() || "Visitor", comment_text:comment});
+      if (error) throw error;
+      form.reset();
+      feedback.textContent = "Comment published.";
+      await loadGalleryComments(client, card, card.dataset.galleryId);
+    } catch (error) { console.warn("Gallery comment failed", error); feedback.textContent = "Unable to post comment. Please try again."; }
+    finally { button.disabled = false; }
+  });
+  box.querySelectorAll(".gallery-engagement").forEach(async (card) => {
+    const client = await getClient();
+    if (client) await updateGalleryLikeCount(client, card, card.dataset.galleryId);
+  });
+}
+async function updateGalleryLikeCount(client, card, id) {
+  const {count, error} = await client.from("gallery_likes").select("id", {count:"exact", head:true}).eq("gallery_id", id);
+  if (error) throw error;
+  card.querySelector("[data-like-count]").textContent = String(count || 0);
+  if (galleryVisitorId) {
+    const {data} = await client.from("gallery_likes").select("id").eq("gallery_id", id).eq("visitor_id", galleryVisitorId).maybeSingle();
+    card.querySelector("[data-gallery-like]").setAttribute("aria-pressed", String(Boolean(data)));
+  }
+}
+async function loadGalleryComments(client, card, id) {
+  const list = card.querySelector("[data-comment-list]");
+  const {data, error} = await client.from("gallery_comments").select("author_name,comment_text,created_at").eq("gallery_id", id).order("created_at", {ascending:false}).limit(50);
+  if (error) { list.textContent = "Comments are temporarily unavailable."; return; }
+  list.innerHTML = data?.length ? data.map(item => '<article class="gallery-comment"><strong>' + esc(item.author_name) + '</strong><p>' + esc(item.comment_text) + '</p><small>' + esc(new Date(item.created_at).toLocaleDateString("en-GB")) + '</small></article>').join("") : '<p class="gallery-comment-empty">Be the first to comment.</p>';
 }
 
 
