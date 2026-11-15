@@ -42,3 +42,17 @@
 .leadership-band .node-d{background:var(--green);color:#fff;border-color:#fff}
 .leadership-band .map-node:hover,.leadership-band .map-node:focus-visible{background:#fff;color:var(--purple);border-color:var(--purple);transform:scale(1.07);outline:none}
 @media(max-width:600px){.leadership-band .map-node{width:66px;height:66px;padding:6px;font-size:6px}.leadership-band .map-node span{font-size:10px}.leadership-band .node-a{top:3px;left:calc(50% - 33px)}.leadership-band .node-b{right:0;top:48%}.leadership-band .node-c{bottom:5px;left:calc(50% - 33px)}.leadership-band .node-d{left:0;top:48%}}
+
+
+/* SDP emblem-inspired concentric layers behind the centre circle */
+.leadership-band .map-ring.ring-a{width:260px;height:260px;border:1px solid rgba(7,155,69,.30);box-shadow:0 0 0 7px rgba(255,255,255,.72),0 0 0 13px rgba(241,90,36,.15)}
+.leadership-band .map-ring.ring-b{width:350px;height:350px;border:1px dashed rgba(7,80,47,.28);box-shadow:0 0 0 8px rgba(241,90,36,.07)}
+.leadership-band .map-core{position:relative;z-index:2;width:138px;height:138px;border:3px solid #079b45;background:#fff;color:#07502f;box-shadow:0 0 0 7px #f15a24,0 0 0 13px #fff,0 0 0 20px #079b45,0 0 0 27px rgba(255,255,255,.92),0 16px 38px rgba(7,80,47,.16)}
+.leadership-band .map-core span{color:#07502f}
+.leadership-band .map-core small{color:#f15a24}
+.leadership-band .node-a{background:#079b45;border-color:#fff;color:#fff}
+.leadership-band .node-b{background:#f15a24;border-color:#fff;color:#fff}
+.leadership-band .node-c{background:#07502f;border-color:#f15a24;color:#fff}
+.leadership-band .node-d{background:#fff;border-color:#079b45;color:#07502f}
+.leadership-band .map-node:hover,.leadership-band .map-node:focus-visible{background:#fff;color:#07502f;border-color:#f15a24;box-shadow:0 10px 25px rgba(7,80,47,.18);transform:scale(1.07);outline:none}
+@media(max-width:600px){.leadership-band .map-ring.ring-a{width:220px;height:220px}.leadership-band .map-ring.ring-b{width:292px;height:292px}.leadership-band .map-core{width:112px;height:112px;box-shadow:0 0 0 6px #f15a24,0 0 0 11px #fff,0 0 0 17px #079b45,0 0 0 23px rgba(255,255,255,.92),0 13px 30px rgba(7,80,47,.16)}}
