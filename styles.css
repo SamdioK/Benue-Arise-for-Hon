@@ -776,3 +776,15 @@ body.campaign-subpage #record-list .record-card .gallery-caption,body.home-page 
 .campaign-subpage .gallery-page-hero+.section .toolbar input,.campaign-subpage .gallery-page-hero+.section .toolbar select{width:100%;min-height:48px;border:1px solid #dce5dc;border-radius:8px;background:#fbfcfa;padding:12px 14px;color:#263a2f;font:inherit;font-size:13px}
 .campaign-subpage .gallery-page-hero+.section .toolbar select{font-weight:700;color:#155438}
 @media(max-width:760px){.campaign-subpage .gallery-page-hero{padding:28px 6vw 25px}.campaign-subpage .gallery-page-hero h1{font-size:clamp(32px,9vw,43px)}.campaign-subpage .gallery-page-hero+.section{padding:22px 5vw 38px}.campaign-subpage .gallery-page-hero+.section .toolbar{grid-template-columns:1fr;padding:11px;gap:9px;margin-bottom:18px}}
+
+.campaign-subpage .gallery-engagement{border-top:1px solid #e6ece5;margin-top:16px;padding-top:13px}
+.campaign-subpage .gallery-action-row{display:flex;gap:8px;flex-wrap:wrap}
+.campaign-subpage .gallery-action-row button{border:1px solid #dce6dc;background:#f8fbf7;color:#155438;border-radius:30px;padding:8px 12px;font:inherit;font-size:11px;font-weight:800;cursor:pointer}
+.campaign-subpage .gallery-action-row button[aria-pressed=true]{background:#e5f3e9;border-color:#9cc8a8}
+.campaign-subpage .gallery-comments{padding-top:12px}.campaign-subpage .gallery-comment-list{display:grid;gap:8px;max-height:250px;overflow:auto}
+.campaign-subpage .gallery-comment{padding:10px 12px;background:#f5f8f4;border-radius:8px}.campaign-subpage .gallery-comment strong{font-size:11px;color:#164a32}
+.campaign-subpage .gallery-comment p{font-family:Georgia,"Times New Roman",serif;font-size:12pt;font-weight:600;text-align:justify;text-align-last:left;line-height:1.65;margin:4px 0;color:#34443a;overflow-wrap:anywhere}
+.campaign-subpage .gallery-comment small,.campaign-subpage .gallery-comment-empty{font-size:10px;color:#78847a}
+.campaign-subpage .gallery-comment-form{display:grid;gap:8px;margin-top:12px}.campaign-subpage .gallery-comment-form input,.campaign-subpage .gallery-comment-form textarea{width:100%;border:1px solid #dce5dc;border-radius:8px;padding:10px 12px;font:inherit;font-size:12px;background:#fff}
+.campaign-subpage .gallery-comment-form textarea{min-height:80px;resize:vertical}.campaign-subpage .gallery-comment-form button{justify-self:start;border:0;border-radius:7px;background:#126b43;color:#fff;padding:10px 15px;font-size:11px;font-weight:850}
+.campaign-subpage .gallery-comment-feedback{font-size:10px;color:#126b43;margin:0}
