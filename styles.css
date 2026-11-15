@@ -747,3 +747,14 @@
 .record-card:has(.record-video){overflow:hidden}
 .record-card video{width:100%;max-height:420px}
 @media(max-width:720px){.record-card .record-image{max-height:300px}.record-card video{max-height:300px}}
+
+/* Newsroom editorial hierarchy and social actions */
+.campaign-subpage .record-card h3{font-size:clamp(22px,2.4vw,30px);font-weight:950;line-height:1.22;letter-spacing:-.025em;color:#14271e;margin:20px 0 10px}
+.campaign-subpage .record-card .record-description{font-size:clamp(14px,1.35vw,16px);font-weight:650;line-height:1.9;color:#59665e;text-align:justify;text-align-last:left;hyphens:auto;margin:18px 0 22px}
+.record-social-actions{display:flex;gap:10px;align-items:center;border-top:1px solid #e9eee8;padding-top:14px;margin-top:auto}
+.record-social-actions button{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:40px;padding:9px 16px;border:1px solid #d9e4da;border-radius:24px;background:#f7faf6;color:#155438;font:800 12px/1 inherit;cursor:pointer;transition:background .18s,border-color .18s,transform .18s}
+.record-social-actions button:hover{background:#eaf4ec;border-color:#9fbea7;transform:translateY(-1px)}
+.record-social-actions .record-like[aria-pressed="true"]{background:#fff0ed;border-color:#e8b4a8;color:#b33b2d}
+.record-social-actions .record-share{background:#126b43;color:#fff;border-color:#126b43}
+.record-social-actions .record-share:hover{background:#0a402c}
+@media(max-width:760px){.campaign-subpage .record-card h3{font-size:clamp(23px,6vw,28px)}.campaign-subpage .record-card .record-description{font-size:15px;line-height:1.85}}
