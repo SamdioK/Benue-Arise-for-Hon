@@ -765,3 +765,14 @@ body.campaign-subpage #record-list .record-card h3{font-family:Inter,Arial,sans-
 /* Media gallery photo/video captions use the same editorial standard as newsroom copy. */
 body.campaign-subpage #record-list .record-card .gallery-caption,body.home-page #home-gallery .record-card .gallery-caption{font-family:"Times New Roman",Times,serif!important;font-size:12pt!important;font-weight:600!important;line-height:1.85!important;letter-spacing:0!important;color:#263b30!important;text-align:justify!important;text-align-last:left!important;text-justify:inter-word;hyphens:auto;overflow-wrap:break-word;margin:20px 0 24px!important}
 @media(max-width:760px){body.campaign-subpage #record-list .record-card .gallery-caption,body.home-page #home-gallery .record-card .gallery-caption{font-size:12pt!important;line-height:1.8!important}}
+
+/* Compact, premium media gallery introduction and filter panel */
+.campaign-subpage .gallery-page-hero{position:relative;overflow:hidden;padding:34px clamp(20px,7vw,90px) 32px;background:radial-gradient(circle at 88% 18%,#ffffff16 0,transparent 30%),linear-gradient(118deg,#073f2c 0%,#0e6040 58%,#16754d 100%);border-bottom:3px solid #d9a441}
+.campaign-subpage .gallery-page-hero:after{content:"";position:absolute;width:190px;height:190px;right:-65px;bottom:-125px;border:1px solid #ffffff25;border-radius:50%;box-shadow:0 0 0 22px #ffffff08,0 0 0 44px #ffffff06;pointer-events:none}
+.campaign-subpage .gallery-page-hero .eyebrow{font-size:9px;letter-spacing:.2em;color:#e8c16e;margin:0 0 8px}
+.campaign-subpage .gallery-page-hero h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(32px,4.5vw,52px);font-weight:500;line-height:1.05;letter-spacing:-.025em;margin:0;color:#fff}
+.campaign-subpage .gallery-page-hero+.section{padding-top:28px}
+.campaign-subpage .gallery-page-hero+.section .toolbar{display:grid;grid-template-columns:minmax(0,1fr) minmax(190px,.42fr);gap:12px;align-items:center;padding:14px;background:#fff;border:1px solid #e2e9e1;border-radius:13px;box-shadow:0 8px 25px #123b2410;margin-bottom:24px}
+.campaign-subpage .gallery-page-hero+.section .toolbar input,.campaign-subpage .gallery-page-hero+.section .toolbar select{width:100%;min-height:48px;border:1px solid #dce5dc;border-radius:8px;background:#fbfcfa;padding:12px 14px;color:#263a2f;font:inherit;font-size:13px}
+.campaign-subpage .gallery-page-hero+.section .toolbar select{font-weight:700;color:#155438}
+@media(max-width:760px){.campaign-subpage .gallery-page-hero{padding:28px 6vw 25px}.campaign-subpage .gallery-page-hero h1{font-size:clamp(32px,9vw,43px)}.campaign-subpage .gallery-page-hero+.section{padding:22px 5vw 38px}.campaign-subpage .gallery-page-hero+.section .toolbar{grid-template-columns:1fr;padding:11px;gap:9px;margin-bottom:18px}}
