@@ -3,6 +3,7 @@ const $ = (selector) => document.querySelector(selector);
 const esc = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({
   "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
 }[char]));
+const escHeading = (value) => esc(String(value ?? "").replace(/[.。．]/g, ""));
 document.querySelectorAll("[data-year]").forEach((node) => node.textContent = new Date().getFullYear());
 
 /* Multilingual campaign mantra: timed text changes, never a scrolling ticker. */
@@ -139,7 +140,7 @@ function renderRecords(records, mode = "standard") {
     const shareText = (record.title || "Benue Arise for Hon") + (summary ? " — " + summary : "");
     return '<article class="record-card">' + media +
       '<div class="record-meta"><span>' + esc(record.category || "Public information") + '</span><span class="status-pill">' + esc(record.status || "Published") + '</span></div>' +
-      '<h3>' + esc(record.title) + '</h3>' +
+      '<h3>' + escHeading(record.title) + '</h3>' +
       (record.venue || record.location ? '<p class="record-location">' + esc(record.venue || record.location) + '</p>' : "") +
       (dateLabel ? '<small>' + esc(dateLabel) + '</small>' : "") +
       (record.verification_status ? '<p class="verification-label">' + esc(record.verification_status) + '</p>' : "") +
@@ -197,7 +198,7 @@ function renderPersonalSection(section, records) {
     const body = String(record.body || "").trim().split(/\n{2,}/).map(part => '<p>' + esc(part).replace(/\n/g,"<br>") + '</p>').join("");
     return '<article class="personal-record-card">' + image + '<div class="personal-record-copy">' +
       (date ? '<p class="personal-record-date">' + esc(date) + '</p>' : "") +
-      '<h3>' + esc(record.title) + '</h3>' +
+      '<h3>' + escHeading(record.title) + '</h3>' +
       (record.excerpt ? '<p class="personal-record-excerpt">' + esc(record.excerpt) + '</p>' : "") +
       body +
       (record.location ? '<p class="personal-record-location">' + esc(record.location) + '</p>' : "") +
@@ -207,7 +208,7 @@ function renderPersonalSection(section, records) {
       (record.evidence_url ? '<a class="text-link" href="' + esc(record.evidence_url) + '" target="_blank" rel="noopener noreferrer">Supporting record ↗</a>' : "") +
       '</div></div></article>';
   }).join("") : '<article class="personal-subsection-empty"><span>✦</span><p>Approved information for this subsection will be added after review and verification.</p></article>';
-  return '<section class="personal-record-group" id="' + esc(section.id) + '"><div class="personal-record-group-heading"><span class="personal-record-number">PROFILE THEME</span><h2>' + esc(section.title) + '</h2><p>' + esc(section.intro) + '</p></div><div class="personal-record-cards">' + cards + '</div></section>';
+  return '<section class="personal-record-group" id="' + esc(section.id) + '"><div class="personal-record-group-heading"><span class="personal-record-number">PROFILE THEME</span><h2>' + escHeading(section.title) + '</h2><p>' + esc(section.intro) + '</p></div><div class="personal-record-cards">' + cards + '</div></section>';
 }
 
 async function loadPageRecords() {
@@ -258,7 +259,7 @@ if (tickerTrack) {
         (data || []).forEach((item) => {
           const href = "news.html" + (item.slug ? "#" + encodeURIComponent(item.slug) : "");
           items += '<span class="ticker-item ticker-headline"><a href="' + esc(href) + '">' +
-            esc(item.title) + '</a></span>';
+            escHeading(item.title) + '</a></span>';
         });
       }
       // Duplicate the content for a seamless continuous loop.
@@ -284,7 +285,7 @@ if (homeNews) {
         homeNews.innerHTML = data.map((item) =>
           '<article class="record-card"><div class="record-meta"><span>News</span><span>' +
           (item.published_at ? esc(new Date(item.published_at).toLocaleDateString("en-GB", { timeZone: "Africa/Lagos" })) : "") +
-          '</span></div><h3>' + esc(item.title) + '</h3><p>' + esc(item.excerpt || "") +
+          '</span></div><h3>' + escHeading(item.title) + '</h3><p>' + esc(item.excerpt || "") +
           '</p><a class="text-link" href="news.html#' + encodeURIComponent(item.slug || "") + '">Read update ↗</a></article>'
         ).join("");
       }
@@ -314,7 +315,7 @@ if (homeEvents) {
         const month = date ? date.toLocaleDateString("en-GB", { month: "short", timeZone: "Africa/Lagos" }).toUpperCase() : "";
         const day = date ? date.toLocaleDateString("en-GB", { day: "2-digit", timeZone: "Africa/Lagos" }) : "";
         const detail = [item.venue, date ? date.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Africa/Lagos" }) : ""].filter(Boolean).join(" · ");
-        return '<article class="home-event-item"><div class="home-event-date">' + esc(month) + '<b>' + esc(day) + '</b></div><div><h3>' + esc(item.title) + '</h3><p>' + esc(detail || item.description || "Public engagement") + '</p></div></article>';
+        return '<article class="home-event-item"><div class="home-event-date">' + esc(month) + '<b>' + esc(day) + '</b></div><div><h3>' + escHeading(item.title) + '</h3><p>' + esc(detail || item.description || "Public engagement") + '</p></div></article>';
       }).join("");
     } catch (error) {
       console.warn("Homepage events could not be loaded.", error);
@@ -341,7 +342,7 @@ if (homeGallery) {
         const mediaUrl = /^https?:\/\//i.test(mediaPath) ? mediaPath : /^(videos|images)\//i.test(mediaPath) ? cfg.SUPABASE_URL + "/storage/v1/object/public/gallery-media/" + mediaPath.split("/").map(encodeURIComponent).join("/") : "";
         const isVideo = item.media_type === "video" || /\.(mp4|webm|mov)(?:[?#].*)?$/i.test(mediaPath);
         const media = mediaUrl ? (isVideo ? '<video class="record-image record-video" controls playsinline preload="metadata" aria-label="' + esc(item.title || "Campaign video") + '"><source src="' + esc(mediaUrl) + '"></video>' : '<img class="record-image" src="' + esc(mediaUrl) + '" alt="' + esc(item.alt_text || item.title || "Campaign media") + '" loading="lazy">') : "";
-        return '<article class="record-card">' + media + '<div class="record-meta"><span>Media gallery</span></div><h3>' + esc(item.title || "Campaign media") + '</h3><p>' + esc(item.caption || item.alt_text || "Approved campaign media item") + '</p><a class="text-link" href="gallery.html">View gallery →</a></article>';
+        return '<article class="record-card">' + media + '<div class="record-meta"><span>Media gallery</span></div><h3>' + escHeading(item.title || "Campaign media") + '</h3><p>' + esc(item.caption || item.alt_text || "Approved campaign media item") + '</p><a class="text-link" href="gallery.html">View gallery →</a></article>';
       }).join("");
     } catch (error) {
       console.warn("Homepage gallery could not be loaded.", error);
