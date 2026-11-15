@@ -390,3 +390,22 @@
 .candidate-profile-link{display:inline-flex;align-items:center;gap:12px;min-height:44px;padding:0 17px;background:var(--orange);color:#fff;font-size:10px;font-weight:900;letter-spacing:.04em;transition:background .2s,transform .2s}
 .candidate-profile-link:hover{background:#d94b1e;transform:translateY(-2px)}
 @media(max-width:760px){.governorship-profile-feature{grid-template-columns:1fr;gap:20px;margin:22px 0;padding:15px}.governorship-profile-photo{min-height:0;max-height:420px;aspect-ratio:4/3}.governorship-profile-photo img{min-height:0;max-height:none;height:100%;object-position:center 20%}.governorship-profile-copy h3{font-size:32px}.candidate-profile-summary{font-size:11px}}
+
+.lga-grid button{cursor:pointer;transition:background .18s,border-color .18s,color .18s,transform .18s}
+.lga-grid button:hover,.lga-grid button.is-selected{background:#edf4ed;border-color:#176b48;color:#104b34;transform:translateY(-1px)}
+.lga-detail-panel{margin-top:26px;padding:clamp(17px,3vw,30px);background:linear-gradient(145deg,#fff 0%,#f6f8f2 100%);border:1px solid #dce5da;border-top:4px solid var(--gold);box-shadow:0 18px 45px rgba(12,58,39,.09);scroll-margin-top:24px}
+.lga-detail-panel[hidden]{display:none}.lga-detail-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.lga-detail-heading h3{margin:7px 0 4px;font:500 clamp(25px,4vw,36px)/1.1 var(--serif);color:var(--forest)}.lga-detail-heading p{margin:0;color:#718076;font-size:11px}
+.lga-detail-close{border:1px solid #d8e1d7;background:#fff;color:#315b46;padding:9px 12px;font-size:10px;font-weight:800;cursor:pointer}
+.lga-stat-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:20px 0}.lga-stat-grid article{padding:16px;background:#0b4934;color:#fff;border-bottom:3px solid var(--gold)}
+.lga-stat-grid span{display:block;font-size:9px;letter-spacing:.14em;color:#d7c28d;font-weight:800}.lga-stat-grid strong{display:block;margin-top:5px;font:600 30px/1 var(--serif);color:#fff}
+.lga-directory-columns{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:15px;align-items:start}.lga-wards-panel,.lga-pus-panel{min-width:0;padding:14px;background:#fff;border:1px solid #e2e8e0}
+.lga-subheading{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}.lga-subheading h4{margin:0;color:#164b35;font:700 12px/1.3 var(--sans)}.lga-subheading>span{font-size:9px;color:#8a7850;font-weight:800}
+.lga-ward-list{display:grid;gap:6px;max-height:570px;overflow:auto}.lga-ward-item{display:grid;grid-template-columns:35px 1fr 15px;gap:9px;align-items:center;width:100%;padding:10px;text-align:left;background:#f8faf7;border:1px solid #e4ebe2;color:#30483a;cursor:pointer}
+.lga-ward-item:hover,.lga-ward-item.is-selected{background:#eaf3eb;border-color:#3b855d}.lga-ward-code{display:grid;place-items:center;min-height:30px;background:#0d563b;color:#f1d28c;font-size:10px;font-weight:900}
+.lga-ward-name{font-size:10px;font-weight:800;line-height:1.4}.lga-ward-name small{display:block;margin-top:3px;color:#7b887e;font-size:9px;font-weight:500}.lga-ward-arrow{font-size:18px;color:#b58b42}
+.lga-pu-list{display:grid;gap:7px;max-height:570px;overflow:auto}.lga-pu-item{display:flex;justify-content:space-between;gap:10px;padding:11px;background:#f8faf7;border:1px solid #e6ece5}.lga-pu-item>div{min-width:0}
+.lga-pu-item strong{display:block;color:#263d30;font-size:10px;line-height:1.5;overflow-wrap:anywhere}.lga-pu-item small{display:block;margin-top:3px;color:#748178;font-size:9px;line-height:1.45;overflow-wrap:anywhere}.lga-pu-item small.location-unavailable{color:#9b8662;font-style:italic}
+.lga-pu-item>span{align-self:flex-start;white-space:nowrap;padding:4px 6px;background:#e9f3e9;color:#286345;font-size:8px;font-weight:900;letter-spacing:.06em}
+.lga-data-note{margin:14px 0 0;color:#879087;font-size:9px;line-height:1.6}.directory-error{color:#a34c39;font-size:11px;line-height:1.6}
+@media(max-width:760px){.lga-directory-columns{grid-template-columns:1fr}.lga-ward-list,.lga-pu-list{max-height:420px}.lga-detail-panel{padding:15px}.lga-stat-grid article{padding:13px}.lga-stat-grid strong{font-size:27px}}
