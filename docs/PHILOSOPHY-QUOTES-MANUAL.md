@@ -20,7 +20,7 @@ The Philosophy & Quotes page presents approved quotations attributed to Prof. S.
 6. Edited text passes through the same moderation check. A flagged edit is held.
 
 ## Moderation limits
-The current moderation is deterministic phrase/pattern screening, not an AI model. It aims to catch explicit abuse while allowing respectful disagreement and political criticism. It can miss coded/contextual abuse and can occasionally flag harmless wording. Held comments require moderator review; no admin review screen is included in this phase.
+The current moderation is deterministic phrase/pattern screening, not an AI model. It aims to catch explicit abuse while allowing respectful disagreement and political criticism. It can miss coded/contextual abuse and can occasionally flag harmless wording. Held comments appear in the administrator CMS moderation queue. Administrators can approve and publish acceptable comments or remove comments that violate the discussion rules.
 
 ## Data and security
 - Comments, reactions and rate-limit records are stored in Supabase schema `arise_site`.
