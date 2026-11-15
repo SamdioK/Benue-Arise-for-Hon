@@ -349,3 +349,28 @@
   .art-disc{width:min(100%,310px);height:auto;aspect-ratio:1;background:transparent}
   .art-disc img{padding:3%}
 }
+
+
+/* Hero gallery correction: preserve the earlier artwork, remove all circular framing */
+.hero:after{display:none!important}
+.hero-art{min-height:0!important;display:flex;align-items:center;justify-content:center}
+.art-orbit,.art-disc{display:none!important}
+.hero-gallery{width:min(100%,500px);gap:22px}
+.hero-gallery-stage{width:100%;aspect-ratio:auto;min-height:clamp(250px,34vw,390px);display:grid;place-items:center}
+.hero-gallery-slide{inset:0;display:grid;place-items:center;transform:none}
+.hero-gallery-slide.is-active{transform:none}
+.hero-featured-image{display:block;width:auto;height:auto;max-width:100%;max-height:clamp(230px,34vw,390px);object-fit:contain;object-position:center;background:transparent;border:0;border-radius:0;box-shadow:none;padding:0}
+.hero-gallery-caption{width:min(100%,500px)}
+@media(max-width:860px){
+  .hero-art{min-height:0!important}
+  .hero-gallery{width:min(100%,460px)}
+  .hero-gallery-stage{min-height:clamp(240px,42vw,340px)}
+  .hero-featured-image{max-height:clamp(220px,42vw,340px)}
+}
+@media(max-width:600px){
+  .hero-art{min-height:0!important;margin-top:18px;padding:0 0 8px}
+  .hero-gallery{width:100%;gap:16px}
+  .hero-gallery-stage{min-height:250px;aspect-ratio:auto}
+  .hero-featured-image{max-width:100%;max-height:250px;width:auto;height:auto;object-fit:contain}
+  .hero-gallery-caption{width:100%;min-height:72px}
+}
