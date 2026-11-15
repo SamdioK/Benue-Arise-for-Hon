@@ -79,6 +79,7 @@ let activeId = null;
 let activeModule = modules.news;
 let currentUser = null;
 let currentRole = null;
+let authCheckInFlight = null;
 let recoveryMode = new URLSearchParams(window.location.hash.slice(1)).get("type") === "recovery" || new URLSearchParams(window.location.search).get("type") === "recovery" || new URLSearchParams(window.location.search).has("code");
 const say = (message) => { const node = $("#cms-status"); if (node) node.textContent = message; };
 const authSay = (message) => { const node = $("#auth-status"); if (node) node.textContent = message; };
@@ -93,7 +94,21 @@ async function initialise() {
     db: { schema: "arise_site" },
     auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, flowType: "pkce" }
   });
-  client.auth.onAuthStateChange((event) => setTimeout(() => { if (event === "PASSWORD_RECOVERY") { recoveryMode = true; showPasswordRecovery(); } else if (!recoveryMode) checkAuth(); }, 0));
+  client.auth.onAuthStateChange((event) => {
+    if (event === "PASSWORD_RECOVERY") { recoveryMode = true; showPasswordRecovery(); return; }
+    if (recoveryMode) return;
+    if (event === "SIGNED_OUT") {
+      currentUser = null; currentRole = null;
+      $("#auth-panel").hidden = false; $("#cms-panel").hidden = true;
+      authSay("You have signed out.");
+      return;
+    }
+    // Token refreshes are not sign-in/sign-out events. Do not re-run the
+    // administrator gate on every refresh; it caused overlapping UI checks.
+    if (event === "INITIAL_SESSION" || event === "SIGNED_IN" || event === "USER_UPDATED") {
+      window.setTimeout(() => checkAuth(), 0);
+    }
+  });
   $("#login-form").addEventListener("submit", login);
   $("#forgot-password").addEventListener("click", requestPasswordReset);
   $("#recovery-form").addEventListener("submit", completePasswordRecovery);
@@ -198,45 +213,66 @@ async function login(event) {
 
 async function checkAuth() {
   if (!client) return;
-  const { data: { user } } = await client.auth.getUser();
-  if (!user) { $("#auth-panel").hidden = false; $("#cms-panel").hidden = true; return; }
-  currentUser = user;
-  const [{ data: admin, error: adminError }, { data: manager, error: managerError }] = await Promise.all([
-    client.from("admins").select("user_id,role").eq("user_id", user.id).maybeSingle(),
-    client.from("profile_managers").select("user_id,display_name,email").eq("user_id", user.id).maybeSingle()
-  ]);
-  if (adminError || managerError || (!admin && !manager)) {
-    $("#auth-panel").hidden = false; $("#cms-panel").hidden = true;
-    authSay("This signed-in account is not authorised to administer this portal.");
-    return;
-  }
-  currentRole = admin ? admin.role : "profile_manager";
-  $("#auth-panel").hidden = true; $("#cms-panel").hidden = false;
-  $("#signed-in-as").textContent = "Signed in as " + (user.email || "authorised user") + " · " + (admin ? admin.role : "Profile Manager");
-  const isManager = !admin && !!manager;
-  $("#profile-manager-users").hidden = isManager;
-  $("#site-assets-manager").hidden = isManager;
-  $("#campaign-audio-manager").hidden = isManager;
-  $("#playlist-track-manager").hidden = isManager;
-  $("#content-type").disabled = isManager;
-  if (isManager) {
-    $("#content-type").value = "profile_records";
-    activeModule = modules.profile_records;
-    $("#new-record").textContent = "+ New profile record";
-    $("#cms-panel .cms-top h2").textContent = "Profile Manager workspace";
-    $("#cms-panel .admin-note").textContent = "Profile Manager access: manage the candidate’s profile records only. Save content as Draft until it has been checked and approved for publication.";
-  } else {
-    $("#new-record").textContent = "+ New record";
-    $("#cms-panel .cms-top h2").textContent = "Manage portal content";
-  }
-  await loadList();
-  $("#quote-moderation-panel").hidden = isManager;
-  if (!isManager) {
-    await loadQuoteModerationQueue();
-    await loadSiteAssets();
-    await loadProfileManagers();
-    await loadPlaylistComposer();
-  }
+  if (authCheckInFlight) return authCheckInFlight;
+  authCheckInFlight = (async () => {
+    const { data, error: userError } = await client.auth.getUser();
+    if (userError) {
+      // A transient network failure must not visually sign an active admin out.
+      if (!currentUser) authSay("Could not verify the session yet: " + userError.message);
+      return;
+    }
+    const user = data?.user;
+    if (!user) {
+      currentUser = null; currentRole = null;
+      $("#auth-panel").hidden = false; $("#cms-panel").hidden = true;
+      return;
+    }
+    currentUser = user;
+    const [{ data: admin, error: adminError }, { data: manager, error: managerError }] = await Promise.all([
+      client.from("admins").select("user_id,role").eq("user_id", user.id).maybeSingle(),
+      client.from("profile_managers").select("user_id,display_name,email").eq("user_id", user.id).maybeSingle()
+    ]);
+    if (adminError || managerError) {
+      authSay("Your session is active, but the access check could not complete. Your workspace has been kept open; retry when connectivity returns.");
+      return;
+    }
+    if (!admin && !manager) {
+      currentRole = null;
+      $("#auth-panel").hidden = false; $("#cms-panel").hidden = true;
+      authSay("This signed-in account is not authorised to administer this portal.");
+      return;
+    }
+    currentRole = admin ? admin.role : "profile_manager";
+    $("#auth-panel").hidden = true; $("#cms-panel").hidden = false;
+    $("#signed-in-as").textContent = "Signed in as " + (user.email || "authorised user") + " · " + (admin ? admin.role : "Profile Manager");
+    const isManager = !admin && !!manager;
+    $("#profile-manager-users").hidden = isManager;
+    $("#site-assets-manager").hidden = isManager;
+    $("#campaign-audio-manager").hidden = isManager;
+    $("#playlist-track-manager").hidden = isManager;
+    $("#gallery-media-manager").hidden = isManager;
+    $("#content-type").disabled = isManager;
+    if (isManager) {
+      $("#content-type").value = "profile_records";
+      activeModule = modules.profile_records;
+      $("#new-record").textContent = "+ New profile record";
+      $("#cms-panel .cms-top h2").textContent = "Profile Manager workspace";
+      $("#cms-panel .admin-note").textContent = "Profile Manager access: manage the candidate’s profile records only. Save content as Draft until it has been checked and approved for publication.";
+    } else {
+      $("#new-record").textContent = "+ New record";
+      $("#cms-panel .cms-top h2").textContent = "Manage portal content";
+    }
+    await loadList();
+    $("#quote-moderation-panel").hidden = isManager;
+    if (!isManager) {
+      await loadQuoteModerationQueue();
+      await loadSiteAssets();
+      await loadProfileManagers();
+      await loadPlaylistComposer();
+    }
+  })();
+  try { return await authCheckInFlight; }
+  finally { authCheckInFlight = null; }
 }
 
 
@@ -577,6 +613,38 @@ async function uploadSiteAssets() {
 $("#upload-site-assets")?.addEventListener("click", uploadSiteAssets);
 
 
+async function uploadStorageFile(bucket,path,file,statusNode) {
+  const {data,error:sessionError}=await client.auth.getSession();
+  const token=data?.session?.access_token;
+  if(sessionError||!token)throw new Error("Your administrator session could not be verified. Sign in again before uploading.");
+  const url=cfg.SUPABASE_URL.replace(/\\/+$/,"")+"/storage/v1/object/"+bucket+"/"+path.split("/").map(encodeURIComponent).join("/");
+  await new Promise((resolve,reject)=>{
+    const xhr=new XMLHttpRequest();
+    xhr.open("POST",url,true);
+    xhr.timeout=120000;
+    xhr.setRequestHeader("apikey",cfg.SUPABASE_PUBLISHABLE_KEY);
+    xhr.setRequestHeader("Authorization","Bearer "+token);
+    xhr.setRequestHeader("Content-Type",file.type||"application/octet-stream");
+    xhr.setRequestHeader("Cache-Control","max-age=3600");
+    xhr.setRequestHeader("x-upsert","false");
+    xhr.upload.onprogress=(event)=>{
+      if(event.lengthComputable&&statusNode){
+        const percent=Math.round(event.loaded/event.total*100);
+        statusNode.textContent="Uploading to Supabase Storage… "+percent+"% ("+(event.loaded/1048576).toFixed(1)+" / "+(event.total/1048576).toFixed(1)+" MB)";
+      }
+    };
+    xhr.onload=()=>{
+      let body={};try{body=JSON.parse(xhr.responseText||"{}")}catch{}
+      if(xhr.status>=200&&xhr.status<300){resolve();return}
+      reject(new Error(body.message||body.error||("Storage upload failed (HTTP "+xhr.status+").")));
+    };
+    xhr.onerror=()=>reject(new Error("Network connection interrupted during upload. Please retry."));
+    xhr.ontimeout=()=>reject(new Error("Upload timed out after 2 minutes. Check your connection and retry; incomplete uploads are not recorded as successful."));
+    xhr.onabort=()=>reject(new Error("Upload was cancelled."));
+    xhr.send(file);
+  });
+}
+
 async function uploadGalleryMedia(){
   const input=$("#gallery-media-file"),status=$("#gallery-media-status"),button=$("#upload-gallery-media"),file=input?.files?.[0];
   if(!file){status.textContent="Choose a photo or video first.";return}
@@ -590,8 +658,7 @@ async function uploadGalleryMedia(){
   try{
     const safe=file.name.normalize("NFKD").replace(/[^a-zA-Z0-9._-]+/g,"-").replace(/^-+|-+$/g,"");
     const path=(video?"videos/":"images/")+Date.now()+"-"+safe;
-    const {error}=await client.storage.from("gallery-media").upload(path,file,{cacheControl:"3600",contentType:file.type,upsert:false});
-    if(error)throw error;
+    await uploadStorageFile("gallery-media",path,file,status);
     const typeField=document.querySelector('#record-fields [name="media_type"]');
     const pathField=document.querySelector('#record-fields [name="storage_path"]');
     if(typeField){typeField.value=video?"video":"image";typeField.dispatchEvent(new Event("change",{bubbles:true}));}
@@ -612,8 +679,7 @@ async function uploadCampaignAsset(kind){
   button.disabled=true;button.textContent="Uploading…";status.textContent="Uploading securely to Supabase Storage…";
   try{
     const safe=file.name.normalize("NFKD").replace(/[^a-zA-Z0-9._-]+/g,"-").replace(/^-+|-+$/g,""),path=(audio?"songs/":"artwork/")+Date.now()+"-"+safe;
-    const {error}=await client.storage.from("campaign-audio").upload(path,file,{cacheControl:"3600",contentType:file.type,upsert:false});
-    if(error)throw error;
+    await uploadStorageFile("campaign-audio",path,file,status);
     const field=audio?"audio_path":"artwork_path",target=document.querySelector('#record-fields [name="'+field+'"]');
     if(target){target.value=path;target.dispatchEvent(new Event("input",{bubbles:true}));status.textContent="Upload complete. The "+(audio?"audio":"artwork")+" path has been inserted into the open Campaign Song record. Save that record to keep the link."}
     else status.textContent="Upload complete. Storage path: "+path+". Open Campaign Songs, create or select the matching song, then paste this path into its "+(audio?"Audio storage path":"Cover artwork storage path")+" field.";
