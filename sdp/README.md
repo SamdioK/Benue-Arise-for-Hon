@@ -73,3 +73,11 @@ Phase 1 is a static presentation layer. It does not write to Supabase, create pe
 - Removed the circular disc, orbit rings and circular hero decoration from the logo display.
 - Both gallery images now sit directly on the existing forest-green hero background, without a circular container or added image frame.
 - The gallery caption and previous/next controls remain below the artwork.
+
+
+### SDP gubernatorial candidate profile integration
+- Added a featured profile for **Prof. (Chief) Sebastine Tartenger Hon, SAN, FCIArb, DSSRS, Sema-Wan u Tiv**, identified by the Benue Arise for Hon campaign website as its **SDP Gubernatorial Candidate · 2027**.
+- Reused the source campaign portrait at https://atstsekevoozausbiqbi.supabase.co/storage/v1/object/public/site-assets/campaign/candidate-portrait.jpg.
+- Transferred the eight official public-profile module headings from the source profile page. The source site's own profile introduction states that detailed records are published as supplied, reviewed and approved; the SDP portal therefore does not invent a longer biography or unsupported achievements.
+- Added a direct link to the source campaign website's Official Public Profile.
+- Further candidate profiles remain subject to confirmation and approval.
