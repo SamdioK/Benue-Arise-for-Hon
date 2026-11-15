@@ -702,3 +702,21 @@
 .nav-submenu a:hover{background:#f2f5ef;color:var(--green)}
 @media(max-width:1100px){.nav-dropdown>summary{font-size:10px}}
 @media(max-width:760px){.nav-dropdown{width:100%}.nav-dropdown>summary{display:block;width:100%;font-size:13px;font-weight:750;line-height:1.6;padding:11px 2px;border-bottom:1px solid #eaf0e9}.nav-submenu{position:static;box-shadow:none;border:0;border-left:2px solid var(--gold,#d9b35d);border-radius:0;margin:0 0 6px 10px;padding:4px 0 4px 10px}.nav-submenu a{padding:10px 12px}}
+
+/* Bold campaign strapline: Chan u ya Chan — Prof. S. T. Hon 2027 */
+.home-topline{min-height:66px;justify-content:center;padding:8px 3vw;background:linear-gradient(105deg,#063b27 0%,#075b39 48%,#063b27 100%);border-bottom:3px solid #ed791b;position:relative;overflow:hidden}
+.home-slogan{display:flex;align-items:center;justify-content:center;gap:clamp(12px,2.2vw,28px);width:100%;text-align:center}
+.home-slogan-main{display:inline-block;color:#fff8e9;font-family:Georgia,'Times New Roman',serif;font-size:clamp(21px,3vw,35px);font-weight:900;font-style:italic;letter-spacing:.035em;line-height:1.15;text-shadow:0 2px 0 #002a1b,0 5px 18px #001c1290}
+.home-slogan-attribution{display:inline-flex;align-items:center;gap:9px;color:#ffd28a;font-size:clamp(9px,.95vw,12px);font-weight:950;letter-spacing:.15em;white-space:nowrap;text-shadow:0 2px 8px #001d13}
+.home-slogan-attribution i{display:block;width:22px;height:2px;background:#f17a1b;box-shadow:0 0 8px #f17a1b80}
+.home-slogan-attribution b{color:#fff;font-size:15px}
+@media(max-width:760px){
+ .home-topline{min-height:82px;padding:10px 12px}
+ .home-slogan{flex-direction:column;gap:4px}
+ .home-slogan-main{font-size:clamp(25px,7vw,34px);letter-spacing:.025em}
+ .home-slogan-attribution{font-size:10px;letter-spacing:.17em;gap:8px}
+ .home-slogan-attribution i{width:18px}
+}
+@media(prefers-reduced-motion:no-preference){
+ .home-slogan-main{text-shadow:0 2px 0 #002a1b,0 5px 18px #001c1290}
+}
