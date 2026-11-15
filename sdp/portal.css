@@ -374,3 +374,19 @@
   .hero-featured-image{max-width:100%;max-height:250px;width:auto;height:auto;object-fit:contain}
   .hero-gallery-caption{width:100%;min-height:72px}
 }
+
+
+/* Featured gubernatorial candidate profile — sourced from Benue Arise for Hon */
+.governorship-profile-feature{display:grid;grid-template-columns:minmax(220px,.78fr) minmax(0,1.22fr);gap:clamp(22px,4vw,48px);align-items:center;margin:30px 0 25px;padding:clamp(18px,3vw,30px);border:1px solid rgba(241,90,36,.22);border-left:4px solid var(--orange);background:linear-gradient(115deg,#fbf8ef 0%,#fff 64%,#f4f7f0 100%);box-shadow:0 16px 42px rgba(5,55,38,.08)}
+.governorship-profile-photo{position:relative;min-height:300px;overflow:hidden;background:#e8eee8}
+.governorship-profile-photo img{display:block;width:100%;height:100%;min-height:300px;max-height:390px;object-fit:cover;object-position:center 22%}
+.governorship-profile-photo>span{position:absolute;left:12px;right:12px;bottom:12px;padding:10px 12px;background:rgba(5,65,43,.94);color:#fff;font-size:9px;font-weight:900;letter-spacing:.13em;text-align:center}
+.governorship-profile-copy{min-width:0;padding:8px 0}
+.candidate-profile-kicker{color:var(--orange);font-size:9px;font-weight:900;letter-spacing:.17em}
+.governorship-profile-copy h3{margin:11px 0 5px;color:var(--forest);font-family:var(--serif);font-size:clamp(27px,3.2vw,42px);line-height:1.05}
+.candidate-profile-credentials{margin:0 0 18px;color:var(--purple);font-size:11px;font-weight:800;letter-spacing:.07em}
+.candidate-profile-summary{max-width:700px;margin:0;color:#596d62;font-size:12px;line-height:1.85}
+.candidate-profile-note{margin:13px 0 18px;padding-left:12px;border-left:2px solid var(--gold);color:#7b796e;font-size:10px;line-height:1.7}
+.candidate-profile-link{display:inline-flex;align-items:center;gap:12px;min-height:44px;padding:0 17px;background:var(--orange);color:#fff;font-size:10px;font-weight:900;letter-spacing:.04em;transition:background .2s,transform .2s}
+.candidate-profile-link:hover{background:#d94b1e;transform:translateY(-2px)}
+@media(max-width:760px){.governorship-profile-feature{grid-template-columns:1fr;gap:20px;margin:22px 0;padding:15px}.governorship-profile-photo{min-height:0;max-height:420px;aspect-ratio:4/3}.governorship-profile-photo img{min-height:0;max-height:none;height:100%;object-position:center 20%}.governorship-profile-copy h3{font-size:32px}.candidate-profile-summary{font-size:11px}}
