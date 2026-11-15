@@ -66,3 +66,10 @@ Phase 1 is a static presentation layer. It does not write to Supabase, create pe
 - The official SDP vector artwork is used without its former white rectangular page background.
 - The Benue SDP Politics WebP artwork retains its transparent background; both marks now sit directly over the portal's green hero artwork rather than on a solid cream disc.
 - Both images preserve their aspect ratio with `object-fit: contain`, while the circular media window clips any content at its perimeter. The circular orbital treatment remains as the gallery frame.
+
+
+### Hero gallery presentation correction
+- Restored the previous logo artwork source for the SDP Official Logo.
+- Removed the circular disc, orbit rings and circular hero decoration from the logo display.
+- Both gallery images now sit directly on the existing forest-green hero background, without a circular container or added image frame.
+- The gallery caption and previous/next controls remain below the artwork.
