@@ -51,3 +51,11 @@ Phase 1 is a static presentation layer. It does not write to Supabase, create pe
 - Removed the duplicate `SOCIAL DEMOCRATIC PARTY` caption beneath the emblem because the supplied party logo already carries that wording.
 - Removed the orange star-like decorative symbol from the lower-right of the hero artwork.
 - Kept the circular logo container, party emblem, orbital rings, and existing green/orange visual identity intact.
+
+
+### Featured hero media gallery
+- The circular artwork area is now a reusable featured-media gallery, rather than a single static logo treatment.
+- Current entries: **SDP Official Logo** and **Benue SDP Politics**, each with its own name, alternative text and short caption displayed below the circular media stage.
+- Image slides fade automatically between entries; previous/next controls are available for manual navigation. The media stage scales responsively and preserves each logo's aspect ratio inside the enlarged circular presentation.
+- The gallery structure also supports future short video entries: add a `figure.hero-gallery-slide` with `data-kind="video"`, `data-title`, `data-caption`, and `data-duration` (10,000–15,000 milliseconds), containing a muted, plays-inline `video` element with its source. Video entries are played when active and advance after their configured duration.
+- Future approved portraits, leadership photographs, candidate images, event photographs and short clips can be added as individual slides with descriptive names and optional captions. Do not publish unverified identity or event claims in captions.
