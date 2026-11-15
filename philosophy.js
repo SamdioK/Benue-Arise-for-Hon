@@ -30,8 +30,8 @@ async function loadPosterImage(url,label){
   });
 }
 async function makeArtwork(q){
-  const portraitUrl="https://atstsekevoozausbiqbi.supabase.co/storage/v1/object/public/site-assets/campaign/candidate-portrait.jpg";
-  const logoUrl="https://atstsekevoozausbiqbi.supabase.co/storage/v1/object/public/site-assets/campaign/sdp-logo.jpg";
+  const portraitUrl=new URL("assets/candidate-portrait.jpg",document.baseURI).href;
+  const logoUrl=new URL("assets/sdp-logo.jpg",document.baseURI).href;
   const [portrait,logo]=await Promise.all([loadPosterImage(portraitUrl,"candidate portrait"),loadPosterImage(logoUrl,"official SDP logo")]);
   if(document.fonts?.load)await Promise.all([document.fonts.load("700 96px Caveat"),document.fonts.load("700 30px DM Sans")]);
   const canvas=document.createElement("canvas");canvas.width=1080;canvas.height=1350;
