@@ -22,6 +22,14 @@
 <p id="site-assets-status" role="status" aria-live="polite"></p>
 <div id="site-assets-list" class="admin-record-list"></div>
 </section>
+
+<section id="gallery-media-manager" class="audio-studio-panel" aria-labelledby="gallery-media-heading">
+  <div class="studio-heading"><div><p class="studio-kicker">PUBLIC MEDIA LIBRARY</p><h3 id="gallery-media-heading">Gallery Media Upload</h3><p>Upload approved campaign photographs and videos. Media files are stored in Supabase Storage.</p></div><span class="studio-storage"><span></span> Supabase Storage</span></div>
+  <div class="studio-upload-grid">
+    <div class="studio-upload-card"><div class="studio-file-icon artwork-icon">▧</div><div><h4>Photo or video</h4><p>JPG, PNG, WebP · MP4, WebM or MOV. Photos up to 10 MB; videos up to 50 MB.</p></div><label class="studio-file-label" for="gallery-media-file">Choose gallery media</label><input id="gallery-media-file" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm,video/quicktime"><button id="upload-gallery-media" class="btn btn-primary" type="button">Upload photo or video</button></div>
+  </div>
+  <div id="gallery-media-status" class="studio-status" role="status" aria-live="polite">Choose a file, upload it, then create or select its Gallery Media record and publish it.</div>
+</section>
 <section id="campaign-audio-manager" class="audio-studio-panel" aria-labelledby="campaign-audio-heading">
   <div class="studio-heading"><div><p class="studio-kicker">MEDIA WORKSPACE</p><h3 id="campaign-audio-heading">Campaign Audio Studio</h3><p>Upload approved campaign recordings and artwork directly to secure Supabase Storage.</p></div><span class="studio-storage"><span></span> Supabase Storage</span></div>
   <div class="studio-guidance"><strong>Simple workflow</strong><span>1. Upload your recording</span><span>2. Add its details under Campaign Songs</span><span>3. Save as Draft, review, then publish</span></div>
