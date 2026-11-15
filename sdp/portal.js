@@ -30,8 +30,22 @@
   async function openLga(name){
     if(!detailPanel)return;const req=++lgaRequest;detailPanel.hidden=false;detailPanel.scrollIntoView({behavior:"smooth",block:"start"});lgaTitle.textContent=name;wardTotal.textContent="…";puTotal.textContent="…";wardMeta.textContent="Loading";wardRoot.textContent="Loading verified ward records…";wardTitle.textContent="Polling units";puMeta.textContent="";puRoot.textContent="Select a ward to display its polling units.";
     document.querySelectorAll("#lga-grid button").forEach(b=>b.classList.toggle("is-selected",b.textContent.trim()===name));
-    try{const client=await getElectoralClient();const result=await client.from("benue_polling_units").select("lga_name,ward_code,ward_name,pu_code,pu_name,pu_location,full_code,verification_status").ilike("lga_name",name).eq("verification_status","verified").order("ward_code",{ascending:true}).order("pu_code",{ascending:true});if(result.error)throw result.error;if(req!==lgaRequest)return;
-      const records=result.data||[],grouped=new Map();records.forEach(row=>{const k=String(row.ward_code??"")+"|"+String(row.ward_name??"");if(!grouped.has(k))grouped.set(k,{ward_code:row.ward_code,ward_name:row.ward_name,polling_units:[]});grouped.get(k).polling_units.push(row);});
+    try{const client=await getElectoralClient();let result=await client.from("benue_polling_units").select("lga_name,ward_code,ward_name,pu_code,pu_location,full_code,verification_status").ilike("lga_name","%"+name.trim()+"%").order("ward_code",{ascending:true}).order("pu_code",{ascending:true});
+      if(result.error)throw result.error;
+      let records=result.data||[];
+      if(!records.length){
+        const allRows=[];let start=0,page=[];
+        do{
+          const pageResult=await client.from("benue_polling_units").select("lga_name,ward_code,ward_name,pu_code,pu_name,pu_location,full_code,verification_status").order("lga_name",{ascending:true}).order("ward_code",{ascending:true}).range(start,start+999);
+          if(pageResult.error)throw pageResult.error;
+          page=pageResult.data||[];allRows.push(...page);start+=page.length;
+        }while(page.length===1000&&start<20000);
+        const normalise=value=>String(value||"").toLowerCase().replace(/\blga\b/g,"").replace(/[^a-z0-9]/g,"");
+        const wanted=normalise(name);
+        records=allRows.filter(row=>normalise(row.lga_name)===wanted);
+      }
+      if(req!==lgaRequest)return;
+      const grouped=new Map();records.forEach(row=>{const k=String(row.ward_code??"")+"|"+String(row.ward_name??"");if(!grouped.has(k))grouped.set(k,{ward_code:row.ward_code,ward_name:row.ward_name,polling_units:[]});grouped.get(k).polling_units.push(row);});
       const wards=Array.from(grouped.values()).sort((a,b)=>String(a.ward_code).localeCompare(String(b.ward_code),undefined,{numeric:true}));wardTotal.textContent=String(wards.length);puTotal.textContent=String(records.length);wardMeta.textContent=wards.length+" wards";
       wardRoot.innerHTML=wards.length?wards.map((w,i)=>'<button type="button" class="lga-ward-item" data-ward-index="'+i+'"><span class="lga-ward-code">'+safe(w.ward_code)+'</span><span class="lga-ward-name">'+safe(w.ward_name||"Ward name not recorded")+'<small>'+w.polling_units.length+' polling units</small></span><span class="lga-ward-arrow">›</span></button>').join(""):"<p>No verified ward records were found for this LGA.</p>";
       wardRoot.querySelectorAll("[data-ward-index]").forEach(b=>b.addEventListener("click",()=>{const w=wards[Number(b.dataset.wardIndex)];if(!w)return;wardRoot.querySelectorAll(".lga-ward-item").forEach(x=>x.classList.toggle("is-selected",x===b));renderPollingUnits(w);}));
