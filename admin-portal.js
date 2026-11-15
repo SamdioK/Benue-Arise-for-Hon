@@ -19,10 +19,10 @@ const modules = {
       ["registration_url","Registration URL","url"],["featured_image","Featured image URL","url"],
       ["status","Status","select",true,["draft","published","archived"]]
     ] },
-  gallery: { label: "Gallery captions", table: "gallery", id: "id", order: "created_at",
+  gallery: { label: "Gallery media", table: "gallery", id: "id", order: "created_at",
     fields: [
-      ["title","Title","text"],["caption","Caption","textarea"],["alt_text","Accessible image description","text",true],
-      ["storage_path","Image storage path (existing public image URL accepted)","text",true],
+      ["title","Media title","text",true],["caption","Caption","textarea"],["alt_text","Accessible description","text",true],
+      ["media_type","Media type","select",true,["image","video"]],["storage_path","Media storage path or public URL","text",true],
       ["display_order","Display order","number"],["status","Status","select",true,["draft","published","archived"]]
     ] },
   vision_mission_content: { label: "Vision & mission", table: "vision_mission_content", id: "id", order: "display_order",
@@ -575,6 +575,33 @@ async function uploadSiteAssets() {
 }
 
 $("#upload-site-assets")?.addEventListener("click", uploadSiteAssets);
+
+
+async function uploadGalleryMedia(){
+  const input=$("#gallery-media-file"),status=$("#gallery-media-status"),button=$("#upload-gallery-media"),file=input?.files?.[0];
+  if(!file){status.textContent="Choose a photo or video first.";return}
+  const image=file.type.startsWith("image/"),video=file.type.startsWith("video/");
+  const allowedImages=new Set(["image/jpeg","image/png","image/webp"]);
+  const allowedVideos=new Set(["video/mp4","video/webm","video/quicktime"]);
+  if(!(image&&allowedImages.has(file.type))&&!(video&&allowedVideos.has(file.type))){status.textContent="Supported formats: JPG, PNG, WebP, MP4, WebM and MOV.";return}
+  const max=image?10*1024*1024:50*1024*1024;
+  if(file.size>max){status.textContent="This file exceeds the "+(image?"10 MB photo":"50 MB video")+" limit.";return}
+  button.disabled=true;button.textContent="Uploading…";status.textContent="Uploading media to Supabase Storage…";
+  try{
+    const safe=file.name.normalize("NFKD").replace(/[^a-zA-Z0-9._-]+/g,"-").replace(/^-+|-+$/g,"");
+    const path=(video?"videos/":"images/")+Date.now()+"-"+safe;
+    const {error}=await client.storage.from("gallery-media").upload(path,file,{cacheControl:"3600",contentType:file.type,upsert:false});
+    if(error)throw error;
+    const typeField=document.querySelector('#record-fields [name="media_type"]');
+    const pathField=document.querySelector('#record-fields [name="storage_path"]');
+    if(typeField){typeField.value=video?"video":"image";typeField.dispatchEvent(new Event("change",{bubbles:true}));}
+    if(pathField){pathField.value=path;pathField.dispatchEvent(new Event("input",{bubbles:true}));}
+    status.textContent="Upload confirmed in Supabase Storage. "+(pathField?"The media type and storage path have been added to the open Gallery record. Save the record to publish it.":"Open Gallery Media, create a record and paste this path into Media storage path: "+path);
+    input.value="";
+  }catch(error){status.textContent=error.message||"Media upload failed."}
+  finally{button.disabled=false;button.textContent="Upload photo or video"}
+}
+$("#upload-gallery-media")?.addEventListener("click",uploadGalleryMedia);
 
 async function uploadCampaignAsset(kind){
   const audio=kind==="audio",input=audio?$("#campaign-audio-file"):$("#campaign-artwork-file"),status=$("#campaign-audio-status"),button=audio?$("#upload-campaign-audio"):$("#upload-campaign-artwork"),file=input?.files?.[0];
