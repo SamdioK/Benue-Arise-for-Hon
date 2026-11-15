@@ -77,6 +77,31 @@ function pageKey() {
   return location.pathname.split("/").pop().replace(/\.html?$/i, "") || "index";
 }
 
+document.addEventListener("click", async (event) => {
+  const like = event.target.closest("[data-record-like]");
+  if (like) {
+    const active = like.getAttribute("aria-pressed") === "true";
+    like.setAttribute("aria-pressed", String(!active));
+    like.innerHTML = (!active ? "♥ <span>Liked</span>" : "♡ <span>Like</span>");
+    return;
+  }
+  const share = event.target.closest("[data-record-share]");
+  if (!share) return;
+  const payload = { title: share.dataset.shareTitle || "Benue Arise for Hon", text: share.dataset.shareText || "", url: share.dataset.shareUrl || location.href };
+  try {
+    if (navigator.share) await navigator.share(payload);
+    else if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(payload.url);
+      share.innerHTML = "✓ <span>Link copied</span>";
+      window.setTimeout(() => { share.innerHTML = "↗ <span>Share</span>"; }, 2200);
+    } else {
+      window.prompt("Copy this link to share:", payload.url);
+    }
+  } catch (error) {
+    if (error?.name !== "AbortError") console.warn("Share action could not be completed", error);
+  }
+});
+
 function renderRecords(records, mode = "standard") {
   const box = $("#record-list");
   if (!box) return;
@@ -102,20 +127,26 @@ function renderRecords(records, mode = "standard") {
     const mediaUrl = /^https?:\/\//i.test(mediaPath) ? mediaPath :
       /^(videos|images)\//i.test(mediaPath) ? cfg.SUPABASE_URL + "/storage/v1/object/public/gallery-media/" + mediaPath.split("/").map(encodeURIComponent).join("/") : "";
     const isVideo = record.media_type === "video" || /\.(mp4|webm|mov)(?:[?#].*)?$/i.test(mediaPath);
+    const posterPath = record.featured_image || record.poster_path || "";
+    const posterUrl = /^https?:\\/\\//i.test(posterPath) ? posterPath :
+      /^(videos|images)\\//i.test(posterPath) ? cfg.SUPABASE_URL + "/storage/v1/object/public/gallery-media/" + posterPath.split("/").map(encodeURIComponent).join("/") : "";
     const media = mediaUrl ? (isVideo
-      ? '<video class="record-image record-video" controls playsinline preload="metadata" aria-label="' + esc(record.title || "Campaign gallery video") + '"><source src="' + esc(mediaUrl) + '"></video>'
+      ? '<video class="record-image record-video" controls playsinline preload="metadata" ' + (posterUrl ? 'poster="' + esc(posterUrl) + '"' : "") + ' aria-label="' + esc(record.title || "Campaign gallery video") + '"><source src="' + esc(mediaUrl) + '"></video>'
       : '<img class="record-image" src="' + esc(mediaUrl) + '" alt="' + esc(record.alt_text || record.title || "Campaign gallery image") + '" loading="lazy">') : "";
     const link = record.registration_url ? '<p><a class="text-link" href="' + esc(record.registration_url) + '" target="_blank" rel="noopener noreferrer">Event information ↗</a></p>' : "";
+    const shareUrl = new URL(location.href);
+    if (record.slug) shareUrl.searchParams.set("story", record.slug);
+    const shareText = (record.title || "Benue Arise for Hon") + (summary ? " — " + summary : "");
     return '<article class="record-card">' + media +
       '<div class="record-meta"><span>' + esc(record.category || "Public information") + '</span><span class="status-pill">' + esc(record.status || "Published") + '</span></div>' +
       '<h3>' + esc(record.title) + '</h3>' +
       (record.venue || record.location ? '<p class="record-location">' + esc(record.venue || record.location) + '</p>' : "") +
       (dateLabel ? '<small>' + esc(dateLabel) + '</small>' : "") +
       (record.verification_status ? '<p class="verification-label">' + esc(record.verification_status) + '</p>' : "") +
-      (summary ? '<p>' + esc(summary) + '</p>' : "") +
+      (summary ? '<p class="record-description">' + esc(summary) + '</p>' : "") +
       (record.source_url ? '<p><a class="text-link" href="' + esc(record.source_url) + '" target="_blank" rel="noopener noreferrer">Primary source ↗</a></p>' : "") +
       (record.evidence_url ? '<p><a class="text-link" href="' + esc(record.evidence_url) + '" target="_blank" rel="noopener noreferrer">Supporting evidence ↗</a></p>' : "") +
-      link + '</article>';
+      link + '<div class="record-social-actions"><button type="button" class="record-like" data-record-like aria-pressed="false">♡ <span>Like</span></button><button type="button" class="record-share" data-record-share data-share-url="' + esc(shareUrl.href) + '" data-share-title="' + esc(record.title || "Benue Arise for Hon") + '" data-share-text="' + esc(shareText) + '">↗ <span>Share</span></button></div></article>';
   }).join("");
   const select = $("#category-filter");
   if (select && select.options.length <= 1) {
