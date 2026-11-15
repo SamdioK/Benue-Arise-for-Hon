@@ -617,7 +617,7 @@ async function uploadStorageFile(bucket,path,file,statusNode) {
   const {data,error:sessionError}=await client.auth.getSession();
   const token=data?.session?.access_token;
   if(sessionError||!token)throw new Error("Your administrator session could not be verified. Sign in again before uploading.");
-  const url=cfg.SUPABASE_URL.replace(/\\/+$/,"")+"/storage/v1/object/"+bucket+"/"+path.split("/").map(encodeURIComponent).join("/");
+  const url=String(cfg.SUPABASE_URL).replace(/\/+$/,"")+"/storage/v1/object/"+bucket+"/"+path.split("/").map(encodeURIComponent).join("/");
   await new Promise((resolve,reject)=>{
     const xhr=new XMLHttpRequest();
     xhr.open("POST",url,true);
