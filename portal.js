@@ -116,7 +116,7 @@ function renderRecords(records, mode = "standard") {
       (!status || (record.verification_status || record.status || "") === status);
   });
   if (!filtered.length) {
-    box.innerHTML = '<section class="profile-empty-card"><span class="profile-empty-mark" aria-hidden="true">✦</span><p class="profile-empty-kicker">BENUE ARISE FOR HON</p><h2>More about the journey, coming soon.</h2><p>We are preparing this section with care. Verified profile information and supporting details will appear here as they are approved for publication.</p></section>';
+    box.innerHTML = '<section class="profile-empty-card"><span class="profile-empty-mark" aria-hidden="true">✦</span><p class="profile-empty-kicker">BENUE ARISE FOR HON</p><h2>More About the Journey, Coming Soon</h2><p>We are preparing this section with care. Verified profile information and supporting details will appear here as they are approved for publication.</p></section>';
     return;
   }
   box.innerHTML = filtered.map((record) => {
