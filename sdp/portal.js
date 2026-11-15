@@ -12,6 +12,7 @@
   };
   toggle?.addEventListener("click", () => setMenu(toggle.getAttribute("aria-expanded") !== "true"));
   close?.addEventListener("click", () => setMenu(false));
+  menu?.querySelector("[data-menu-close]")?.addEventListener("click", () => setMenu(false));
   menu?.querySelectorAll('a[href^="#"]').forEach(link => link.addEventListener("click", () => setMenu(false)));
   document.addEventListener("keydown", event => {
     if (event.key === "Escape") setMenu(false);
