@@ -155,3 +155,41 @@
   .mobile-menu-panel>a,.mobile-menu-panel>details>summary{min-height:58px}
   .mobile-menu-panel i{flex-basis:28px;width:28px;height:28px;font-size:9px}
 }
+
+/* Compact mobile navigation rows; place circular section numbers on the left */
+.mobile-menu-panel>a,
+.mobile-menu-panel>details>summary{
+  justify-content:flex-start;
+  gap:13px;
+  min-height:50px;
+  padding:9px 0;
+  line-height:1.25;
+}
+.mobile-menu-panel i{
+  order:-1;
+  flex:0 0 27px;
+  width:27px;
+  height:27px;
+  margin-right:1px;
+}
+.mobile-menu-panel>details>summary{cursor:pointer}
+.mobile-menu-panel details>div{padding:2px 0 7px 40px}
+.mobile-menu-panel details>div a{padding:6px 0;line-height:1.35}
+@media(max-width:760px){
+  .menu-toggle{
+    width:33px;
+    min-width:33px;
+    height:36px;
+    padding:0;
+    gap:3px;
+    border-radius:4px;
+  }
+  .menu-toggle span{width:13px;height:2px}
+  .menu-toggle[aria-expanded=true] span:first-child{transform:translateY(5px) rotate(45deg)}
+  .menu-toggle[aria-expanded=true] span:last-child{transform:translateY(-5px) rotate(-45deg)}
+  .mobile-menu-panel>a,
+  .mobile-menu-panel>details>summary{min-height:46px;padding:7px 0;gap:11px}
+  .mobile-menu-panel i{flex-basis:26px;width:26px;height:26px;font-size:9px}
+  .mobile-menu-panel details>div{padding-left:37px}
+  .mobile-menu-panel details>div a{padding:5px 0}
+}
