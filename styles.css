@@ -761,3 +761,7 @@
 body.campaign-subpage #record-list .record-card p.record-description{font-family:"Times New Roman",Times,serif!important;font-size:12pt!important;font-weight:600!important;line-height:1.85!important;letter-spacing:0!important;color:#263b30!important;text-align:justify!important;text-align-last:left!important;text-justify:inter-word;hyphens:auto;overflow-wrap:break-word;margin:20px 0 24px!important}
 body.campaign-subpage #record-list .record-card h3{font-family:Inter,Arial,sans-serif;font-weight:900!important;color:#14271e!important;line-height:1.2!important;letter-spacing:-.02em}
 @media(max-width:760px){body.campaign-subpage #record-list .record-card p.record-description{font-size:12pt!important;line-height:1.8!important}}
+
+/* Media gallery photo/video captions use the same editorial standard as newsroom copy. */
+body.campaign-subpage #record-list .record-card .gallery-caption,body.home-page #home-gallery .record-card .gallery-caption{font-family:"Times New Roman",Times,serif!important;font-size:12pt!important;font-weight:600!important;line-height:1.85!important;letter-spacing:0!important;color:#263b30!important;text-align:justify!important;text-align-last:left!important;text-justify:inter-word;hyphens:auto;overflow-wrap:break-word;margin:20px 0 24px!important}
+@media(max-width:760px){body.campaign-subpage #record-list .record-card .gallery-caption,body.home-page #home-gallery .record-card .gallery-caption{font-size:12pt!important;line-height:1.8!important}}
