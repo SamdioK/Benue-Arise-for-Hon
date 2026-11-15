@@ -112,7 +112,7 @@ function renderRecords(records, mode = "standard") {
       (record.venue || record.location ? '<p class="record-location">' + esc(record.venue || record.location) + '</p>' : "") +
       (dateLabel ? '<small>' + esc(dateLabel) + '</small>' : "") +
       (record.verification_status ? '<p class="verification-label">' + esc(record.verification_status) + '</p>' : "") +
-      (summary ? '<p>' + esc(summary) + '</p>' : "") +
+      (summary ? '<p class="record-description gallery-caption">'+esc(summary)+'</p>' : "") +
       (record.source_url ? '<p><a class="text-link" href="' + esc(record.source_url) + '" target="_blank" rel="noopener noreferrer">Primary source ↗</a></p>' : "") +
       (record.evidence_url ? '<p><a class="text-link" href="' + esc(record.evidence_url) + '" target="_blank" rel="noopener noreferrer">Supporting evidence ↗</a></p>' : "") +
       link + '</article>';
@@ -310,7 +310,7 @@ if (homeGallery) {
         const mediaUrl = /^https?:\/\//i.test(mediaPath) ? mediaPath : /^(videos|images)\//i.test(mediaPath) ? cfg.SUPABASE_URL + "/storage/v1/object/public/gallery-media/" + mediaPath.split("/").map(encodeURIComponent).join("/") : "";
         const isVideo = item.media_type === "video" || /\.(mp4|webm|mov)(?:[?#].*)?$/i.test(mediaPath);
         const media = mediaUrl ? (isVideo ? '<video class="record-image record-video" controls playsinline preload="metadata" aria-label="' + esc(item.title || "Campaign video") + '"><source src="' + esc(mediaUrl) + '"></video>' : '<img class="record-image" src="' + esc(mediaUrl) + '" alt="' + esc(item.alt_text || item.title || "Campaign media") + '" loading="lazy">') : "";
-        return '<article class="record-card">' + media + '<div class="record-meta"><span>Media gallery</span></div><h3>' + esc(item.title || "Campaign media") + '</h3><p>' + esc(item.caption || item.alt_text || "Approved campaign media item") + '</p><a class="text-link" href="gallery.html">View gallery →</a></article>';
+        return '<article class="record-card">' + media + '<div class="record-meta"><span>Media gallery</span></div><h3>' + esc(item.title || "Campaign media") + '</h3><p class="record-description gallery-caption">'+esc(item.caption || item.alt_text || "Approved campaign media item")+'</p><a class="text-link" href="gallery.html">View gallery →</a></article>';
       }).join("");
     } catch (error) {
       console.warn("Homepage gallery could not be loaded.", error);
