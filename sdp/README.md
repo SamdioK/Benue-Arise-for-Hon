@@ -59,3 +59,10 @@ Phase 1 is a static presentation layer. It does not write to Supabase, create pe
 - Image slides fade automatically between entries; previous/next controls are available for manual navigation. The media stage scales responsively and preserves each logo's aspect ratio inside the enlarged circular presentation.
 - The gallery structure also supports future short video entries: add a `figure.hero-gallery-slide` with `data-kind="video"`, `data-title`, `data-caption`, and `data-duration` (10,000–15,000 milliseconds), containing a muted, plays-inline `video` element with its source. Video entries are played when active and advance after their configured duration.
 - Future approved portraits, leadership photographs, candidate images, event photographs and short clips can be added as individual slides with descriptive names and optional captions. Do not publish unverified identity or event claims in captions.
+
+
+### Circular logo masking and transparent backgrounds
+- The hero media window is a true circular clipping area. Any square/rectangular corners or artwork points extending beyond its circular boundary are hidden.
+- The official SDP vector artwork is used without its former white rectangular page background.
+- The Benue SDP Politics WebP artwork retains its transparent background; both marks now sit directly over the portal's green hero artwork rather than on a solid cream disc.
+- Both images preserve their aspect ratio with `object-fit: contain`, while the circular media window clips any content at its perimeter. The circular orbital treatment remains as the gallery frame.
