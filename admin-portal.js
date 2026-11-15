@@ -230,7 +230,9 @@ async function checkAuth() {
     $("#cms-panel .cms-top h2").textContent = "Manage portal content";
   }
   await loadList();
+  $("#quote-moderation-panel").hidden = isManager;
   if (!isManager) {
+    await loadQuoteModerationQueue();
     await loadSiteAssets();
     await loadProfileManagers();
     await loadPlaylistComposer();
@@ -597,5 +599,27 @@ async function uploadCampaignAsset(kind){
 $("#upload-campaign-audio")?.addEventListener("click", () => uploadCampaignAsset("audio"));
 $("#upload-campaign-artwork")?.addEventListener("click", () => uploadCampaignAsset("artwork"));
 
+
+async function loadQuoteModerationQueue() {
+  const box=$("#quote-moderation-list"),panel=$("#quote-moderation-panel");
+  if(!box||!panel||panel.hidden||!client||currentRole==="profile_manager")return;
+  box.textContent="Loading held comments…";
+  const {data,error}=await client.from("quote_comments").select("id,quote_key,display_name,comment_text,moderation_reason,created_at").eq("moderation_status","held").order("created_at",{ascending:true}).limit(100);
+  if(error){box.textContent="Could not load held comments: "+error.message;return}
+  if(!data?.length){box.innerHTML="<p>No comments are awaiting review.</p>";return}
+  box.replaceChildren();
+  data.forEach(row=>{
+    const card=document.createElement("article");card.className="admin-record quote-moderation-record";
+    const title=document.createElement("strong");title.textContent=row.display_name+" · "+(row.quote_key==="challenge-your-challenge"?"Resilience quote":"Poverty quote");
+    const comment=document.createElement("p");comment.textContent=row.comment_text;
+    const reason=document.createElement("small");reason.textContent="Flag: "+(row.moderation_reason||"Potentially abusive language")+" · "+new Date(row.created_at).toLocaleString("en-GB");
+    const approve=document.createElement("button");approve.type="button";approve.className="btn btn-primary";approve.textContent="Approve and publish";
+    const remove=document.createElement("button");remove.type="button";remove.className="admin-delete";remove.textContent="Remove comment";
+    approve.addEventListener("click",async()=>{approve.disabled=true;const {error:updateError}=await client.from("quote_comments").update({moderation_status:"approved",moderation_reason:null,updated_at:new Date().toISOString()}).eq("id",row.id).eq("moderation_status","held");if(updateError){$("#quote-moderation-status").textContent=updateError.message;approve.disabled=false;return}$("#quote-moderation-status").textContent="Comment approved and published.";await loadQuoteModerationQueue()});
+    remove.addEventListener("click",async()=>{if(!window.confirm("Permanently remove this held comment?"))return;remove.disabled=true;const {error:deleteError}=await client.from("quote_comments").delete().eq("id",row.id).eq("moderation_status","held");if(deleteError){$("#quote-moderation-status").textContent=deleteError.message;remove.disabled=false;return}$("#quote-moderation-status").textContent="Held comment removed.";await loadQuoteModerationQueue()});
+    const actions=document.createElement("div");actions.className="quote-moderation-actions";actions.append(approve,remove);card.append(title,comment,reason,actions);box.append(card);
+  });
+}
+$("#refresh-quote-moderation")?.addEventListener("click",loadQuoteModerationQueue);
 
 initialise();
