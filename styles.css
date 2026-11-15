@@ -756,3 +756,8 @@
 .campaign-subpage #record-list .record-social-actions .record-like[aria-pressed="true"]{background:#fff0ed;border-color:#e8b4a8;color:#b33b2d}
 .campaign-subpage #record-list .record-social-actions .record-share{background:#126b43;color:#fff;border-color:#126b43}
 @media(max-width:760px){.campaign-subpage #record-list .record-card .record-description{font-size:12pt!important}.campaign-subpage #record-list .record-social-actions button{min-width:112px;min-height:46px}}
+
+/* Newsroom long-form description: readable serif editorial treatment */
+body.campaign-subpage #record-list .record-card p.record-description{font-family:"Times New Roman",Times,serif!important;font-size:12pt!important;font-weight:600!important;line-height:1.85!important;letter-spacing:0!important;color:#263b30!important;text-align:justify!important;text-align-last:left!important;text-justify:inter-word;hyphens:auto;overflow-wrap:break-word;margin:20px 0 24px!important}
+body.campaign-subpage #record-list .record-card h3{font-family:Inter,Arial,sans-serif;font-weight:900!important;color:#14271e!important;line-height:1.2!important;letter-spacing:-.02em}
+@media(max-width:760px){body.campaign-subpage #record-list .record-card p.record-description{font-size:12pt!important;line-height:1.8!important}}
