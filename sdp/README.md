@@ -81,3 +81,15 @@ Phase 1 is a static presentation layer. It does not write to Supabase, create pe
 - Transferred the eight official public-profile module headings from the source profile page. The source site's own profile introduction states that detailed records are published as supplied, reviewed and approved; the SDP portal therefore does not invent a longer biography or unsupported achievements.
 - Added a direct link to the source campaign website's Official Public Profile.
 - Further candidate profiles remain subject to confirmation and approval.
+
+
+### LGA → ward → polling-unit directory
+- The Benue 23 LGAs directory is an interactive three-level electoral geography explorer.
+- Selecting an LGA retrieves its verified register rows from the same public.benue_polling_units source used by SDP-BESR, in Supabase project mcbwbcqetrrwxfqfvhkc. The browser uses only the project's publishable key; row visibility remains governed by Supabase RLS.
+- The LGA summary displays the number of distinct verified wards and verified polling-unit records returned for that LGA.
+- Wards are grouped by source ward code and ward name, sorted numerically by ward code, and displayed with each ward's polling-unit count.
+- Selecting a ward displays its polling units with name, PU code, full register code and location where recorded. Missing locations are labelled as not recorded; none are inferred.
+- The layout uses two columns on wider screens and stacked panels on mobile.
+- SDP-BESR's directory is documented as containing 23 LGAs, 276 wards and 5,102 polling-unit records. Live counts here are calculated from rows marked verification_status = verified; they are not hard-coded totals.
+- If the directory cannot be reached, the interface displays an error state rather than substituting fabricated or locally stored records.
+- The portal reads directly from SDP-BESR's source; electoral records are not copied into browser storage or duplicated in the Benue Arise database.
