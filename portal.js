@@ -128,8 +128,8 @@ function renderRecords(records, mode = "standard") {
       /^(videos|images)\//i.test(mediaPath) ? cfg.SUPABASE_URL + "/storage/v1/object/public/gallery-media/" + mediaPath.split("/").map(encodeURIComponent).join("/") : "";
     const isVideo = record.media_type === "video" || /\.(mp4|webm|mov)(?:[?#].*)?$/i.test(mediaPath);
     const posterPath = record.featured_image || record.poster_path || "";
-    const posterUrl = /^https?:\\/\\//i.test(posterPath) ? posterPath :
-      /^(videos|images)\\//i.test(posterPath) ? cfg.SUPABASE_URL + "/storage/v1/object/public/gallery-media/" + posterPath.split("/").map(encodeURIComponent).join("/") : "";
+    const posterUrl = /^https?:\/\//i.test(posterPath) ? posterPath :
+      /^(videos|images)\//i.test(posterPath) ? cfg.SUPABASE_URL + "/storage/v1/object/public/gallery-media/" + posterPath.split("/").map(encodeURIComponent).join("/") : "";
     const media = mediaUrl ? (isVideo
       ? '<video class="record-image record-video" controls playsinline preload="metadata" ' + (posterUrl ? 'poster="' + esc(posterUrl) + '"' : "") + ' aria-label="' + esc(record.title || "Campaign gallery video") + '"><source src="' + esc(mediaUrl) + '"></video>'
       : '<img class="record-image" src="' + esc(mediaUrl) + '" alt="' + esc(record.alt_text || record.title || "Campaign gallery image") + '" loading="lazy">') : "";
