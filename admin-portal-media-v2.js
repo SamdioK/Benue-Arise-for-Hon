@@ -621,7 +621,7 @@ async function uploadStorageFile(bucket,path,file,statusNode) {
   await new Promise((resolve,reject)=>{
     const xhr=new XMLHttpRequest();
     xhr.open("POST",url,true);
-    xhr.timeout=120000;
+    xhr.timeout=300000;
     xhr.setRequestHeader("apikey",cfg.SUPABASE_PUBLISHABLE_KEY);
     xhr.setRequestHeader("Authorization","Bearer "+token);
     xhr.setRequestHeader("Content-Type",file.type||"application/octet-stream");
@@ -639,7 +639,7 @@ async function uploadStorageFile(bucket,path,file,statusNode) {
       reject(new Error(body.message||body.error||("Storage upload failed (HTTP "+xhr.status+").")));
     };
     xhr.onerror=()=>reject(new Error("Network connection interrupted during upload. Please retry."));
-    xhr.ontimeout=()=>reject(new Error("Upload timed out after 2 minutes. Check your connection and retry; incomplete uploads are not recorded as successful."));
+    xhr.ontimeout=()=>reject(new Error("Upload timed out after 5 minutes. Check your connection and retry; incomplete uploads are not recorded as successful."));
     xhr.onabort=()=>reject(new Error("Upload was cancelled."));
     xhr.send(file);
   });
