@@ -235,3 +235,26 @@
   .mobile-menu-panel details>div a{padding:3px 0}
   .mobile-menu-panel .mobile-menu-head{padding-bottom:15px;margin-bottom:3px}
 }
+
+/* Brand treatment for the mobile portal navigation heading */
+.mobile-menu-head{gap:12px}
+.mobile-menu-head>div{flex:1;min-width:0;gap:4px}
+.mobile-menu-head strong{color:#f15a24;font-size:23px;line-height:1.08}
+.menu-brand-logo{
+  display:block;
+  flex:0 0 84px;
+  width:84px;
+  height:56px;
+  object-fit:cover;
+  object-position:center;
+  border:1px solid rgba(7,80,47,.14);
+  border-radius:6px;
+  background:#073d2b;
+  box-shadow:0 4px 12px rgba(7,80,47,.13);
+}
+@media(max-width:760px){
+  .mobile-menu-head{gap:9px}
+  .menu-brand-logo{flex-basis:72px;width:72px;height:48px}
+  .mobile-menu-head strong{font-size:20px}
+  .mobile-menu-head .menu-kicker{font-size:7px;letter-spacing:.14em}
+}
