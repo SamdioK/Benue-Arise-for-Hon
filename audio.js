@@ -37,9 +37,9 @@ function createRestClient(baseUrl,apiKey){
 }
 function asset(path){
   if(!path)return "";
-  if(/^https?:\\/\\//i.test(path))return path;
-  const clean=String(path).replace(/^\\/+/, "");
-  return String(cfg.SUPABASE_URL).replace(/\\/+$/,"")+"/storage/v1/object/public/campaign-audio/"+clean.split("/").map(encodeURIComponent).join("/");
+  if(/^https?:\/\//i.test(path))return path;
+  const clean=String(path).replace(/^\/+/, "");
+  return String(cfg.SUPABASE_URL).replace(/\/+$/,"")+"/storage/v1/object/public/campaign-audio/"+clean.split("/").map(encodeURIComponent).join("/");
 }
 function levelName(v){return ({governorship:"Governorship",senate:"Senate",house_of_representatives:"House of Representatives",house_of_assembly:"House of Assembly"})[v]||"Campaign"}
 function filtered(){const q=$("#song-search").value.trim().toLowerCase(),level=document.querySelector(".audio-category.active")?.dataset.level||"all";let list=songs.filter(s=>(level==="all"||s.campaign_level===level)&&(!q||[s.title,s.artist,s.language,s.constituency,s.description].join(" ").toLowerCase().includes(q)));const sort=$("#song-sort").value;if(sort==="title")list.sort((a,b)=>a.title.localeCompare(b.title));if(sort==="artist")list.sort((a,b)=>a.artist.localeCompare(b.artist));if(sort==="popular")list.sort((a,b)=>(b.play_count||0)-(a.play_count||0));if(sort==="newest")list.sort((a,b)=>new Date(b.published_at||b.created_at)-new Date(a.published_at||a.created_at));return list}
