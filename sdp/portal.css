@@ -56,3 +56,65 @@
 .leadership-band .node-d{background:#fff;border-color:#079b45;color:#07502f}
 .leadership-band .map-node:hover,.leadership-band .map-node:focus-visible{background:#fff;color:#07502f;border-color:#f15a24;box-shadow:0 10px 25px rgba(7,80,47,.18);transform:scale(1.07);outline:none}
 @media(max-width:600px){.leadership-band .map-ring.ring-a{width:220px;height:220px}.leadership-band .map-ring.ring-b{width:292px;height:292px}.leadership-band .map-core{width:112px;height:112px;box-shadow:0 0 0 6px #f15a24,0 0 0 11px #fff,0 0 0 17px #079b45,0 0 0 23px rgba(255,255,255,.92),0 13px 30px rgba(7,80,47,.16)}}
+
+
+/* Header refinement and Benue Arise-matched welcome ticker */
+.portal-welcome-ticker{
+  position:relative;
+  width:100%;
+  min-height:42px;
+  display:flex;
+  align-items:center;
+  overflow:hidden;
+  border-top:1px solid rgba(255,255,255,.24);
+  border-bottom:3px solid var(--orange);
+  background:linear-gradient(90deg,#07502f 0%,#087a3d 52%,#07502f 100%);
+  color:#fff;
+}
+.portal-welcome-ticker:before{
+  content:"WELCOME";
+  flex:0 0 auto;
+  display:flex;
+  align-items:center;
+  align-self:stretch;
+  padding:0 13px;
+  background:var(--orange);
+  color:#fff;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.13em;
+}
+.portal-ticker-window{flex:1;min-width:0;overflow:hidden;display:flex;align-items:center}
+.portal-ticker-track{
+  display:flex;
+  width:max-content;
+  min-width:max-content;
+  animation:portalWelcomeScroll 52s linear infinite;
+  will-change:transform;
+}
+.portal-ticker-copy{
+  display:block;
+  flex:0 0 auto;
+  padding:0 58px 0 22px;
+  color:#fff;
+  font-size:10px;
+  font-weight:750;
+  line-height:1.4;
+  letter-spacing:.075em;
+  white-space:nowrap;
+}
+.portal-welcome-ticker:hover .portal-ticker-track,
+.portal-welcome-ticker:focus-within .portal-ticker-track{animation-play-state:paused}
+@keyframes portalWelcomeScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(max-width:760px){
+  .header-inner{min-height:78px;transform:translateY(-3px);gap:12px}
+  .brand{gap:9px}
+  .brand img{width:55px;height:50px}
+  .brand-copy strong{font-size:14px}
+  .brand-copy small{font-size:7px;letter-spacing:.13em}
+  .menu-toggle{transform:translateY(-2px)}
+  .portal-welcome-ticker{min-height:39px}
+  .portal-welcome-ticker:before{padding:0 9px;font-size:8px;letter-spacing:.09em}
+  .portal-ticker-copy{padding-right:42px;padding-left:16px;font-size:9px;letter-spacing:.055em}
+}
+@media(prefers-reduced-motion:reduce){.portal-ticker-track{animation:none;transform:none}}
