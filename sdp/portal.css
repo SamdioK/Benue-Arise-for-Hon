@@ -193,3 +193,45 @@
   .mobile-menu-panel details>div{padding-left:37px}
   .mobile-menu-panel details>div a{padding:5px 0}
 }
+
+/* Tighter mobile menu rhythm: remove excess vertical whitespace between entries */
+.mobile-menu-panel>a,
+.mobile-menu-panel>details>summary{
+  min-height:0;
+  padding:5px 0;
+  line-height:1.15;
+  gap:10px;
+}
+.mobile-menu-panel i{
+  width:24px;
+  height:24px;
+  flex-basis:24px;
+}
+.mobile-menu-panel details>div{
+  padding:1px 0 4px 34px;
+}
+.mobile-menu-panel details>div a{
+  padding:4px 0;
+  line-height:1.2;
+}
+.mobile-menu-panel>details[open]>summary{
+  padding-bottom:5px;
+}
+@media(max-width:760px){
+  .mobile-menu-panel>a,
+  .mobile-menu-panel>details>summary{
+    min-height:0;
+    padding:4px 0;
+    gap:9px;
+    line-height:1.12;
+  }
+  .mobile-menu-panel i{
+    width:23px;
+    height:23px;
+    flex-basis:23px;
+    font-size:8px;
+  }
+  .mobile-menu-panel details>div{padding-left:32px;padding-bottom:3px}
+  .mobile-menu-panel details>div a{padding:3px 0}
+  .mobile-menu-panel .mobile-menu-head{padding-bottom:15px;margin-bottom:3px}
+}
