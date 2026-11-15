@@ -98,10 +98,15 @@ function renderRecords(records, mode = "standard") {
     const summary = record.excerpt || record.description || record.content || record.content_text || record.body || record.caption || "";
     const date = record.published_at || record.starts_at || record.created_at;
     const dateLabel = date ? new Date(date).toLocaleDateString("en-GB", { timeZone: "Africa/Lagos", day: "numeric", month: "short", year: "numeric" }) : "";
-    const mediaUrl = /^https?:\/\//i.test(record.storage_path || "") ? record.storage_path : "";
-    const image = mediaUrl ? '<img class="record-image" src="' + esc(mediaUrl) + '" alt="' + esc(record.alt_text || record.title || "Campaign gallery image") + '" loading="lazy">' : "";
+    const mediaPath = record.storage_path || "";
+    const mediaUrl = /^https?:\/\//i.test(mediaPath) ? mediaPath :
+      /^(videos|images)\//i.test(mediaPath) ? cfg.SUPABASE_URL + "/storage/v1/object/public/gallery-media/" + mediaPath.split("/").map(encodeURIComponent).join("/") : "";
+    const isVideo = record.media_type === "video" || /\.(mp4|webm|mov)(?:[?#].*)?$/i.test(mediaPath);
+    const media = mediaUrl ? (isVideo
+      ? '<video class="record-image record-video" controls playsinline preload="metadata" aria-label="' + esc(record.title || "Campaign gallery video") + '"><source src="' + esc(mediaUrl) + '"></video>'
+      : '<img class="record-image" src="' + esc(mediaUrl) + '" alt="' + esc(record.alt_text || record.title || "Campaign gallery image") + '" loading="lazy">') : "";
     const link = record.registration_url ? '<p><a class="text-link" href="' + esc(record.registration_url) + '" target="_blank" rel="noopener noreferrer">Event information ↗</a></p>' : "";
-    return '<article class="record-card">' + image +
+    return '<article class="record-card">' + media +
       '<div class="record-meta"><span>' + esc(record.category || "Public information") + '</span><span class="status-pill">' + esc(record.status || "Published") + '</span></div>' +
       '<h3>' + esc(record.title) + '</h3>' +
       (record.venue || record.location ? '<p class="record-location">' + esc(record.venue || record.location) + '</p>' : "") +
@@ -293,7 +298,7 @@ if (homeGallery) {
     try {
       const client = await getClient();
       if (!client) return;
-      const { data, error } = await client.from("gallery").select("title,caption,alt_text,storage_path")
+      const { data, error } = await client.from("gallery").select("title,caption,alt_text,storage_path,media_type")
         .eq("status", "published").order("display_order", { ascending: true }).limit(3);
       if (error) throw error;
       if (!data?.length) {
@@ -301,9 +306,11 @@ if (homeGallery) {
         return;
       }
       homeGallery.innerHTML = data.map((item) => {
-        const imageUrl = /^https?:\/\//i.test(item.storage_path || "") ? item.storage_path : "";
-        const image = imageUrl ? '<img class="record-image" src="' + esc(imageUrl) + '" alt="' + esc(item.alt_text || item.title || "Campaign media") + '" loading="lazy">' : "";
-        return '<article class="record-card">' + image + '<div class="record-meta"><span>Media gallery</span></div><h3>' + esc(item.title || "Campaign media") + '</h3><p>' + esc(item.caption || item.alt_text || "Approved campaign media item") + '</p><a class="text-link" href="gallery.html">View gallery →</a></article>';
+        const mediaPath = item.storage_path || "";
+        const mediaUrl = /^https?:\/\//i.test(mediaPath) ? mediaPath : /^(videos|images)\//i.test(mediaPath) ? cfg.SUPABASE_URL + "/storage/v1/object/public/gallery-media/" + mediaPath.split("/").map(encodeURIComponent).join("/") : "";
+        const isVideo = item.media_type === "video" || /\.(mp4|webm|mov)(?:[?#].*)?$/i.test(mediaPath);
+        const media = mediaUrl ? (isVideo ? '<video class="record-image record-video" controls playsinline preload="metadata" aria-label="' + esc(item.title || "Campaign video") + '"><source src="' + esc(mediaUrl) + '"></video>' : '<img class="record-image" src="' + esc(mediaUrl) + '" alt="' + esc(item.alt_text || item.title || "Campaign media") + '" loading="lazy">') : "";
+        return '<article class="record-card">' + media + '<div class="record-meta"><span>Media gallery</span></div><h3>' + esc(item.title || "Campaign media") + '</h3><p>' + esc(item.caption || item.alt_text || "Approved campaign media item") + '</p><a class="text-link" href="gallery.html">View gallery →</a></article>';
       }).join("");
     } catch (error) {
       console.warn("Homepage gallery could not be loaded.", error);
