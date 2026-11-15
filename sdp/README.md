@@ -44,3 +44,10 @@ Phase 1 is a static presentation layer. It does not write to Supabase, create pe
 - `sdp/portal.js`
 - `sdp/README.md`
 - `benue-sdp-politics.html` (legacy redirect)
+
+
+### Hero artwork refinement (15 November 2026)
+- Removed the floating top and bottom rectangular callout panels around the circular hero emblem.
+- Removed the duplicate `SOCIAL DEMOCRATIC PARTY` caption beneath the emblem because the supplied party logo already carries that wording.
+- Removed the orange star-like decorative symbol from the lower-right of the hero artwork.
+- Kept the circular logo container, party emblem, orbital rings, and existing green/orange visual identity intact.
