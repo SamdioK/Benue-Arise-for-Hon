@@ -19,7 +19,7 @@ function createRestClient(baseUrl,apiKey){
     async execute(){
       const url=root+"/rest/v1/"+encodeURIComponent(this.table)+(this.params.size?"?"+this.params.toString():"");
       const controller=new AbortController();
-      const timeout=setTimeout(()=>controller.abort(),15000);
+      const timeout=setTimeout(()=>controller.abort(),30000);
       try{
         const h=headers(this.schema,this.method!=="GET");
         if(this.wantRepresentation)h.Prefer="return=representation";
@@ -29,7 +29,7 @@ function createRestClient(baseUrl,apiKey){
         return {data,error:null};
       }catch(error){
         const timedOut=error?.name==="AbortError";
-        return {data:null,error:{message:timedOut?"The request timed out after 15 seconds. Check your connection and try again.":error?.message||"Network request failed",code:timedOut?"REQUEST_TIMEOUT":undefined}};
+        return {data:null,error:{message:timedOut?"The audio library request timed out after 30 seconds. Please retry or check your connection.":error?.message||"Network request failed",code:timedOut?"REQUEST_TIMEOUT":undefined}};
       }finally{clearTimeout(timeout)}
     }
   }
