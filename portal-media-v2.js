@@ -86,8 +86,12 @@ function renderRecords(records, mode = "standard") {
   const filtered = records.filter((record) => {
     const searchable = [record.title, record.description, record.content, record.content_text, record.body, record.excerpt,
       record.category, record.venue, record.caption, record.alt_text].join(" ").toLowerCase();
+    const mediaPath = record.storage_path || "";
+    const isVideoRecord = record.media_type === "video" || /\.(mp4|webm|mov)(?:[?#].*)?$/i.test(mediaPath);
+    const galleryCategoryMatch = key !== "gallery" || !category || category === "all" ||
+      (category === "video" && isVideoRecord) || (category === "photo" && !isVideoRecord);
     return (!query || searchable.includes(query)) &&
-      (!category || record.category === category) &&
+      galleryCategoryMatch &&
       (!status || (record.verification_status || record.status || "") === status);
   });
   if (!filtered.length) {
@@ -118,7 +122,7 @@ function renderRecords(records, mode = "standard") {
       link + '</article>';
   }).join("");
   const select = $("#category-filter");
-  if (select && select.options.length <= 1) {
+  if (select && key !== "gallery" && select.options.length <= 1) {
     [...new Set(records.map((record) => record.category).filter(Boolean))].sort()
       .forEach((value) => select.add(new Option(value, value)));
   }
