@@ -20,7 +20,42 @@ $("quote-love").addEventListener("click",()=>react("love"));$("quote-like").addE
 $("quote-comment-jump").addEventListener("click",()=>$("comment-text").focus());
 $("quote-comment-form").addEventListener("submit",async e=>{e.preventDefault();const button=$("comment-submit"),status=$("comment-status");button.disabled=true;status.textContent="Submitting…";try{const data=await call("comment",{display_name:$("comment-name").value,comment_text:$("comment-text").value});status.textContent=data.message+(data.status==="approved"?"":" A moderator will review it.");if(data.edit_token){editTokens.set(data.id,data.edit_token);$("edit-comment-id").value=data.id;$("edit-code").value=data.edit_token;$("edit-comment-text").value=$("comment-text").value;status.textContent+=" Your private edit code is shown in the correction section below; keep it safe.";document.querySelector(".comment-edit-panel").open=true;} $("comment-text").value="";await loadData();}catch(error){status.textContent=error.message;}finally{button.disabled=false;}});
 $("quote-edit-form").addEventListener("submit",async e=>{e.preventDefault();const button=e.currentTarget.querySelector("button"),status=$("edit-status");button.disabled=true;status.textContent="Saving correction…";try{const data=await call("edit",{id:$("edit-comment-id").value.trim(),edit_token:$("edit-code").value.trim(),comment_text:$("edit-comment-text").value});status.textContent=data.message;await loadData();}catch(error){status.textContent=error.message;}finally{button.disabled=false;}});
-async function makeArtwork(q){if(document.fonts?.load)await document.fonts.load("700 86px Caveat");const canvas=document.createElement("canvas");canvas.width=1080;canvas.height=1350;const ctx=canvas.getContext("2d");const grad=ctx.createLinearGradient(0,0,1080,1350);grad.addColorStop(0,"#052f22");grad.addColorStop(.58,"#07563a");grad.addColorStop(1,"#073b2a");ctx.fillStyle=grad;ctx.fillRect(0,0,1080,1350);ctx.strokeStyle="#f0a04f";ctx.lineWidth=3;ctx.strokeRect(48,48,984,1254);ctx.fillStyle="#f5a04d";ctx.font="800 26px Arial";ctx.textAlign="center";ctx.fillText("BENUE ARISE FOR HON  ·  CHAN U YA CHAN",540,135);ctx.fillStyle="#f2a24e";ctx.font="800 160px Georgia";ctx.fillText("“",540,360);ctx.fillStyle="#fff8eb";ctx.font="700 86px Caveat, cursive";const words=("“"+q.text+"”").split(/\s+/);const lines=[];let line="";for(const word of words){const test=line?line+" "+word:word;if(ctx.measureText(test).width>850&&line){lines.push(line);line=word;}else line=test;}if(line)lines.push(line);const lineHeight=112;let y=620-(lines.length*lineHeight)/2;for(const part of lines){ctx.fillText(part,540,y,880);y+=lineHeight;}ctx.fillStyle="#f2a04e";ctx.fillRect(430,1010,220,5);ctx.fillStyle="#ffe0b6";ctx.font="800 31px Arial";ctx.fillText("PROF. S. T. HON",540,1090);ctx.fillStyle="#f2a04e";ctx.font="700 26px Arial";ctx.fillText("2027  ·  SDP GUBERNATORIAL CANDIDATE",540,1145);ctx.fillStyle="#e5eee7";ctx.font="24px Arial";ctx.fillText("Ideas that inspire courage. Words that move a people.",540,1220);return await new Promise(resolve=>canvas.toBlob(resolve,"image/png"));}
+async function makeArtwork(q){
+  if(document.fonts?.load){await Promise.all([document.fonts.load("700 96px Caveat"),document.fonts.load("700 32px DM Sans")]);}
+  const canvas=document.createElement("canvas");canvas.width=1080;canvas.height=1350;
+  const ctx=canvas.getContext("2d");
+  const bg=ctx.createLinearGradient(0,0,1080,1350);bg.addColorStop(0,"#031f19");bg.addColorStop(.48,"#07533b");bg.addColorStop(1,"#031f25");ctx.fillStyle=bg;ctx.fillRect(0,0,1080,1350);
+  const glow=ctx.createRadialGradient(830,410,30,830,410,780);glow.addColorStop(0,"rgba(31,132,91,.32)");glow.addColorStop(1,"rgba(3,31,25,0)");ctx.fillStyle=glow;ctx.fillRect(0,0,1080,1350);
+  // Architectural linework adds depth without competing with the quotation.
+  ctx.strokeStyle="rgba(226,169,91,.16)";ctx.lineWidth=2;
+  for(let i=0;i<7;i++){ctx.beginPath();ctx.arc(1060,220,180+i*64,Math.PI*.5,Math.PI*1.5);ctx.stroke();}
+  ctx.strokeStyle="#dca45b";ctx.lineWidth=3;ctx.strokeRect(44,44,992,1262);
+  ctx.strokeStyle="rgba(240,190,119,.48)";ctx.lineWidth=1;ctx.strokeRect(58,58,964,1234);
+  // Header lock-up
+  ctx.textAlign="left";ctx.fillStyle="#f1bd77";ctx.font="700 25px 'DM Sans',Arial";ctx.fillText("BENUE ARISE",92,126);
+  ctx.fillStyle="rgba(255,244,222,.72)";ctx.font="600 18px 'DM Sans',Arial";ctx.fillText("FOR HON",92,157);
+  ctx.textAlign="right";ctx.fillStyle="#f1bd77";ctx.font="700 19px 'DM Sans',Arial";ctx.fillText("CHAN U YA CHAN",988,132);
+  ctx.strokeStyle="rgba(231,183,117,.55)";ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(92,194);ctx.lineTo(988,194);ctx.stroke();
+  // Quote category and statement
+  ctx.textAlign="center";ctx.fillStyle="#efb36a";ctx.font="700 19px 'DM Sans',Arial";
+  const category=q.key==="poverty-will-suffer"?"POVERTY ERADICATION  /  HUMAN DIGNITY":"RESILIENCE  /  PERSONAL DETERMINATION";
+  ctx.fillText(category,540,280);
+  ctx.fillStyle="#e9ae61";ctx.font="700 190px Georgia";ctx.fillText("“",540,455);
+  ctx.fillStyle="#fff9ed";ctx.textAlign="center";
+  const words=q.text.split(/\s+/);let lines=[],line="",fontSize=94;
+  function wrapAt(size){ctx.font="700 "+size+"px Caveat, cursive";const output=[];let currentLine="";for(const word of words){const test=currentLine?currentLine+" "+word:word;if(ctx.measureText(test).width>850&&currentLine){output.push(currentLine);currentLine=word;}else currentLine=test;}if(currentLine)output.push(currentLine);return output;}
+  lines=wrapAt(fontSize);while((lines.length>4||Math.max(...lines.map(x=>ctx.measureText(x).width))>850)&&fontSize>66){fontSize-=4;lines=wrapAt(fontSize);}
+  ctx.font="700 "+fontSize+"px Caveat, cursive";const lineHeight=fontSize*1.12;const quoteTop=690-(lines.length*lineHeight)/2;
+  lines.forEach((part,i)=>ctx.fillText(part,540,quoteTop+i*lineHeight,880));
+  // Gold signature flourish
+  const flourish=ctx.createLinearGradient(365,0,715,0);flourish.addColorStop(0,"rgba(221,161,86,0)");flourish.addColorStop(.5,"#e8b36d");flourish.addColorStop(1,"rgba(221,161,86,0)");
+  ctx.fillStyle=flourish;ctx.fillRect(365,970,350,3);
+  ctx.fillStyle="#fff0d7";ctx.font="700 34px 'DM Sans',Arial";ctx.fillText("PROF. S. T. HON",540,1054);
+  ctx.fillStyle="#efb36a";ctx.font="700 21px 'DM Sans',Arial";ctx.fillText("SDP GUBERNATORIAL CANDIDATE  ·  2027",540,1104);
+  ctx.fillStyle="rgba(245,244,229,.78)";ctx.font="500 21px 'DM Sans',Arial";ctx.fillText("Ideas that inspire courage. Words that move a people.",540,1194);
+  ctx.fillStyle="#e7b36e";ctx.font="700 17px 'DM Sans',Arial";ctx.fillText("LEADERSHIP  ·  SERVICE  ·  PUBLIC ENGAGEMENT",540,1252);
+  return await new Promise(resolve=>canvas.toBlob(resolve,"image/png"));
+}
 $("quote-share").addEventListener("click",async()=>{const button=$("quote-share"),status=$("quote-share-status"),q=quotes[current];button.disabled=true;status.textContent="Preparing the branded quote image…";try{const blob=await makeArtwork(q);if(!blob)throw new Error("The artwork could not be generated on this device.");const file=new File([blob],"benue-arise-quote-"+q.key+".png",{type:"image/png"});const shareData={files:[file],title:"Prof. S. T. Hon — Philosophy & Quotes",text:q.text+" — Prof. S. T. Hon · 2027"};if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share(shareData);status.textContent="Quote artwork shared.";}else{const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=file.name;a.click();setTimeout(()=>URL.revokeObjectURL(url),30000);try{await navigator.clipboard.writeText(q.text+" — Prof. S. T. Hon · 2027");}catch{}status.textContent="The branded quote image has been downloaded. Attach that image to your social post; the quote text has also been copied where supported."}}catch(error){if(error.name==="AbortError"){status.textContent="Sharing cancelled.";}else{status.textContent=error.message||"Unable to share this artwork on this device.";}}finally{button.disabled=false;}});
 async function init(){for(let i=0;i<quotes.length;i++){current=i;try{const data=await call("list");cache[quotes[i].key]=data;const card=quotes[i].card;card.querySelector("[data-love-count]").textContent=data.reactions?.love||0;card.querySelector("[data-like-count]").textContent=data.reactions?.like||0;card.querySelector("[data-comment-count]").textContent=data.comment_count||0;}catch(e){console.warn("Quote interaction counts unavailable",e);}}current=0;}
 const year=document.querySelector("[data-year]");if(year)year.textContent=new Date().getFullYear();init();
