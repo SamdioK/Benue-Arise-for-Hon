@@ -175,3 +175,42 @@
   fill:none !important;
   stroke:#f4c65c !important;
 }
+
+/* Approved Lawshield corner treatment: purple folded corner with a diagonal gold sweep. */
+.auth-card{isolation:isolate;overflow:hidden;position:relative}
+.auth-card:before{
+  content:"";
+  position:absolute;
+  z-index:0;
+  top:0;
+  right:0;
+  width:min(56%,390px);
+  height:clamp(150px,22vw,245px);
+  border:0;
+  border-radius:0;
+  opacity:1;
+  pointer-events:none;
+  background:#53156d;
+  clip-path:polygon(19% 0,100% 0,100% 78%);
+}
+.auth-card:after{
+  content:"";
+  position:absolute;
+  z-index:0;
+  top:0;
+  right:0;
+  width:min(61%,425px);
+  height:clamp(165px,24vw,265px);
+  border:0;
+  border-radius:0;
+  opacity:1;
+  pointer-events:none;
+  background:linear-gradient(180deg,#f3c64f,#e6ad31);
+  clip-path:polygon(8% 0,19% 0,100% 77%,100% 90%);
+}
+.auth-card > *{position:relative;z-index:1}
+.auth-brand-stacked{position:relative;z-index:2}
+@media(max-width:560px){
+ .auth-card:before{width:56%;height:150px}
+ .auth-card:after{width:61%;height:165px}
+}
