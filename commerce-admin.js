@@ -27,7 +27,7 @@ if(error)throw error;
 $("#commerce-book-category").innerHTML='<option value="">Uncategorised</option>'+(data||[]).map(x=>'<option value="'+esc(x.id)+'">'+esc(x.name)+'</option>').join("");
 }
 async function upload(bucket,file,id){
-if(!file)return null;
+if(!file||!file.size)return null;
 const path=id+"/"+Date.now()+"-"+fileName(file.name);
 const {error}=await db.storage.from(bucket).upload(path,file,{upsert:false,contentType:file.type||undefined});
 if(error)throw error;
