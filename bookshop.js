@@ -15,7 +15,7 @@ $("#book-grid").innerHTML=list.map(p=>{
 const category=state.categories.find(c=>c.id===p.category_id)?.name||"Book collection";
 const cover=p.cover_storage_path&&cfg.SUPABASE_URL?cfg.SUPABASE_URL+"/storage/v1/object/public/shop-covers/"+p.cover_storage_path.split("/").map(encodeURIComponent).join("/"):"";
 const variants=(p.shop_product_variants||[]).filter(v=>v.is_active&&(!state.format||v.format===state.format));
-const editions=variants.map(v=>'<div class="book-edition"><span>'+(v.format==="physical"?"Printed edition":"Digital edition")+'</span><strong>'+money(state.currency==="NGN"?v.price_ngn:v.price_usd,state.currency)+'</strong></div>').join("");
+const editions=variants.map(v=>'<div class="book-edition"><span>'+(v.format==="physical"?"Printed edition":"Digital edition")+'</span><strong>'+money(state.currency==="NGN"?v.price_ngn:v.price_usd,state.currency)+'</strong><a class="add-to-cart" href="cart.html?variant='+encodeURIComponent(v.id)+'&currency='+state.currency+'" data-add-variant="'+esc(v.id)+'">Add to cart</a></div>').join("");
 const refs=(p.shop_external_listings||[]).map(x=>{
 const shown=x.price_display_authorized&&x.observed_price!==null&&x.currency;
 const price=shown?" · "+money(x.observed_price,x.currency)+(x.price_observed_at?" (checked "+esc(date(x.price_observed_at))+")":""):"";
@@ -48,6 +48,15 @@ $("#bookshop-status").textContent=state.products.length?state.products.length+" 
 $("#services-status").textContent=state.services.length?state.services.length+" professional service(s) available.":"No professional services have been published yet.";render();
 }catch(e){console.error("Bookshop load failed",e);$("#bookshop-status").textContent="The catalogue could not be loaded from Supabase. Please try again later.";}
 }
+$("#book-grid").addEventListener("click",async e=>{
+const btn=e.target.closest("[data-add-variant]");if(!btn)return;e.preventDefault();
+if(!db){window.location.href=btn.href;return;}
+const {data:{user}}=await db.auth.getUser();if(!user){window.location.href=btn.href;return;}
+btn.setAttribute("aria-busy","true");btn.textContent="Adding…";
+try{const {error}=await db.rpc("commerce_cart_add",{p_variant_id:btn.dataset.addVariant,p_quantity:1,p_currency:state.currency});if(error)throw error;btn.textContent="Added ✓";}
+catch(err){btn.textContent="Try again";$("#bookshop-status").textContent=err.message||"Could not add this edition to your cart.";}
+finally{btn.removeAttribute("aria-busy");}
+});
 $("#service-grid").addEventListener("click",e=>{const btn=e.target.closest("[data-service-id]");if(!btn)return;const dialog=$("#service-request-dialog"),form=$("#service-request-form");form.elements.service_id.value=btn.dataset.serviceId;$("#service-request-heading").textContent="Enquire about "+btn.dataset.serviceTitle;$("#service-request-name").textContent="Tell us what you need in relation to "+btn.dataset.serviceTitle+". The team will review your request.";$("#service-request-status").textContent="";dialog.hidden=false;form.elements.customer_name.focus();});
 $("#service-request-close").addEventListener("click",()=>{$("#service-request-dialog").hidden=true;});
 $("#service-request-dialog").addEventListener("click",e=>{if(e.target.id==="service-request-dialog")e.currentTarget.hidden=true;});
