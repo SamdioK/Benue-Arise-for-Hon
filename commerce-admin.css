@@ -3,4 +3,4 @@
 
 .commerce-request-status{display:grid;gap:6px;margin-top:10px;font-size:10px;font-weight:800}.commerce-request-status select{max-width:220px;padding:8px;border:1px solid #d5e0d4;border-radius:6px;background:#fff;font-size:11px}.commerce-request-status option{text-transform:capitalize}
 
-.commerce-admin-logo{display:block;width:min(100%,420px);max-height:76px;object-fit:contain;object-position:left center;margin-bottom:14px}
+.commerce-admin-logo{display:block;width:58px;height:58px;object-fit:contain;margin:0 0 10px}
