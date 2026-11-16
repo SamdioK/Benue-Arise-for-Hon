@@ -24,7 +24,7 @@ else cartStatus("Sign in to retrieve or create your saved cart.");
 }catch(e){console.error(e);accountStatus("The account service could not be loaded. Please refresh and try again.");}
 }
 async function signUp(e){
-e.preventDefault();const f=e.currentTarget,fd=new FormData(f),button=f.querySelector("button[type=submit");button.disabled=true;
+e.preventDefault();const f=e.currentTarget,fd=new FormData(f),button=f.querySelector('button[type="submit"]');button.disabled=true;
 try{
 const {data,error}=await state.db.auth.signUp({email:String(fd.get("email")).trim().toLowerCase(),password:String(fd.get("password")),options:{data:{full_name:String(fd.get("full_name")).trim(),phone:String(fd.get("phone")||"").trim()}}});
 if(error)throw error;
@@ -80,7 +80,7 @@ const root=$("#cart-items");
 if(!state.items.length){root.innerHTML='<p class="shop-status">Your cart is empty. <a href="bookshop.html">Explore the books</a>.</p>';$("#cart-subtotal").textContent=money(0,state.currency);$("#checkout-panel").hidden=true;cartStatus("Your "+state.currency+" cart is ready.");return;}
 let subtotal=0;
 root.innerHTML='<div class="cart-items-list">'+state.items.map(item=>{
-const v=item.shop_product_variants,p=v?.shop_products||{},unit=Number(state.currency==="NGN"?v?.price_ngn:v?.price_usd||0),line=unit*item.quantity;subtotal+=line;
+const v=item.shop_product_variants,p=v?.shop_products||{},unit=Number((state.currency==="NGN"?v?.price_ngn:v?.price_usd)||0),line=unit*item.quantity;subtotal+=line;
 return '<article class="cart-item"><div><h3>'+esc(p.title||"Book")+'</h3><small>'+esc(v?.format==="physical"?"Printed edition":"Digital edition")+' · '+money(unit,state.currency)+' each</small><p><strong>'+money(line,state.currency)+'</strong></p></div><div class="cart-item-controls"><input aria-label="Quantity for '+esc(p.title)+'" type="number" min="1" max="50" value="'+item.quantity+'" data-quantity="'+esc(item.id)+'"><button type="button" data-remove="'+esc(item.id)+'">Remove</button></div></article>';
 }).join("")+'</div>';
 $("#cart-subtotal").textContent=money(subtotal,state.currency);$("#checkout-panel").hidden=false;
