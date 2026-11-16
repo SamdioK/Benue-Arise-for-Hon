@@ -41,19 +41,12 @@ if(error)throw error;await activateCustomer(data.user);
 }catch(err){accountStatus(err.message||"Sign in failed.");}
 finally{button.disabled=false;}
 }
-async function activateCustomer(user,extra={}){
-state.user=user;
-const metadata=user.user_metadata||{};
-const fullName=String(extra.full_name||metadata.full_name||user.email?.split("@")[0]||"Customer").trim();
-const phone=String(extra.phone||metadata.phone||"").trim();
-const {data:customer,error}=await state.db.from("commerce_customers").upsert({auth_user_id:user.id,full_name:fullName,email:user.email,phone:phone||null},{onConflict:"auth_user_id"}).select("id,full_name,email,phone").single();
-if(error)throw error;
-state.customer=customer;
-$("#auth-forms").hidden=true;$("#signed-in-panel").hidden=false;$("#customer-email").textContent="Signed in as "+customer.email;
-accountStatus("Your customer account is active. Your saved cart is retrieved from Supabase.");
-await loadCart();
-const params=new URLSearchParams(location.search),variant=params.get("variant");
-if(variant){await addVariant(variant);params.delete("variant");params.set("currency",state.currency);history.replaceState(null,"",location.pathname+"?"+params.toString());}
+async function activateCustomer(user){
+state.user=user;state.customer={id:null,full_name:user.user_metadata?.full_name||user.email?.split("@")[0]||"Customer",email:user.email,phone:user.user_metadata?.phone||null};
+$("#auth-forms").hidden=true;$("#signed-in-panel").hidden=false;$("#customer-email").textContent="Signed in as "+user.email;
+accountStatus("Your customer account is active. Your saved cart is retrieved securely from Supabase.");
+await loadCart();const params=new URLSearchParams(location.search),variant=params.get("variant");
+if(variant){await addVariant(variant);params.delete("variant");history.replaceState(null,"",location.pathname+(params.toString()?"?"+params.toString():""));}
 await loadOrders();
 }
 async function signOut(){
@@ -61,27 +54,20 @@ await state.db.auth.signOut();state.user=null;state.customer=null;state.cart=nul
 $("#auth-forms").hidden=false;$("#signed-in-panel").hidden=true;$("#checkout-panel").hidden=true;$("#order-history").hidden=true;$("#cart-items").innerHTML="";$("#cart-subtotal").textContent="—";accountStatus("You have signed out. Your cart remains saved in Supabase.");cartStatus("Sign in to retrieve your saved cart.");
 }
 async function ensureCart(){
-if(!state.customer)throw new Error("Sign in to manage your cart.");
-const {data,error}=await state.db.from("shop_carts").select("id,currency,status").eq("customer_id",state.customer.id).eq("currency",state.currency).eq("status","active").order("updated_at",{ascending:false}).limit(1).maybeSingle();
-if(error)throw error;
-if(data){state.cart=data;return data;}
-const {data:created,error:insertError}=await state.db.from("shop_carts").insert({customer_id:state.customer.id,currency:state.currency,status:"active"}).select("id,currency,status").single();
-if(insertError)throw insertError;state.cart=created;return created;
+if(!state.user)throw new Error("Sign in to manage your cart.");
+const {data,error}=await state.db.rpc("commerce_cart_get",{p_currency:state.currency});if(error)throw error;return data;
 }
 async function loadCart(){
-try{
-const cart=await ensureCart();
-const {data,error}=await state.db.from("shop_cart_items").select("id,variant_id,quantity,shop_product_variants(id,format,price_ngn,price_usd,stock_quantity,shop_products(title,author_name,cover_storage_path))").eq("cart_id",cart.id).order("created_at");
-if(error)throw error;state.items=data||[];renderCart();
-}catch(e){console.error(e);cartStatus(e.message||"Unable to load your cart.");}
+try{const data=await ensureCart();state.cart={id:data.id,currency:data.currency,status:data.status};state.items=data.items||[];state.currency=data.currency||state.currency;$("#cart-currency").value=state.currency;renderCart();}
+catch(e){console.error(e);cartStatus(e.message||"Unable to load your cart.");}
 }
 function renderCart(){
 const root=$("#cart-items");
 if(!state.items.length){root.innerHTML='<p class="shop-status">Your cart is empty. <a href="bookshop.html">Explore the books</a>.</p>';$("#cart-subtotal").textContent=money(0,state.currency);$("#checkout-panel").hidden=true;cartStatus("Your "+state.currency+" cart is ready.");return;}
 let subtotal=0;
 root.innerHTML='<div class="cart-items-list">'+state.items.map(item=>{
-const v=item.shop_product_variants,p=v?.shop_products||{},unit=Number((state.currency==="NGN"?v?.price_ngn:v?.price_usd)||0),line=unit*item.quantity;subtotal+=line;
-return '<article class="cart-item"><div><h3>'+esc(p.title||"Book")+'</h3><small>'+esc(v?.format==="physical"?"Printed edition":"Digital edition")+' · '+money(unit,state.currency)+' each</small><p><strong>'+money(line,state.currency)+'</strong></p></div><div class="cart-item-controls"><input aria-label="Quantity for '+esc(p.title)+'" type="number" min="1" max="50" value="'+item.quantity+'" data-quantity="'+esc(item.id)+'"><button type="button" data-remove="'+esc(item.id)+'">Remove</button></div></article>';
+const unit=Number(item.unit_price||0),line=Number(item.line_total||unit*item.quantity);subtotal+=line;
+return '<article class="cart-item"><div><h3>'+esc(item.title||"Book")+'</h3><small>'+esc(item.format==="physical"?"Printed edition":"Digital edition")+' · '+money(unit,state.currency)+' each</small><p><strong>'+money(line,state.currency)+'</strong></p></div><div class="cart-item-controls"><input aria-label="Quantity for '+esc(item.title)+'" type="number" min="1" max="50" value="'+item.quantity+'" data-quantity="'+esc(item.variant_id)+'"><button type="button" data-remove="'+esc(item.variant_id)+'">Remove</button></div></article>';
 }).join("")+'</div>';
 $("#cart-subtotal").textContent=money(subtotal,state.currency);$("#checkout-panel").hidden=false;
 cartStatus(state.items.length+" item line(s) saved in your "+state.currency+" cart.");
@@ -89,25 +75,18 @@ root.querySelectorAll("[data-quantity]").forEach(el=>el.addEventListener("change
 root.querySelectorAll("[data-remove]").forEach(el=>el.addEventListener("click",()=>removeItem(el.dataset.remove)));
 }
 async function addVariant(variantId){
-try{
-const {data:variant,error}=await state.db.from("shop_product_variants").select("id,format,is_active,stock_quantity,shop_products!inner(status)").eq("id",variantId).eq("is_active",true).eq("shop_products.status","published").maybeSingle();
-if(error)throw error;if(!variant)throw new Error("This edition is no longer available.");
-const cart=await ensureCart();
-const existing=state.items.find(x=>x.variant_id===variantId);
-const quantity=(existing?.quantity||0)+1;
-if(variant.stock_quantity!==null&&variant.stock_quantity<quantity)throw new Error("There is not enough stock for this quantity.");
-const {error:saveError}=await state.db.from("shop_cart_items").upsert({cart_id:cart.id,variant_id:variantId,quantity},{onConflict:"cart_id,variant_id"});
-if(saveError)throw saveError;
-await loadCart();cartStatus("Edition added to your saved cart.");
-}catch(e){cartStatus(e.message||"Could not add this edition.");}
+try{const {data,error}=await state.db.rpc("commerce_cart_add",{p_variant_id:variantId,p_quantity:1,p_currency:state.currency});if(error)throw error;state.cart={id:data.id,currency:data.currency,status:data.status};state.items=data.items||[];renderCart();cartStatus("Edition added to your saved cart.");}
+catch(e){cartStatus(e.message||"Could not add this edition.");}
 }
-async function changeQuantity(id,quantity){
+async function changeQuantity(variantId,quantity){
 if(!Number.isInteger(quantity)||quantity<1||quantity>50){await loadCart();return;}
-const item=state.items.find(x=>x.id===id),v=item?.shop_product_variants;
-if(v?.stock_quantity!==null&&v?.stock_quantity!==undefined&&quantity>v.stock_quantity){cartStatus("The requested quantity exceeds available stock.");await loadCart();return;}
-const {error}=await state.db.from("shop_cart_items").update({quantity}).eq("id",id);if(error){cartStatus(error.message);return;}await loadCart();
+const {data,error}=await state.db.rpc("commerce_cart_set_quantity",{p_variant_id:variantId,p_quantity:quantity});
+if(error){cartStatus(error.message);await loadCart();return;}state.cart={id:data.id,currency:data.currency,status:data.status};state.items=data.items||[];renderCart();
 }
-async function removeItem(id){const {error}=await state.db.from("shop_cart_items").delete().eq("id",id);if(error){cartStatus(error.message);return;}await loadCart();}
+async function removeItem(variantId){
+const {data,error}=await state.db.rpc("commerce_cart_remove",{p_variant_id:variantId});
+if(error){cartStatus(error.message);return;}state.cart={id:data.id,currency:data.currency,status:data.status};state.items=data.items||[];renderCart();
+}
 async function prepareOrder(e){
 e.preventDefault();if(!state.user||!state.cart||!state.items.length)return;
 const form=e.currentTarget,fd=new FormData(form),button=$("#prepare-order-button");
