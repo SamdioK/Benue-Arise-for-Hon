@@ -675,15 +675,15 @@
 @media (min-width:561px) and (max-width:1100px){.visual-features .feature-row{position:relative;top:clamp(-22px,-1.8vh,-12px)}.trust-strip{background:linear-gradient(105deg,#f4eafa 0%,#eee0f5 52%,#e9d9f1 100%)!important;border-color:rgba(221,199,232,.98)!important}}
 
 
-/* Final mobile/tablet visibility fix: lift the entire four-link group clear of
-   the floating assurance bar. The green panel itself remains in place. */
+/* Fine adjustment: bring the four shortcuts one step back down while
+   retaining enough clearance above the floating assurance strip. */
 @media (min-width:561px) and (max-width:1100px){
   .auth-visual .visual-features{
     justify-content:center !important;
-    padding-bottom:clamp(82px,10vh,112px) !important;
+    padding-bottom:clamp(38px,5vh,52px) !important;
   }
   .auth-visual .visual-features .feature-row{
     top:0 !important;
-    transform:translateY(clamp(-64px,-6vh,-46px)) !important;
+    transform:translateY(clamp(-30px,-2.8vh,-22px)) !important;
   }
 }
