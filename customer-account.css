@@ -684,6 +684,6 @@
   }
   .auth-visual .visual-features .feature-row{
     top:0 !important;
-    transform:translateY(clamp(-30px,-2.8vh,-22px)) !important;
+    transform:translateY(clamp(-12px,-1vh,-8px)) !important;
   }
 }
