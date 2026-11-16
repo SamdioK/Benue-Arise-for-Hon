@@ -481,35 +481,63 @@
   .auth-visual:after{top:214px}
 }
 
-/* Final reference match: remove the small floating preview treatment and let the
-   complete Lawshield composition occupy the available browser canvas. */
+/* Approved reference canvas: preserve the complete two-column composition at its
+   measured 1404:1536 proportion and centre it on the page. Do not stretch it to
+   the full phone height; the surrounding lilac canvas is part of the design. */
 @media (min-width:561px) and (max-width:1100px){
   html,body{width:100%;min-height:100%;margin:0}
   body.lawshield-auth-page{
-    display:block;
+    display:grid;
+    place-items:center;
     width:100%;
     min-height:100svh;
-    padding:0;
+    height:auto;
+    padding:clamp(10px,2.2vw,22px);
     background:
       radial-gradient(ellipse at 88% 90%,rgba(231,215,239,.88) 0,transparent 38%),
       linear-gradient(135deg,#fbf8f4 0%,#f7f2f7 58%,#f2e9f5 100%);
   }
   .auth-shell{
+    position:relative;
     display:grid;
-    width:100%;
-    max-width:none;
-    height:100svh;
-    min-height:100svh;
-    aspect-ratio:auto;
-    margin:0;
+    width:min(100%,760px);
+    max-width:760px;
+    height:auto;
+    min-height:0;
+    aspect-ratio:1404 / 1536;
+    margin:auto;
     grid-template-columns:38% 62%;
-    border-radius:0;
+    border-radius:clamp(18px,3vw,28px);
     overflow:hidden;
-    box-shadow:none;
+    background:#f7f3f6;
+    box-shadow:0 22px 65px rgba(38,20,42,.18);
   }
-  .auth-visual{height:100%;min-height:0}
-  .auth-visual .visual-top{height:43%;min-height:0;flex:0 0 43%;background-position:center 52%}
-  .visual-features{height:57%;flex:1 1 57%;padding:clamp(16px,3vw,34px) clamp(12px,2.5vw,28px);gap:clamp(20px,3.4vh,42px)}
+  .auth-visual{
+    position:relative;
+    height:100%;
+    min-height:0;
+    overflow:hidden;
+    border-radius:0;
+  }
+  .auth-visual .visual-top{
+    height:43%;
+    min-height:0;
+    flex:0 0 43%;
+    background-position:center 52%;
+    background-size:cover;
+  }
+  .visual-features{
+    height:57%;
+    flex:1 1 57%;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:clamp(13px,2.2vh,24px);
+    padding:clamp(15px,2.4vw,30px) clamp(12px,2.2vw,28px);
+    background:linear-gradient(155deg,#06432f 0%,#003c2c 100%);
+  }
+  .visual-features:before{display:none}
   .auth-visual:after{
     content:"";
     position:absolute;
@@ -518,45 +546,103 @@
     left:-8%;
     top:39.4%;
     width:120%;
-    height:clamp(48px,7vw,82px);
+    height:clamp(30px,5.2vw,58px);
     transform:none;
     border-radius:0;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0 28 C210 104 390 110 590 76 C820 36 1000 24 1200 0 L1200 43 C1000 66 820 78 590 108 C390 142 210 136 0 70 Z' fill='%23e6ad31'/%3E%3Cpath d='M0 70 C210 136 390 142 590 108 C820 78 1000 66 1200 43 L1200 55 C1000 80 820 92 590 120 C390 154 210 148 0 82 Z' fill='%23f8e4ae'/%3E%3C/svg%3E");
     background-size:100% 100%;
     background-repeat:no-repeat;
   }
-  .auth-main{height:100%;min-height:0;padding:clamp(12px,2.1vw,26px);gap:clamp(10px,1.7vh,20px)}
-  .auth-card{width:100%;max-width:none;padding:clamp(18px,3vw,38px) clamp(14px,3vw,34px);border-radius:clamp(20px,3.2vw,38px)}
+  .feature-row{gap:clamp(8px,1.2vw,15px)}
+  .feature-icon{width:clamp(34px,4.8vw,52px);height:clamp(34px,4.8vw,52px);flex:0 0 clamp(34px,4.8vw,52px);border-radius:14px}
+  .feature-row strong{font-size:clamp(.78rem,1.45vw,1.04rem);font-weight:800;line-height:1.12}
+  .feature-row small{font-size:clamp(.62rem,1.05vw,.82rem);line-height:1.25}
+  .visual-brand-watermark{font-size:.42rem;bottom:9px;right:10px}
+  .auth-main{
+    min-width:0;
+    height:100%;
+    min-height:0;
+    justify-content:center;
+    gap:clamp(8px,1.3vh,15px);
+    padding:clamp(14px,2.4vw,28px) clamp(12px,2.4vw,28px) clamp(100px,13%,150px);
+    background:linear-gradient(145deg,#fff 0%,#fbf8fc 70%,#f5edf8 100%);
+  }
+  .auth-card{
+    width:100%;
+    max-width:none;
+    padding:clamp(17px,2.6vw,30px) clamp(13px,2.4vw,27px);
+    border-radius:clamp(18px,2.6vw,28px);
+    box-shadow:0 15px 35px rgba(50,24,55,.15);
+  }
   .auth-card:before{
-    top:0;right:0;width:38%;height:clamp(150px,23vw,250px);
-    background:#53156d;border-radius:0 34px 0 0;
+    top:0;right:0;width:38%;height:clamp(125px,19vw,205px);
+    background:#53156d;border-radius:0 28px 0 0;
     clip-path:polygon(12% 0,100% 0,100% 100%);
   }
   .auth-card:after{
-    top:0;right:0;width:43%;height:clamp(165px,25vw,270px);
+    top:0;right:0;width:43%;height:clamp(138px,21vw,225px);
     background:linear-gradient(180deg,#f1c34c 0 78%,#f8e4ae 78% 100%);
     clip-path:polygon(3% 0,14% 0,100% 78%,100% 89%);
   }
-  .auth-brand.auth-brand-stacked{gap:6px}
-  .auth-brand-stacked img{width:clamp(92px,13vw,142px);height:clamp(86px,12vw,132px)}
-  .auth-brand-stacked strong{font-size:clamp(1.55rem,3.25vw,2.45rem);font-family:'Playfair Display',Georgia,serif;font-weight:800;letter-spacing:-.025em}
-  .auth-brand-stacked span{font-size:clamp(.86rem,1.65vw,1.2rem);letter-spacing:.12em}
-  .auth-clock{margin:clamp(8px,1.4vh,16px) 0 clamp(14px,2vh,24px)}
-  .auth-heading h1{font-size:clamp(2rem,4vw,3rem)}
-  .auth-heading p{font-size:clamp(.9rem,1.65vw,1.2rem)}
-  .auth-field{height:clamp(52px,6.7vw,68px)}
-  .auth-primary,.auth-secondary{min-height:clamp(54px,7vw,68px);font-size:clamp(1rem,1.7vw,1.25rem)}
-  .trust-strip{width:100%;padding:clamp(12px,1.8vw,20px) clamp(10px,1.8vw,20px);gap:clamp(7px,1vw,14px)}
-  .trust-strip div{font-size:clamp(.65rem,1.1vw,.86rem);gap:clamp(6px,.9vw,12px)}
-  .trust-strip b{width:clamp(25px,3.4vw,38px);height:clamp(27px,3.6vw,40px)}
-  .trust-strip>i{height:36px}
-  .back-to-shop{font-size:clamp(.7rem,1.1vw,.85rem)}
+  .auth-brand.auth-brand-stacked{gap:5px;margin-bottom:0}
+  .auth-brand-stacked img{width:clamp(66px,9vw,100px);height:clamp(62px,8.5vw,94px);margin-bottom:0}
+  .auth-brand-stacked strong{
+    font-size:clamp(1.08rem,2.15vw,1.62rem);
+    font-family:'Playfair Display',Georgia,serif;
+    font-weight:800;
+    letter-spacing:-.025em;
+    line-height:1.08;
+    white-space:nowrap;
+  }
+  .auth-brand-stacked span{font-size:clamp(.68rem,1.05vw,.88rem);letter-spacing:.11em;gap:8px}
+  .auth-brand-stacked span:before,.auth-brand-stacked span:after{height:2px;max-width:48px;min-width:12px}
+  .auth-clock{margin:clamp(4px,.8vh,8px) 0 clamp(8px,1.2vh,14px)}
+  .auth-clock strong{font-size:clamp(.58rem,.9vw,.72rem)}
+  .auth-clock span{font-size:clamp(.54rem,.8vw,.66rem)}
+  .auth-heading{margin-bottom:clamp(8px,1.2vh,14px)}
+  .auth-heading h1{font-size:clamp(1.55rem,3vw,2.25rem);line-height:1.04}
+  .auth-heading p{font-size:clamp(.68rem,1.1vw,.88rem)}
+  .auth-heading i{width:clamp(45px,6vw,65px);height:5px;margin-top:10px}
+  .auth-form{gap:clamp(7px,1vh,11px)}
+  .auth-field{height:clamp(40px,5.5vw,54px);padding:0 10px;border-radius:12px}
+  .auth-field input{font-size:clamp(.68rem,1vw,.86rem)}
+  .auth-field>span{font-size:1rem}
+  .auth-options{font-size:clamp(.58rem,.85vw,.72rem)}
+  .text-action{font-size:inherit}
+  .auth-primary,.auth-secondary{min-height:clamp(42px,5.7vw,56px);font-size:clamp(.76rem,1.15vw,.96rem)}
+  .auth-or{margin:clamp(7px,1.2vh,13px) 0;gap:8px}
+  .auth-or b{width:32px;height:32px;font-size:.78rem}
+  .auth-secondary{border-radius:12px}
+  .auth-legal{font-size:clamp(.5rem,.78vw,.64rem);margin-top:clamp(8px,1.2vh,14px)}
+  .auth-status{min-height:10px;font-size:.68rem}
+  .trust-strip{
+    position:absolute;
+    z-index:12;
+    left:4.5%;
+    bottom:4.2%;
+    width:91%;
+    max-width:none;
+    min-height:clamp(48px,7.4vw,76px);
+    padding:clamp(9px,1.4vw,16px) clamp(13px,2.4vw,25px);
+    border-radius:999px;
+    display:flex;
+    flex-wrap:nowrap;
+    justify-content:space-between;
+    gap:clamp(5px,.8vw,10px);
+    background:linear-gradient(105deg,rgba(255,255,255,.98),rgba(248,238,252,.98));
+    border:1px solid rgba(255,255,255,.98);
+    box-shadow:0 12px 30px rgba(61,31,69,.17),inset 0 2px 0 rgba(255,255,255,.95);
+  }
+  .trust-strip div{flex:1 1 0;min-width:0;display:flex;align-items:center;justify-content:center;gap:clamp(5px,.9vw,10px);font-size:clamp(.58rem,.95vw,.76rem);font-weight:800;color:#42105c}
+  .trust-strip b{display:grid;place-items:center;flex:0 0 clamp(23px,3.2vw,34px);width:clamp(23px,3.2vw,34px);height:clamp(25px,3.4vw,36px);color:#50136a}
+  .trust-strip b svg{width:100%;height:100%;display:block;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+  .trust-strip>i{display:block;flex:0 0 1px;height:clamp(23px,3vw,32px);background:#d7c4df}
+  .back-to-shop{position:absolute;z-index:13;right:5%;bottom:1.3%;font-size:clamp(.56rem,.82vw,.68rem)}
 }
-
 /* The approved assurance bar spans the entire artwork, not only the form column. */
 @media (min-width:561px) and (max-width:1100px){
   .auth-shell{position:relative}
-  .auth-main{padding-bottom:clamp(105px,14vh,190px)}
+  .auth-main{padding-bottom:clamp(100px,13%,150px)}
   .trust-strip{
     position:absolute;
     z-index:12;
