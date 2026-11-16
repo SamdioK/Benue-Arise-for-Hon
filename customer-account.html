@@ -83,11 +83,32 @@
       </div>
 
       <div id="forgot-view" class="auth-view" hidden>
-        <div class="auth-heading"><h1>Reset Password</h1><p>We will send a secure reset link to your email</p><i></i></div>
-        <form id="forgot-form" class="auth-form">
+        <div class="auth-heading"><h1>Reset Password</h1><p>Choose how you would like to receive your verification code</p><i></i></div>
+        <div class="recovery-methods" id="recovery-methods">
+          <button class="recovery-method" type="button" data-recovery-method="email"><span aria-hidden="true">✉</span><strong>Email address</strong><small>Receive a secure recovery link</small></button>
+          <button class="recovery-method" type="button" data-recovery-method="phone"><span aria-hidden="true">▣</span><strong>Registered phone number</strong><small>Receive a one-time SMS code</small></button>
+        </div>
+        <form id="forgot-form" class="auth-form recovery-panel" hidden>
+          <p class="recovery-intro">Enter the email address registered to your Lawshield customer account.</p>
           <label class="auth-field"><span aria-hidden="true">✉</span><input type="email" name="email" placeholder="Email address" autocomplete="email" required></label>
-          <button class="auth-primary" type="submit">Send Reset Link</button>
+          <button class="auth-primary" type="submit">Send Recovery Email</button>
           <p class="auth-status" id="forgot-status" role="status" aria-live="polite"></p>
+          <button class="auth-back" type="button" data-recovery-back>Choose another method</button>
+        </form>
+        <form id="phone-recovery-form" class="auth-form recovery-panel" hidden>
+          <p class="recovery-intro">Enter the full international phone number that has been verified on your Lawshield account, including its country calling code (for example, +234…).</p>
+          <label class="auth-field"><span aria-hidden="true">☎</span><input type="tel" name="phone" placeholder="Registered phone number (+234…)" autocomplete="tel" inputmode="tel" required></label>
+          <button class="auth-primary" type="submit" id="send-phone-otp">Send SMS OTP</button>
+          <label class="auth-field otp-field" id="phone-otp-wrap" hidden><span aria-hidden="true">⌑</span><input name="token" inputmode="numeric" autocomplete="one-time-code" placeholder="Enter 6-digit OTP" minlength="6" maxlength="6" pattern="[0-9]{6}"></label>
+          <button class="auth-primary" type="button" id="verify-phone-otp" hidden>Verify OTP</button>
+          <p class="auth-status" id="phone-recovery-status" role="status" aria-live="polite"></p>
+          <button class="auth-back" type="button" data-recovery-back>Choose another method</button>
+        </form>
+        <form id="phone-new-password-form" class="auth-form recovery-panel" hidden>
+          <p class="recovery-intro">Your phone number has been verified. Choose a new password for your account.</p>
+          <label class="auth-field"><span aria-hidden="true">♙</span><input type="password" name="password" placeholder="New password (8+ characters)" minlength="8" autocomplete="new-password" required></label>
+          <button class="auth-primary" type="submit">Update Password</button>
+          <p class="auth-status" id="phone-password-status" role="status" aria-live="polite"></p>
         </form>
         <button class="auth-back" type="button" data-show-signin>Return to sign in</button>
       </div>
@@ -121,5 +142,5 @@
 
 </main>
 <dialog id="legal-dialog" class="legal-dialog"><button type="button" id="legal-close" aria-label="Close">×</button><h2 id="legal-title"></h2><p id="legal-copy"></p></dialog>
-<script src="customer-account.js?v=20261116-confirmed-account" defer></script>
+<script src="customer-account.js?v=20261116-email-phone-recovery" defer></script>
 </body></html>
