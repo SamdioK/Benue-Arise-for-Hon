@@ -62,7 +62,11 @@ try{
  const {data,error}=await db.auth.signUp({
    email:String(fd.get("email")).trim().toLowerCase(),
    password:String(fd.get("password")),
-   options:{data:{full_name:String(fd.get("full_name")).trim(),phone}}
+   options:{
+     data:{full_name:String(fd.get("full_name")).trim(),phone},
+     // Return the customer to this exact GitHub Pages project URL after Supabase verifies the email.
+     emailRedirectTo:window.location.origin+window.location.pathname
+   }
  });
  if(error)throw error;
  if(data.session&&data.user){activate(data.user);status("signup-status","Your account has been created.",true);}
