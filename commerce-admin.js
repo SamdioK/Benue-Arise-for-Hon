@@ -29,12 +29,12 @@ $("#lawshield-contact-form").addEventListener("submit",saveLawshieldContact);
 
 const lawshieldContactStatus=(message)=>{const el=$("#lawshield-contact-admin-status");if(el)el.textContent=message;};
 async function loadLawshieldContact(){
- const {data,error}=await db.from("site_settings").select("setting_value").eq("setting_key","lawshield_contact").maybeSingle();
+ const {data,error}=await db.from("lawshield_contact_profiles").select("contact_data,status").eq("id","primary").maybeSingle();
  if(error){lawshieldContactStatus("Could not load Lawshield contact settings: "+error.message);return;}
  const form=$("#lawshield-contact-form");if(!form)return;
- const v=data?.setting_value||{};
+ const v=data?.contact_data||{};
  for(const key of ["phone","whatsapp","email","address","website","facebook","instagram","linkedin","x","youtube","intro"]){if(form.elements[key])form.elements[key].value=v[key]||"";}
- lawshieldContactStatus(v.publication_status==="published"?"Published contact details are live on the Lawshield contact page.":"Contact details are currently saved as a draft and are not public.");
+ lawshieldContactStatus(data?.status==="published"?"Published contact details are live on the Lawshield contact page.":"Contact details are currently saved as a draft and are not public.");
 }
 async function saveLawshieldContact(event){
  event.preventDefault();if(!adminReady)return;
@@ -48,7 +48,7 @@ async function saveLawshieldContact(event){
  const buttons=form.querySelectorAll("button");buttons.forEach(b=>b.disabled=true);lawshieldContactStatus("Saving Lawshield contact settings to Supabase…");
  try{
   const {data:{user}}=await db.auth.getUser();
-  const {error}=await db.from("site_settings").upsert({setting_key:"lawshield_contact",setting_value:value,updated_at:new Date().toISOString(),updated_by:user.id},{onConflict:"setting_key"});
+  const {error}=await db.from("lawshield_contact_profiles").upsert({id:"primary",contact_data:value,status:publication,updated_at:new Date().toISOString(),updated_by:user.id},{onConflict:"id"});
   if(error)throw error;
   lawshieldContactStatus(publication==="published"?"Lawshield contact details published successfully.":"Lawshield contact details saved as draft. They are not visible to customers yet.");
  }catch(e){lawshieldContactStatus("Contact details were not saved: "+(e.message||"Supabase rejected the operation"));}
