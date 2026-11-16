@@ -147,3 +147,31 @@
 .visual-features .feature-row:first-child .feature-icon svg{
   stroke-width:2.15;
 }
+
+/* Force the feature artwork to render as gold outline drawings, never solid glyph silhouettes. */
+.visual-features .feature-icon svg,
+.visual-features .feature-icon svg *{
+  fill:none !important;
+  stroke:#f4c65c !important;
+  color:#f4c65c !important;
+}
+.visual-features .feature-icon svg{
+  overflow:visible;
+  width:72%;
+  height:72%;
+  stroke-width:2.5 !important;
+  stroke-linecap:round !important;
+  stroke-linejoin:round !important;
+}
+.visual-features .feature-icon{
+  background:linear-gradient(145deg,#07523a 0%,#063d2e 100%) !important;
+  border:2px solid #eab63e !important;
+  color:#f4c65c !important;
+}
+.visual-features .feature-icon svg path,
+.visual-features .feature-icon svg circle,
+.visual-features .feature-icon svg line,
+.visual-features .feature-icon svg polyline{
+  fill:none !important;
+  stroke:#f4c65c !important;
+}
