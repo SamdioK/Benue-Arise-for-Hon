@@ -69,8 +69,18 @@ try{
    }
  });
  if(error)throw error;
+ if(data.user?.email_confirmed_at){
+   status("signup-status","This email address is already verified. Please sign in. If you cannot remember your password, use Forgot password.",true);
+   setView("signup");
+   return;
+ }
+ if(data.user && Array.isArray(data.user.identities) && data.user.identities.length===0){
+   status("signup-status","An account already exists with this email address. Please sign in. If you have not verified it yet, use the confirmation option; if you cannot remember your password, use Forgot password.",true);
+   setView("signup");
+   return;
+ }
  if(data.session&&data.user){activate(data.user);status("signup-status","Your account has been created.",true);}
- else status("signup-status","If this is a new account, a confirmation email should arrive shortly. Check Spam/Junk too. If you have registered before, return to sign in or use Forgot password. You can request another confirmation email below.",true);
+ else status("signup-status","Your registration request was accepted. If the address still requires verification, Supabase will send a confirmation email. Check Inbox and Spam/Junk. If you have already verified this address, please sign in instead.",true);
 }catch(err){status("signup-status",err.message||"Account creation failed.");}
 finally{setBusy(form,false);}
 }
@@ -84,7 +94,7 @@ async function resendConfirmation(){
   if(error){
    if(/already confirmed/i.test(error.message||""))status("signup-status","This email address is already confirmed. Please sign in or use Forgot password.",true);
    else throw error;
-  }else status("signup-status","A new confirmation request has been accepted. Check Inbox, Spam/Junk and Promotions.",true);
+  }else status("signup-status","The confirmation request was accepted, but this does not guarantee that another email will be sent. If you have already verified this address, please sign in. Otherwise check Inbox, Spam/Junk and Promotions.",true);
  }catch(err){status("signup-status",err.message||"We could not request another confirmation email.");}
  finally{button.disabled=false;}
 }
