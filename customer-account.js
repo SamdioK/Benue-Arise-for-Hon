@@ -1,6 +1,6 @@
 (() => {
 const cfg=window.ARISE_CONFIG||{},$=s=>document.querySelector(s),views=["signin","signup","forgot","reset","account"];
-let db=null,user=null,phoneIti=null;
+let db=null,user=null;
 const params=new URLSearchParams(location.search);
 const setView=name=>views.forEach(v=>$("#"+v+"-view").hidden=v!==name);
 const status=(id,message,ok=false)=>{const el=$("#"+id);if(el){el.textContent=message;el.classList.toggle("success",ok);}};
@@ -15,67 +15,22 @@ document.querySelectorAll("[data-show-signin]").forEach(b=>b.addEventListener("c
 $("#forgot-button").addEventListener("click",()=>{const email=$("#signin-form").elements.email.value.trim();$("#forgot-form").elements.email.value=email;setView("forgot");});
 document.querySelectorAll("[data-open-legal]").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();const terms=a.dataset.openLegal==="terms";$("#legal-title").textContent=terms?"Terms of Service":"Privacy Policy";$("#legal-copy").textContent=terms?"Use this account to manage purchases, book orders and professional-service enquiries with S. T. Hon (SAN) & Co. Product prices, availability, delivery arrangements and service engagements are confirmed by the firm. Orders are not considered paid until the payment provider confirms payment.":"Account information is used to authenticate customers, manage shopping carts and orders, respond to service enquiries and provide purchased digital publications. Authentication is handled by the firm's Supabase service. Do not submit confidential legal instructions or privileged documents through general shopping forms.";$("#legal-dialog").showModal();}));
 $("#legal-close").addEventListener("click",()=>$("#legal-dialog").close());
-async function loadPhoneSelectorLibrary(){
-  if(typeof window.intlTelInput==="function")return true;
-  const sources=[
-    "https://unpkg.com/intl-tel-input@29.5.11/build/js/intlTelInput.min.js",
-    "https://cdn.jsdelivr.net/npm/intl-tel-input@29.5.11/build/js/intlTelInput.min.js"
-  ];
-  for(const src of sources){
-    try{
-      await new Promise((resolve,reject)=>{
-        const script=document.createElement("script");
-        script.src=src;script.async=true;
-        script.onload=resolve;script.onerror=()=>reject(new Error("Phone selector source unavailable"));
-        document.head.appendChild(script);
-      });
-      if(typeof window.intlTelInput==="function")return true;
-    }catch(_error){}
-  }
-  return false;
-}
-async function initInternationalPhone(){
-  const input=$("#signup-phone");
-  if(!input)return;
-  const loaded=await loadPhoneSelectorLibrary();
-  if(!loaded){
-    status("signup-status","The international phone selector could not load. Please refresh the page or try again shortly.");
-    input.setAttribute("aria-describedby","phone-selector-error");
-    return;
-  }
-  try{
-    phoneIti=window.intlTelInput(input,{
-      initialCountry:"auto",
-      geoIpLookup:async(callback)=>{
-        let country="ng";
-        try{
-          const response=await fetch("https://ipapi.co/json/",{headers:{Accept:"application/json"}});
-          if(response.ok){
-            const location=await response.json();
-            const detected=String(location.country_code||"").toLowerCase();
-            if(/^[a-z]{2}$/.test(detected))country=detected;
-          }
-        }catch(_error){}
-        callback(country);
-      },
-      countryOrder:["ng"],
-      countrySearch:true,
-      separateDialCode:true,
-      showFlags:true,
-      nationalMode:false,
-      formatAsYouType:true,
-      strictMode:true,
-      loadUtils:()=>import("https://cdn.jsdelivr.net/npm/intl-tel-input@29.5.11/build/js/utils.js")
-    });
-    await phoneIti.promise;
-    input.dataset.phoneSelectorReady="true";
-  }catch(error){
-    console.error("International phone selector initialisation failed",error);
-    status("signup-status","The country selector could not initialise. Please refresh and try again.");
-  }
+const countrySelect=$("#signup-country");
+const phoneInput=$("#signup-phone");
+const dialPreview=$("#phone-dial-preview");
+const selectedDial=()=>countrySelect?.selectedOptions?.[0]?.dataset.dial||"234";
+countrySelect?.addEventListener("change",()=>{if(dialPreview)dialPreview.textContent="+"+selectedDial();});
+function buildInternationalPhone(){
+  const digits=String(phoneInput?.value||"").replace(/\\D/g,"");
+  if(!digits)return "";
+  const dial=selectedDial();
+  const national=digits.replace(/^0+/,"");
+  if(!national)throw new Error("Please enter a valid phone number.");
+  if(national.length<6||national.length>14)throw new Error("Please enter a valid phone number.");
+  return "+"+dial+national;
 }
 async function init(){
-const phoneInitPromise=initInternationalPhone();
+
 if(!cfg.SUPABASE_URL||!cfg.SUPABASE_PUBLISHABLE_KEY){status("signin-status","The secure account service is not configured.");return;}
 try{
 const {createClient}=await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/+esm");
@@ -89,18 +44,7 @@ async function signUp(e){
 e.preventDefault();const form=e.currentTarget,fd=new FormData(form);setBusy(form,true);
 status("signup-status","Creating your customer account…");
 try{
- let phone="";
- if(phoneIti){
-   await phoneInitPromise;
-   await phoneIti.promise;
-   const raw=String(fd.get("phone")||"").trim();
-   if(raw){
-     if(!phoneIti.isValidNumber())throw new Error("Please check the phone number and selected country code.");
-     phone=phoneIti.getNumber();
-   }
- }else if(String(fd.get("phone")||"").trim()){
-   throw new Error("The international phone selector is still loading. Please try again.");
- }
+ const phone=buildInternationalPhone();
  const {data,error}=await db.auth.signUp({
    email:String(fd.get("email")).trim().toLowerCase(),
    password:String(fd.get("password")),
