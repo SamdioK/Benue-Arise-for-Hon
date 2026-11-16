@@ -98,3 +98,45 @@ The signed-in customer can view their recent order numbers, amounts, currency, s
 - [ ] Delivery fee and fulfilment configuration.
 - [ ] Paystack initialisation, webhook verification and payment confirmation.
 - [ ] Receipts and digital download entitlement.
+
+## 10. Lawshield contact directory and administrator management
+
+The commercial website uses `lawshield-contact.html`. It is independent of the Benue Arise campaign's `contact.html` page. Storefront and cart Contact links point to the Lawshield page.
+
+The Lawshield administrator can manage the firm's commercial contact channels from the **Lawshield contact details and social channels** panel in the Commerce Administrator workspace.
+
+Fields include:
+- Main telephone number and WhatsApp number
+- Customer-care/business email
+- Office or correspondence address
+- Firm website
+- Facebook, Instagram, LinkedIn, X and YouTube links
+- A short contact-page introduction
+
+### Save and publication workflow
+
+1. Sign in to the authorised portal administrator account.
+2. Open the Lawshield Commerce workspace.
+3. Enter only verified firm contact details and official social profile URLs.
+4. Choose **Save as draft** while information is awaiting confirmation. Draft information is private and cannot be read by anonymous visitors.
+5. Choose **Publish contact details** only after verifying the details. At least one direct contact method (telephone, WhatsApp or email) is required.
+6. The public Lawshield contact page reads only the published record. If no record is published, it displays a clear pending-update message and does not invent contact details.
+
+### Security and independence
+
+- Contact information is stored in `arise_site.lawshield_contact_profiles`.
+- Row-level security allows public reading only when the record status is `published`.
+- Only an authenticated account on the existing administrator allowlist can create or change the contact record.
+- Draft contact details remain private in Supabase.
+- The commercial contact directory does not reuse campaign phone numbers, social handles, donations or campaign enquiry forms.
+- The page uses only details uploaded and published by the Lawshield administrator.
+
+### Contact directory test tasks
+
+1. Open `lawshield-contact.html` before any contact details have been published; confirm the pending-update message appears.
+2. Save sample details as a draft; confirm they do not appear on the public page.
+3. Attempt an anonymous read of a draft row; confirm RLS returns no row.
+4. Publish verified test details; confirm the public page displays only the supplied details.
+5. Confirm HTTPS social URLs open in a new tab with safe link attributes.
+6. Confirm the commercial Contact links from the Bookshop and Cart open `lawshield-contact.html`, not the campaign Contact page.
+7. Confirm the campaign `contact.html` remains a separate page and is not overwritten.
