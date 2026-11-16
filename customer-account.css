@@ -480,3 +480,75 @@
   .auth-visual .visual-top{height:230px;min-height:230px;flex:0 0 230px}
   .auth-visual:after{top:214px}
 }
+
+/* Final reference match: remove the small floating preview treatment and let the
+   complete Lawshield composition occupy the available browser canvas. */
+@media (min-width:561px) and (max-width:1100px){
+  html,body{width:100%;min-height:100%;margin:0}
+  body.lawshield-auth-page{
+    display:block;
+    width:100%;
+    min-height:100svh;
+    padding:0;
+    background:
+      radial-gradient(ellipse at 88% 90%,rgba(231,215,239,.88) 0,transparent 38%),
+      linear-gradient(135deg,#fbf8f4 0%,#f7f2f7 58%,#f2e9f5 100%);
+  }
+  .auth-shell{
+    display:grid;
+    width:100%;
+    max-width:none;
+    height:100svh;
+    min-height:100svh;
+    aspect-ratio:auto;
+    margin:0;
+    grid-template-columns:38% 62%;
+    border-radius:0;
+    overflow:hidden;
+    box-shadow:none;
+  }
+  .auth-visual{height:100%;min-height:0}
+  .auth-visual .visual-top{height:43%;min-height:0;flex:0 0 43%;background-position:center 52%}
+  .visual-features{height:57%;flex:1 1 57%;padding:clamp(16px,3vw,34px) clamp(12px,2.5vw,28px);gap:clamp(20px,3.4vh,42px)}
+  .auth-visual:after{
+    content:"";
+    position:absolute;
+    z-index:5;
+    pointer-events:none;
+    left:-8%;
+    top:39.4%;
+    width:120%;
+    height:clamp(48px,7vw,82px);
+    transform:none;
+    border-radius:0;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0 28 C210 104 390 110 590 76 C820 36 1000 24 1200 0 L1200 43 C1000 66 820 78 590 108 C390 142 210 136 0 70 Z' fill='%23e6ad31'/%3E%3Cpath d='M0 70 C210 136 390 142 590 108 C820 78 1000 66 1200 43 L1200 55 C1000 80 820 92 590 120 C390 154 210 148 0 82 Z' fill='%23f8e4ae'/%3E%3C/svg%3E");
+    background-size:100% 100%;
+    background-repeat:no-repeat;
+  }
+  .auth-main{height:100%;min-height:0;padding:clamp(12px,2.1vw,26px);gap:clamp(10px,1.7vh,20px)}
+  .auth-card{width:100%;max-width:none;padding:clamp(18px,3vw,38px) clamp(14px,3vw,34px);border-radius:clamp(20px,3.2vw,38px)}
+  .auth-card:before{
+    top:0;right:0;width:38%;height:clamp(150px,23vw,250px);
+    background:#53156d;border-radius:0 34px 0 0;
+    clip-path:polygon(12% 0,100% 0,100% 100%);
+  }
+  .auth-card:after{
+    top:0;right:0;width:43%;height:clamp(165px,25vw,270px);
+    background:linear-gradient(180deg,#f1c34c 0 78%,#f8e4ae 78% 100%);
+    clip-path:polygon(3% 0,14% 0,100% 78%,100% 89%);
+  }
+  .auth-brand.auth-brand-stacked{gap:6px}
+  .auth-brand-stacked img{width:clamp(92px,13vw,142px);height:clamp(86px,12vw,132px)}
+  .auth-brand-stacked strong{font-size:clamp(1.55rem,3.25vw,2.45rem);font-family:'Playfair Display',Georgia,serif;font-weight:800;letter-spacing:-.025em}
+  .auth-brand-stacked span{font-size:clamp(.86rem,1.65vw,1.2rem);letter-spacing:.12em}
+  .auth-clock{margin:clamp(8px,1.4vh,16px) 0 clamp(14px,2vh,24px)}
+  .auth-heading h1{font-size:clamp(2rem,4vw,3rem)}
+  .auth-heading p{font-size:clamp(.9rem,1.65vw,1.2rem)}
+  .auth-field{height:clamp(52px,6.7vw,68px)}
+  .auth-primary,.auth-secondary{min-height:clamp(54px,7vw,68px);font-size:clamp(1rem,1.7vw,1.25rem)}
+  .trust-strip{width:100%;padding:clamp(12px,1.8vw,20px) clamp(10px,1.8vw,20px);gap:clamp(7px,1vw,14px)}
+  .trust-strip div{font-size:clamp(.65rem,1.1vw,.86rem);gap:clamp(6px,.9vw,12px)}
+  .trust-strip b{width:clamp(25px,3.4vw,38px);height:clamp(27px,3.6vw,40px)}
+  .trust-strip>i{height:36px}
+  .back-to-shop{font-size:clamp(.7rem,1.1vw,.85rem)}
+}
