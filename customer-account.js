@@ -22,8 +22,10 @@ phoneIti=window.intlTelInput(input,{
   initialCountry:"ng",
   countryOrder:["ng"],
   separateDialCode:true,
-  nationalMode:false,
+  nationalMode:true,
+  autoPlaceholder:"aggressive",
   formatAsYouType:true,
+  formatOnDisplay:true,
   loadUtils:()=>import("https://cdn.jsdelivr.net/npm/intl-tel-input@29.5.11/build/js/utils.js")
 });
 }
