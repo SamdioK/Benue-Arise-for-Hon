@@ -68,6 +68,7 @@ create table if not exists arise_site.shop_external_listings (
   observed_price numeric(14,2) check (observed_price is null or observed_price >= 0),
   currency text check (currency is null or currency in ('NGN','USD','GBP','EUR','CAD','AUD','INR')),
   price_observed_at timestamptz,
+  price_display_authorized boolean not null default false,
   availability_label text,
   capture_method text not null default 'manual' check (capture_method in ('manual','approved_api','approved_feed')),
   source_note text,
