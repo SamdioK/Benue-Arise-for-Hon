@@ -1,0 +1,100 @@
+# Lawshield Partners — Phase 3: Customer Accounts, Cart and Order Preparation
+
+**Brand:** S. T. Hon (SAN) & Co. — Lawshield Partners  
+**Working branch:** `implementation/brand-and-foundation`  
+**Pages:** `bookshop.html`, `cart.html`  
+**Database schema:** `arise_site` in the connected Supabase project  
+**Migrations:** `20261116100000_lawshield_customer_cart_rpcs.sql`, `20261116110000_lawshield_order_preparation.sql`  
+**Status:** Authenticated cart and pending-order preparation implemented. Payment gateway integration remains disabled.
+
+## 1. Purpose
+
+This phase enables customer accounts, persistent server-side shopping carts, currency-consistent cart operations, and preparation of orders using prices held in Supabase. It does not collect payment or mark an order as paid.
+
+## 2. Customer account
+
+1. From the Bookshop, select **Add to cart** on a physical or digital edition.
+2. The customer is directed to `cart.html`, with the chosen edition identified in the URL.
+3. A new customer can create an account with full name, email, optional phone number and password.
+4. An existing customer signs in with email and password.
+5. Email confirmation may be required according to the Supabase Auth project settings.
+6. After sign-in, the cart is retrieved from Supabase. If the customer arrived with a selected edition, the item is added and the one-time selection is removed from the page URL.
+
+## 3. Persistent cart
+
+- Cart and cart-item records are stored in `arise_site.shop_carts` and `arise_site.shop_cart_items`.
+- The browser does not use localStorage, sessionStorage or IndexedDB to save cart state.
+- The page uses an in-memory authentication session. If the customer closes or reloads the page and the session is no longer available, they sign in again; the cart itself remains in Supabase.
+- Customers can change quantities and remove items.
+- Quantity is restricted to 1–50 per edition.
+- Physical stock limits are checked against the catalogue.
+- The cart uses one currency at a time. If it contains items in NGN, it cannot be switched to USD until emptied, and vice versa.
+- The RPC functions validate the authenticated user and execute cart operations server-side. The browser is not granted direct access to customer cart tables.
+
+## 4. Order preparation
+
+1. Review each edition, quantity and unit price.
+2. Confirm the cart currency.
+3. Enter customer name, email and phone.
+4. For physical books, provide street address, city and country.
+5. Submit **Prepare order — payment not yet enabled**.
+6. The database checks the customer identity, active cart, published product status, active variant and stock availability.
+7. Current prices are recalculated from the catalogue in the selected cart currency.
+8. The database creates an order and order-item snapshots, then marks the cart as converted.
+9. The customer receives an order number and the total amount.
+10. The order remains `pending_payment`. It is not a paid order, receipt of payment or fulfilment authorisation.
+
+Stock is not decremented at order preparation. It must be rechecked and reserved/decremented atomically during verified payment confirmation in the payment phase.
+
+## 5. Customer order history
+
+The signed-in customer can view their recent order numbers, amounts, currency, status and creation date. The history is returned by an authenticated database function, not by a direct browser query against order tables.
+
+## 6. Security and persistence
+
+- Customer cart functions require an authenticated Supabase user.
+- The database resolves the customer record from `auth.uid()`; the browser cannot choose another customer's ID.
+- Cart and order functions use `SECURITY DEFINER` with a restricted search path and authenticated-only execute grants.
+- The customer-facing browser code uses the Supabase publishable key and RLS; no service-role credential is shipped to the browser.
+- Cart records, order records and order-item snapshots are stored in Supabase.
+- No persistent browser storage is used for customer data, cart contents or session persistence.
+- A pending order is not represented as paid. Paystack integration and webhook verification are not enabled in this phase.
+
+## 7. Important current boundaries
+
+- No card or bank payment is collected.
+- No Paystack initialisation, verification or webhook processing is active.
+- No payment receipt is issued.
+- No digital download entitlement is granted.
+- Delivery fees are currently zero and must be configured before live physical-book checkout.
+- Stock is checked at order preparation but not reserved until the payment phase.
+- Customer password reset and email notification workflows require separate implementation and testing.
+
+## 8. Test tasks
+
+1. Create a customer account and confirm the Supabase Auth user is created.
+2. Add a physical edition and a digital edition to the cart.
+3. Verify that the database cart survives sign-out and a later sign-in.
+4. Increase and decrease quantities and remove an item.
+5. Attempt to change the currency while the cart has items; confirm the database rejects the switch.
+6. Empty the cart and switch between NGN and USD.
+7. Prepare an order with physical books and confirm address validation.
+8. Prepare an order containing digital books only.
+9. Confirm order numbers and item price snapshots are saved in Supabase.
+10. Confirm each prepared order remains `pending_payment` and no payment is recorded.
+11. Confirm anonymous users cannot execute the cart or order RPC functions.
+12. Confirm customer A cannot retrieve customer B's cart or order history.
+
+## 9. Completion checklist
+
+- [x] Supplied Lawshield scales-of-justice symbol integrated as SVG.
+- [x] Customer account sign-up and sign-in interface.
+- [x] Authenticated cart database functions.
+- [x] Add, update quantity and remove cart item operations.
+- [x] NGN/USD single-currency cart enforcement.
+- [x] Pending-order preparation with server-side price snapshots.
+- [x] Authenticated customer order-history function.
+- [ ] Live browser testing with real customer accounts.
+- [ ] Delivery fee and fulfilment configuration.
+- [ ] Paystack initialisation, webhook verification and payment confirmation.
+- [ ] Receipts and digital download entitlement.
