@@ -246,6 +246,9 @@ async function checkAuth() {
     $("#auth-panel").hidden = true; $("#cms-panel").hidden = false;
     $("#signed-in-as").textContent = "Signed in as " + (user.email || "authorised user") + " · " + (admin ? admin.role : "Profile Manager");
     const isManager = !admin && !!manager;
+  const commercePanel = $("#commerce-admin-panel");
+  if (commercePanel) commercePanel.hidden = isManager;
+  window.dispatchEvent(new Event("arise-admin-ready"));
     $("#profile-manager-users").hidden = isManager;
     $("#site-assets-manager").hidden = isManager;
     $("#campaign-audio-manager").hidden = isManager;
