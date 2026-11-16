@@ -15,7 +15,7 @@ const {data:{user},error}=await db.auth.getUser();if(error||!user){status("Sign 
 const {data:admin,error:roleError}=await db.from("admins").select("user_id,role").eq("user_id",user.id).maybeSingle();
 if(roleError||!admin){status("This account is not on the portal administrator allowlist. Commerce management is restricted.");return;}
 adminReady=true;$("#commerce-admin-panel").hidden=false;status("Administrator access verified. Commerce records are saved directly to Supabase.");
-await Promise.all([loadCategories(),loadBooks(),loadOrders(),loadServices(),loadServiceRequests()]);
+await Promise.all([loadCategories(),loadBooks(),loadOrders(),loadServices(),loadServiceRequests(),loadLawshieldContact()]);
 $("#commerce-book-form").addEventListener("submit",saveBook);
 $("#commerce-service-form").addEventListener("submit",saveService);
 $("#commerce-marketplace-form").addEventListener("submit",saveMarketplace);
@@ -23,8 +23,38 @@ $("#commerce-refresh-books").addEventListener("click",loadBooks);
 $("#commerce-refresh-orders").addEventListener("click",loadOrders);
 $("#commerce-refresh-services").addEventListener("click",loadServices);
 $("#commerce-refresh-requests").addEventListener("click",loadServiceRequests);
+$("#lawshield-contact-form").addEventListener("submit",saveLawshieldContact);
 }catch(e){console.error(e);status("Commerce administration could not initialise. Confirm the Phase 1 database migration has been applied.");}
 }
+
+const lawshieldContactStatus=(message)=>{const el=$("#lawshield-contact-admin-status");if(el)el.textContent=message;};
+async function loadLawshieldContact(){
+ const {data,error}=await db.from("site_settings").select("setting_value").eq("setting_key","lawshield_contact").maybeSingle();
+ if(error){lawshieldContactStatus("Could not load Lawshield contact settings: "+error.message);return;}
+ const form=$("#lawshield-contact-form");if(!form)return;
+ const v=data?.setting_value||{};
+ for(const key of ["phone","whatsapp","email","address","website","facebook","instagram","linkedin","x","youtube","intro"]){if(form.elements[key])form.elements[key].value=v[key]||"";}
+ lawshieldContactStatus(v.publication_status==="published"?"Published contact details are live on the Lawshield contact page.":"Contact details are currently saved as a draft and are not public.");
+}
+async function saveLawshieldContact(event){
+ event.preventDefault();if(!adminReady)return;
+ const form=event.currentTarget,fd=new FormData(form),publication=event.submitter?.value==="published"?"published":"draft";
+ const keys=["phone","whatsapp","email","address","website","facebook","instagram","linkedin","x","youtube"];
+ const value={};for(const key of keys)value[key]=String(fd.get(key)||"").trim();
+ value.intro=String(fd.get("intro")||"").trim();value.publication_status=publication;value.updated_at=new Date().toISOString();
+ for(const key of ["website","facebook","instagram","linkedin","x","youtube"]){if(value[key]&&!/^https:\/\//i.test(value[key])){lawshieldContactStatus("Use HTTPS links for "+key+".");return;}}
+ if(value.email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.email)){lawshieldContactStatus("Enter a valid business email address.");return;}
+ if(publication==="published"&&!value.phone&&!value.email&&!value.whatsapp){lawshieldContactStatus("Add at least one verified phone, WhatsApp or email contact before publishing.");return;}
+ const buttons=form.querySelectorAll("button");buttons.forEach(b=>b.disabled=true);lawshieldContactStatus("Saving Lawshield contact settings to Supabase…");
+ try{
+  const {data:{user}}=await db.auth.getUser();
+  const {error}=await db.from("site_settings").upsert({setting_key:"lawshield_contact",setting_value:value,updated_at:new Date().toISOString(),updated_by:user.id},{onConflict:"setting_key"});
+  if(error)throw error;
+  lawshieldContactStatus(publication==="published"?"Lawshield contact details published successfully.":"Lawshield contact details saved as draft. They are not visible to customers yet.");
+ }catch(e){lawshieldContactStatus("Contact details were not saved: "+(e.message||"Supabase rejected the operation"));}
+ finally{buttons.forEach(b=>b.disabled=false);}
+}
+
 async function loadCategories(){
 const {data,error}=await db.from("shop_categories").select("id,name").eq("is_active",true).order("display_order");
 if(error)throw error;
