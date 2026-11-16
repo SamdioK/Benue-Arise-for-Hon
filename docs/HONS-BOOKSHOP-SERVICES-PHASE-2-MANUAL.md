@@ -70,7 +70,7 @@ The storefront reads published records from Supabase. It does not use browser st
 3. The browser calls the `commerce-service-request` Edge Function.
 4. The function validates the selected service is published, validates the request, applies a per-email rate limit and stores the request server-side.
 5. A unique `HBS-SRV` reference is returned to the visitor.
-6. The administrator can review the request in the service request records; a full quote and appointment management interface is a later iteration.
+6. The administrator can review the request in the commerce workspace and update its workflow status. Quote drafting and appointment scheduling are later iterations.
 
 ## 8. Security and persistence
 
@@ -111,6 +111,7 @@ The storefront reads published records from Supabase. It does not use browser st
 - [x] Marketplace links and price-display permission gate.
 - [x] Administrator book and service draft creation.
 - [x] Secure service enquiry Edge Function deployed.
+- [x] Administrator service publishing and enquiry status queue.
 - [ ] Full cart and checkout.
 - [ ] Payment verification and order fulfilment.
 - [ ] Digital download entitlement.
