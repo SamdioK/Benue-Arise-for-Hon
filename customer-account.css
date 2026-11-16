@@ -328,3 +328,155 @@
   .visual-features{display:grid;grid-template-columns:1fr;gap:14px}
   .auth-main{padding:22px 12px 30px}
 }
+
+/* Reference-match correction: framed full composition, curved left-panel sweep and real trust marks. */
+@media (min-width:561px) and (max-width:1100px){
+  html,body{min-height:100%;height:auto}
+  body.lawshield-auth-page{
+    min-height:100svh;
+    display:grid;
+    place-items:center;
+    padding:clamp(12px,2.2vw,24px);
+    background:
+      radial-gradient(ellipse at 88% 88%,rgba(231,215,239,.9) 0,transparent 34%),
+      linear-gradient(135deg,#fbf8f4 0%,#f7f2f7 58%,#f2e9f5 100%);
+  }
+  .auth-shell{
+    width:min(100%,760px);
+    height:auto;
+    min-height:0;
+    aspect-ratio: .914 / 1;
+    grid-template-columns:38% 62%;
+    border-radius:26px;
+    overflow:hidden;
+    box-shadow:0 22px 65px rgba(38,20,42,.18);
+    background:#fbf8fc;
+  }
+  .auth-visual{
+    min-height:0;
+    height:100%;
+    position:relative;
+    overflow:hidden;
+    border-radius:0;
+  }
+  .auth-visual .visual-top{
+    height:43%;
+    min-height:0;
+    flex:0 0 43%;
+    background-position:center 53%;
+    background-size:cover;
+  }
+  .visual-features{
+    position:relative;
+    flex:1 1 57%;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:clamp(13px,2.2vh,24px);
+    padding:clamp(15px,2.4vw,30px) clamp(12px,2.2vw,28px);
+    background:linear-gradient(155deg,#06432f 0%,#003c2c 100%);
+  }
+  .visual-features:before{display:none}
+  .auth-visual:after{
+    content:"";
+    position:absolute;
+    z-index:5;
+    pointer-events:none;
+    left:-16%;
+    top:40.5%;
+    width:132%;
+    height:clamp(22px,3.2vw,34px);
+    border-radius:50%;
+    background:linear-gradient(180deg,#e6ad31 0 67%,#f8e4ae 67% 100%);
+    transform:rotate(-5.5deg);
+    box-shadow:0 2px 4px rgba(0,0,0,.12);
+  }
+  .feature-row{gap:clamp(8px,1.2vw,15px)}
+  .feature-icon{width:clamp(38px,5vw,54px);height:clamp(38px,5vw,54px);flex:0 0 clamp(38px,5vw,54px);border-radius:14px}
+  .feature-row strong{font-size:clamp(.82rem,1.55vw,1.08rem);font-weight:800;line-height:1.12}
+  .feature-row small{font-size:clamp(.66rem,1.15vw,.84rem);line-height:1.25}
+  .visual-brand-watermark{font-size:.42rem;bottom:9px;right:10px}
+  .auth-main{
+    min-width:0;
+    height:100%;
+    justify-content:center;
+    gap:clamp(10px,1.7vh,18px);
+    padding:clamp(12px,2.2vw,24px);
+    background:linear-gradient(145deg,#fff 0%,#fbf8fc 70%,#f5edf8 100%);
+  }
+  .auth-card{
+    width:100%;
+    max-width:none;
+    padding:clamp(18px,2.6vw,30px) clamp(14px,2.5vw,28px);
+    border-radius:clamp(18px,2.6vw,28px);
+    box-shadow:0 15px 35px rgba(50,24,55,.15);
+  }
+  .auth-card:before{
+    width:33%;
+    height:clamp(120px,18vw,205px);
+    background:#53156d;
+    clip-path:polygon(18% 0,100% 0,100% 78%);
+  }
+  .auth-card:after{
+    width:38%;
+    height:clamp(135px,20vw,225px);
+    background:linear-gradient(180deg,#e6ad31 0 70%,#f7dfa0 70% 100%);
+    clip-path:polygon(8% 0,19% 0,100% 77%,100% 88%);
+  }
+  .auth-brand.auth-brand-stacked{gap:5px;margin-bottom:0}
+  .auth-brand-stacked img{width:clamp(64px,8.5vw,88px);height:clamp(58px,8vw,82px);margin-bottom:0}
+  .auth-brand-stacked div{gap:5px}
+  .auth-brand-stacked strong{
+    font-family:'Playfair Display',Georgia,serif;
+    font-size:clamp(1.35rem,2.55vw,1.9rem);
+    font-weight:800;
+    letter-spacing:-.025em;
+    line-height:1.08;
+    white-space:nowrap;
+  }
+  .auth-brand-stacked span{font-size:clamp(.72rem,1.2vw,.92rem);letter-spacing:.12em;gap:9px}
+  .auth-brand-stacked span:before,.auth-brand-stacked span:after{height:2px;max-width:50px;min-width:14px}
+  .auth-clock{margin:clamp(5px,1vh,10px) 0 clamp(12px,1.7vh,19px)}
+  .auth-clock strong{font-size:clamp(.68rem,1.15vw,.82rem)}
+  .auth-clock span{font-size:clamp(.62rem,1vw,.74rem)}
+  .auth-heading{margin-bottom:clamp(12px,1.8vh,20px)}
+  .auth-heading h1{font-size:clamp(1.8rem,3.5vw,2.65rem);line-height:1.04}
+  .auth-heading p{font-size:clamp(.78rem,1.35vw,1rem)}
+  .auth-heading i{width:clamp(52px,8vw,80px);height:6px;margin-top:14px}
+  .auth-form{gap:clamp(9px,1.35vh,14px)}
+  .auth-field{height:clamp(46px,6.2vw,60px);padding:0 12px;border-radius:13px}
+  .auth-field input{font-size:clamp(.78rem,1.3vw,.98rem)}
+  .auth-field>span{font-size:1.12rem}
+  .auth-options{font-size:clamp(.65rem,1vw,.8rem)}
+  .text-action{font-size:inherit}
+  .auth-primary,.auth-secondary{min-height:clamp(48px,6.2vw,59px);font-size:clamp(.86rem,1.4vw,1.08rem)}
+  .auth-or{margin:clamp(10px,1.8vh,18px) 0;gap:8px}
+  .auth-or b{width:36px;height:36px;font-size:.85rem}
+  .auth-secondary{border-radius:12px}
+  .auth-legal{font-size:clamp(.58rem,.9vw,.7rem);margin-top:clamp(12px,1.8vh,20px)}
+  .trust-strip{
+    width:100%;
+    max-width:none;
+    display:flex;
+    flex-wrap:nowrap;
+    justify-content:space-between;
+    gap:clamp(5px,.8vw,10px);
+    padding:clamp(10px,1.4vw,15px) clamp(8px,1.4vw,15px);
+    border-radius:999px;
+    background:linear-gradient(110deg,#fff 0%,#f7eefb 100%);
+    border:1px solid rgba(255,255,255,.95);
+    box-shadow:0 9px 24px rgba(67,35,74,.13),inset 0 1px 0 #fff;
+  }
+  .trust-strip div{flex:1 1 0;min-width:0;justify-content:center;gap:clamp(4px,.7vw,8px);font-size:clamp(.55rem,.9vw,.72rem);line-height:1.2}
+  .trust-strip b{display:grid;place-items:center;flex:0 0 auto;width:clamp(20px,2.6vw,29px);height:clamp(22px,2.8vw,31px);color:var(--purple)}
+  .trust-strip b svg{display:block;width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+  .trust-strip>i{display:block;flex:0 0 1px;height:28px;background:#d9c6e0}
+  .back-to-shop{font-size:clamp(.62rem,1vw,.76rem);text-align:center}
+}
+@media (max-width:560px){
+  body.lawshield-auth-page{padding:0;display:block;min-height:100svh}
+  .auth-shell{aspect-ratio:auto;width:100%;min-height:100svh;height:auto;border-radius:0;grid-template-columns:1fr;overflow:visible}
+  .auth-visual .visual-top{height:230px;min-height:230px;flex:0 0 230px}
+  .auth-visual:after{top:214px}
+}
