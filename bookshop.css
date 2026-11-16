@@ -21,3 +21,11 @@
 @media(max-width:760px){.lawshield-brand img{width:min(100%,300px);max-height:58px}.lawshield-nav{gap:10px}}
 
 .add-to-cart{display:inline-flex;align-items:center;padding:7px 10px;border-radius:4px;background:#176342;color:#fff;font-size:.68rem;font-weight:850;text-decoration:none;white-space:nowrap}.add-to-cart[aria-busy=true]{opacity:.65;pointer-events:none}.book-edition{align-items:center;flex-wrap:wrap}
+
+/* Discreet live WAT clock within the storefront hero; the former green masthead is removed. */
+.shop-wat-clock{display:inline-flex;align-items:center;gap:10px;margin:0 0 25px;padding:9px 13px;border:1px solid #e8dfd0;border-radius:7px;background:rgba(255,255,255,.78);color:#37312b;font-family:Inter,system-ui,sans-serif}
+.shop-wat-clock-mark{width:8px;height:8px;flex:none;border-radius:50%;background:#d99b35;box-shadow:0 0 0 3px rgba(217,155,53,.15)}
+.shop-wat-clock>span:last-child{display:flex;flex-direction:column;gap:3px}
+.shop-wat-clock strong{font-size:.75rem;letter-spacing:.035em;font-variant-numeric:tabular-nums;color:#245c43}
+.shop-wat-clock small{font-size:.64rem;color:#756d62}
+@media(max-width:640px){.shop-wat-clock{margin-bottom:21px;padding:8px 11px}.shop-wat-clock strong{font-size:.7rem}.shop-wat-clock small{font-size:.6rem}}
