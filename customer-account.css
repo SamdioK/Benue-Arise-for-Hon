@@ -726,3 +726,6 @@
 .country-option:hover,.country-option[aria-selected=true]{background:#f4eef8}
 .country-option-flag{font-size:1.25rem}.country-option-code{color:#6d6470;font-variant-numeric:tabular-nums}.country-empty{padding:18px;color:#746c77;text-align:center;font-size:.85rem}
 @media(max-width:560px){.phone-field{grid-template-columns:38px auto minmax(0,1fr);gap:8px;padding:6px 10px}.country-picker-trigger{width:36px}.phone-dial-preview{font-size:.85rem}.phone-field input{font-size:.88rem}.country-picker-panel{width:min(350px,calc(100vw - 52px))}}
+
+/* Keep the searchable country menu visible outside the card bounds */
+.auth-card{overflow:visible}
