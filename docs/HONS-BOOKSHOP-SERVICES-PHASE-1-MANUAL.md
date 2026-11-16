@@ -28,11 +28,11 @@ This commercial module is operationally and financially separate from campaign d
 - Physical stock and shipping weight can be recorded. Digital files are stored in a private bucket.
 
 ### Marketplace reference prices
-- `shop_external_listings` stores marketplace name, region, product/listing identifier, HTTPS listing URL, observed price, currency, observation timestamp, availability label and capture method.
+- `shop_external_listings` stores marketplace name, region, product/listing identifier, HTTPS listing URL, observed price, currency, observation timestamp, explicit permission to display the price, availability label and capture method.
 - Supported capture methods are manual, approved API and approved feed.
 - External prices are informational references, not Hon's Bookshop checkout prices.
 - Marketplace price displays must follow the relevant marketplace's terms. For Amazon, do not scrape or republish prices/images outside an authorised method. Use an approved Amazon integration where eligible; otherwise show a marketplace link and avoid representing an unverified amount as live.
-- Show the source marketplace, currency and the time/date checked whenever a marketplace price is displayed.
+- Show the source marketplace, currency and the time/date checked whenever a marketplace price is displayed. The administrator must explicitly confirm that the source terms permit the price display; the default is link-only.
 
 ### Currency and checkout
 - Customers choose NGN or USD.
