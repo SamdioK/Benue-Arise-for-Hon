@@ -2,6 +2,15 @@
 const cfg=window.ARISE_CONFIG||{},$=s=>document.querySelector(s);
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 document.querySelectorAll("[data-year]").forEach(n=>n.textContent=new Date().getFullYear());
+const mountShopWatClock=()=>{
+ const timeNode=$("#shop-wat-time"),dateNode=$("#shop-wat-date");
+ if(!timeNode||!dateNode)return;
+ const timeFormat=new Intl.DateTimeFormat("en-GB",{timeZone:"Africa/Lagos",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false});
+ const dateFormat=new Intl.DateTimeFormat("en-GB",{timeZone:"Africa/Lagos",weekday:"short",day:"2-digit",month:"short",year:"numeric"});
+ const update=()=>{const now=new Date();timeNode.textContent=timeFormat.format(now)+" WAT";dateNode.textContent=dateFormat.format(now);};
+ update();window.setInterval(update,1000);
+};
+mountShopWatClock();
 const toggle=$(".menu-toggle"),nav=$(".nav");toggle?.addEventListener("click",()=>{const o=nav.classList.toggle("nav-open");toggle.setAttribute("aria-expanded",String(o));});
 let db=null;
 const state={products:[],categories:[],services:[],currency:"NGN",search:"",category:"",format:""};
