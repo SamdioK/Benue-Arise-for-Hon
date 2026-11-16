@@ -710,3 +710,19 @@
 .phone-field input{width:100%;min-width:0;height:44px;border:0!important;outline:0!important;box-shadow:none!important;background:transparent!important;padding:0 4px!important;font:500 .95rem 'DM Sans',sans-serif;color:#25212a}
 .phone-help{display:block;margin:-9px 4px 0;color:#77717a;font-size:.72rem;line-height:1.4}
 @media(max-width:560px){.phone-field{grid-template-columns:minmax(0,1.2fr) auto minmax(0,1.1fr);gap:5px;padding:6px 9px}.phone-field select{font-size:.72rem}.phone-dial-preview{font-size:.82rem}.phone-field input{font-size:.88rem}.phone-help{font-size:.68rem}}
+
+/* Searchable, complete international country picker */
+.phone-field{position:relative;display:grid;grid-template-columns:42px auto minmax(0,1fr);align-items:center;gap:10px;padding:7px 12px;min-height:62px;overflow:visible;z-index:5}
+.country-picker-trigger{width:40px;height:42px;border:0;background:transparent;display:flex;align-items:center;justify-content:center;gap:4px;padding:0;cursor:pointer;font-size:1.2rem}
+.country-caret{font-size:.7rem;color:#68616c}
+.phone-dial-preview{font-weight:700;color:#66606a;font-size:.92rem;white-space:nowrap}
+.phone-field input{width:100%;min-width:0;height:44px;border:0!important;outline:0!important;box-shadow:none!important;background:transparent!important;padding:0 4px!important;font:500 .95rem 'DM Sans',sans-serif;color:#25212a}
+.country-picker-panel{position:absolute;z-index:50;left:0;top:calc(100% + 8px);width:min(390px,calc(100vw - 64px));max-height:340px;background:#fff;border:1px solid #e1d9e5;border-radius:14px;box-shadow:0 16px 42px #21102235;overflow:hidden}
+.country-picker-panel[hidden]{display:none}
+.country-search-wrap{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid #eee8f0;color:#3c3340;font-size:1.35rem}
+.country-search-wrap input{border:0!important;outline:0!important;box-shadow:none!important;width:100%;min-width:0;height:34px;padding:0!important;font:500 .9rem 'DM Sans',sans-serif;background:#fff!important}
+.country-options{max-height:278px;overflow-y:auto;overscroll-behavior:contain}
+.country-option{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;width:100%;padding:11px 14px;border:0;border-bottom:1px solid #f3eff4;background:#fff;text-align:left;color:#27232b;font:500 .88rem 'DM Sans',sans-serif;cursor:pointer}
+.country-option:hover,.country-option[aria-selected=true]{background:#f4eef8}
+.country-option-flag{font-size:1.25rem}.country-option-code{color:#6d6470;font-variant-numeric:tabular-nums}.country-empty{padding:18px;color:#746c77;text-align:center;font-size:.85rem}
+@media(max-width:560px){.phone-field{grid-template-columns:38px auto minmax(0,1fr);gap:8px;padding:6px 10px}.country-picker-trigger{width:36px}.phone-dial-preview{font-size:.85rem}.phone-field input{font-size:.88rem}.country-picker-panel{width:min(350px,calc(100vw - 52px))}}
