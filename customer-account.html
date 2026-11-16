@@ -4,7 +4,8 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#073f2c">
 <meta name="description" content="Secure customer sign-in for S. T. Hon (SAN) & Co. — Lawshield Partners.">
-<link rel="stylesheet" href="customer-account.css?v=20261116-signin-door-icon">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@29.5.11/build/css/intlTelInput.css">
+<link rel="stylesheet" href="customer-account.css?v=20261116-global-phone">
 <script src="config.js"></script>
 <title>Customer Sign In | Lawshield Partners</title>
 </head>
@@ -63,10 +64,12 @@
         <form id="signup-form" class="auth-form">
           <label class="auth-field"><span aria-hidden="true">♙</span><input name="full_name" placeholder="Full name" autocomplete="name" minlength="2" maxlength="160" required></label>
           <label class="auth-field"><span aria-hidden="true">✉</span><input type="email" name="email" placeholder="Email address" autocomplete="email" required></label>
-          <label class="auth-field"><span aria-hidden="true">☎</span><input name="phone" type="tel" placeholder="Phone number (optional)" autocomplete="tel" maxlength="40"></label>
+          <label class="auth-field phone-field"><span aria-hidden="true">☎</span><input id="signup-phone" name="phone" type="tel" placeholder="Phone number (optional)" autocomplete="tel" inputmode="tel" maxlength="40"></label>
+          <small class="phone-help">Choose your country code and enter your number. Nigeria (+234) is selected by default.</small>
           <label class="auth-field"><span aria-hidden="true">♙</span><input id="signup-password" type="password" name="password" placeholder="Create password (8+ characters)" autocomplete="new-password" minlength="8" required><button class="password-toggle" type="button" data-toggle-password="signup-password" aria-label="Show password">◉</button></label>
           <button class="auth-primary" type="submit">Create Account</button>
           <p class="auth-status" id="signup-status" role="status" aria-live="polite"></p>
+          <button class="resend-confirmation" id="resend-confirmation" type="button">Didn’t receive the confirmation email? Resend it</button>
         </form>
         <button class="auth-back" type="button" data-show-signin>Already have an account? Sign in</button>
       </div>
@@ -110,5 +113,6 @@
 
 </main>
 <dialog id="legal-dialog" class="legal-dialog"><button type="button" id="legal-close" aria-label="Close">×</button><h2 id="legal-title"></h2><p id="legal-copy"></p></dialog>
-<script src="customer-account.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@29.5.11/build/js/intlTelInput.min.js" defer></script>
+<script src="customer-account.js?v=20261116-global-phone" defer></script>
 </body></html>
