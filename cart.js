@@ -37,7 +37,7 @@ try{const {data,error}=await state.db.auth.signInWithPassword({email:String(fd.g
 catch(err){accountStatus(err.message||"Sign in failed.");}finally{button.disabled=false;}
 }
 async function activateCustomer(user){
-state.user=user;$("#auth-forms").hidden=true;$("#signed-in-panel").hidden=false;$("#customer-email").textContent="Signed in as "+user.email;
+state.user=user;$("#auth-forms").hidden=true;$("#signed-in-panel").hidden=false;$("#customer-email").textContent="Signed in as "+user.email;const checkout=$("#checkout-form");checkout.elements.customer_email.value=user.email||"";checkout.elements.customer_name.value=user.user_metadata?.full_name||user.email?.split("@")[0]||"";checkout.elements.customer_phone.value=user.user_metadata?.phone||"";
 accountStatus("Your customer account is active. Your cart is retrieved securely from Supabase.");
 await loadCart();
 const params=new URLSearchParams(location.search),variant=params.get("variant");
