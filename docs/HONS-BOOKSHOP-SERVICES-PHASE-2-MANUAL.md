@@ -1,20 +1,20 @@
-# Hon's Bookshop & Services — Phase 2: Public Catalogue and Service Enquiries
+# S. T. Hon (SAN) & Co. — Lawshield Partners — Phase 2: Public Catalogue and Service Enquiries
 
 **Working branch:** `implementation/brand-and-foundation`  
 **Public page:** `bookshop.html`  
-**Administrator:** `admin.html` → Hon's Bookshop & Services workspace  
+**Administrator:** `admin.html` → S. T. Hon (SAN) & Co. — Lawshield Partners workspace  
 **Database:** Supabase project `atstsekevoozausbiqbi`, schema `arise_site`  
 **Edge Function:** `commerce-service-request`  
 **Status:** Catalogue and service-enquiry foundation implemented. Checkout, cart and digital fulfilment are subsequent phases.
 
 ## 1. Purpose
 
-This phase introduces the public Hon's Bookshop & Services storefront and the first administrator workflows. Visitors can browse published books, choose NGN or USD display currency, filter by category and edition, follow external bookseller links, and submit a professional service enquiry.
+This phase introduces the public S. T. Hon (SAN) & Co. — Lawshield Partners storefront and the first administrator workflows. Visitors can browse published books, choose NGN or USD display currency, filter by category and edition, follow external bookseller links, and submit a professional service enquiry.
 
 ## 2. Public storefront
 
 1. Open `bookshop.html` from the portal navigation or homepage quick links.
-2. Select NGN or USD in the currency selector. This changes displayed Hon's Bookshop prices only; it does not convert or alter stored prices.
+2. Select NGN or USD in the currency selector. This changes displayed Lawshield Bookshop prices only; it does not convert or alter stored prices.
 3. Search by title, author or ISBN.
 4. Filter by category and physical/digital edition.
 5. Review the available editions and the independently stored NGN/USD prices.
