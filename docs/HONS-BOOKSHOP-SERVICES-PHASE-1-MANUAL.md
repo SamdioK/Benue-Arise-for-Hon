@@ -3,7 +3,7 @@
 **Project:** Benue Arise for Hon  
 **Working branch:** `implementation/brand-and-foundation`  
 **Database:** Supabase project `atstsekevoozausbiqbi`, schema `arise_site`  
-**Status:** Foundation migration staged for review; not yet applied to the live database.
+**Status:** Foundation migration applied successfully to the connected Supabase project on 16 November 2026.
 
 ## 1. Purpose
 
@@ -137,9 +137,9 @@ Digital fulfilment must issue short-lived signed URLs only after a verified succ
 
 ## 10. Completion checklist
 
-- [ ] Migration reviewed and applied to the intended Supabase project.
-- [ ] RLS and administrator policies verified.
-- [ ] Storage buckets and policies verified.
+- [x] Migration reviewed and applied to the intended Supabase project.
+- [x] RLS enabled on all commerce tables; administrator policies installed.
+- [x] Public cover and private digital/document storage buckets created; storage policies installed.
 - [ ] Public catalogue read tests pass.
 - [ ] Customer/private data access tests pass.
 - [ ] No persistent browser/device storage introduced.
