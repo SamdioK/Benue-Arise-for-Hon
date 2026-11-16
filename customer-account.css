@@ -716,3 +716,14 @@
 
 /* Keep the searchable country menu visible outside the card bounds */
 .auth-card{overflow:visible}
+
+/* Password recovery: clear email/SMS choice and compact mobile-friendly verification panels. */
+.recovery-methods{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin:4px 0 20px}
+.recovery-method{min-height:145px;padding:18px 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border:1.5px solid #d5cbd9;border-radius:16px;background:#fff;color:var(--purple);font:inherit;cursor:pointer;text-align:center}
+.recovery-method>span{font-size:1.8rem;color:var(--green)}
+.recovery-method strong{font-size:.95rem;font-weight:800}
+.recovery-method small{font-size:.76rem;line-height:1.4;color:#6d6671}
+.recovery-method:hover,.recovery-method:focus-visible{border-color:var(--gold);box-shadow:0 0 0 3px #e6ad3120;outline:0}
+.recovery-panel[hidden],.recovery-methods[hidden],.otp-field[hidden]{display:none!important}
+.recovery-intro{margin:0 0 3px;color:#5f5963;font-size:.88rem;line-height:1.55}
+@media(max-width:420px){.recovery-methods{grid-template-columns:1fr}.recovery-method{min-height:112px}}
