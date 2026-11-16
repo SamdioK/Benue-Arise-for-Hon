@@ -93,7 +93,7 @@ begin
   if p_quantity < 1 or p_quantity > 50 then raise exception 'Quantity must be between 1 and 50'; end if;
   if p_currency not in ('NGN','USD') then raise exception 'Choose NGN or USD'; end if;
   v_customer := arise_site.commerce_customer_for_current_user();
-  select * into v_variant from arise_site.shop_product_variants v
+  select v.* into v_variant from arise_site.shop_product_variants v
     join arise_site.shop_products p on p.id=v.product_id
     where v.id=p_variant_id and v.is_active=true and p.status='published'
     for update of v;
