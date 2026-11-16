@@ -65,3 +65,17 @@
 @media(max-width:390px){
  .site-header .lawshield-brand .lawshield-clock{flex-direction:column;align-items:flex-start;gap:2px}
 }
+
+/* Refined centred Lawshield brand lock-up */
+.site-header .lawshield-brand .lawshield-brand-copy{align-items:center;text-align:center}
+.site-header .lawshield-brand .lawshield-brand-copy>strong{font:900 clamp(1.08rem,2.6vw,1.9rem)/1.08 Georgia,serif;letter-spacing:.012em;text-align:center}
+.site-header .lawshield-brand .lawshield-brand-copy>small{text-align:center;font-weight:900}
+.site-header .lawshield-brand .lawshield-clock{justify-content:center;align-items:center;flex-direction:column;gap:3px;margin-top:6px;text-align:center}
+.site-header .lawshield-brand .lawshield-clock strong{font-size:clamp(.72rem,1.5vw,.88rem);font-weight:900;text-align:center}
+.site-header .lawshield-brand .lawshield-clock-date{font-size:clamp(.66rem,1.3vw,.78rem);font-weight:700;text-align:center}
+@media(max-width:760px){
+ .site-header .lawshield-brand .lawshield-brand-copy>strong{font-size:clamp(.98rem,4.3vw,1.25rem);font-weight:900}
+ .site-header .lawshield-brand .lawshield-brand-copy>small{font-size:clamp(.56rem,2.5vw,.7rem)}
+ .site-header .lawshield-brand .lawshield-clock strong{font-size:.7rem}
+ .site-header .lawshield-brand .lawshield-clock-date{font-size:.64rem}
+}
