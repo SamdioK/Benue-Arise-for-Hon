@@ -117,3 +117,13 @@
   .trust-strip>i{display:none}
   .auth-legal{font-size:.72rem}
 }
+
+/* Exact approved brand hierarchy: justice emblem above firm name, gold rules flanking tagline. */
+.auth-brand.auth-brand-stacked{display:flex;flex-direction:column;flex-wrap:nowrap;align-items:center;justify-content:flex-start;gap:8px;width:100%;margin:0 auto 4px;text-align:center}
+.auth-brand-stacked img{display:block;order:0;width:112px;height:104px;object-fit:contain;object-position:center;margin:0 auto 2px}
+.auth-brand-stacked div{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;width:100%}
+.auth-brand-stacked strong{display:block;order:0;font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.45rem,2.6vw,2rem);line-height:1.08;font-weight:800;letter-spacing:-.02em;text-align:center}
+.auth-brand-stacked span{display:flex;align-items:center;justify-content:center;gap:13px;width:100%;font-family:'Playfair Display',Georgia,serif;font-size:clamp(.86rem,1.4vw,1.05rem);line-height:1.15;font-weight:800;letter-spacing:.11em;text-align:center;white-space:nowrap}
+.auth-brand-stacked span:before,.auth-brand-stacked span:after{content:"";display:block;flex:1 1 42px;max-width:70px;min-width:24px;height:2px;background:linear-gradient(90deg,#e6ad31,#f3d27c);border-radius:2px}
+.auth-clock{margin-top:13px}
+@media(max-width:560px){.auth-brand.auth-brand-stacked{gap:6px}.auth-brand-stacked img{width:94px;height:88px}.auth-brand-stacked strong{font-size:1.42rem}.auth-brand-stacked span{font-size:.78rem;gap:9px;letter-spacing:.09em}.auth-brand-stacked span:before,.auth-brand-stacked span:after{max-width:48px;min-width:18px}}
