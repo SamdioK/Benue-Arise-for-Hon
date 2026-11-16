@@ -58,10 +58,6 @@ begin
   loop
     insert into arise_site.shop_order_items(order_id,product_id,variant_id,title_snapshot,author_snapshot,format_snapshot,unit_price,quantity,line_total)
     values(v_order_id,v_item.product_id,v_item.variant_id,v_item.title,v_item.author_name,v_item.format,v_item.unit_price,v_item.quantity,v_item.unit_price*v_item.quantity);
-    if v_item.format='physical' then
-      update arise_site.shop_product_variants set stock_quantity=stock_quantity-v_item.quantity
-      where id=v_item.variant_id and stock_quantity is not null;
-    end if;
   end loop;
   update arise_site.shop_carts set status='converted' where id=v_cart.id;
   return jsonb_build_object('success',true,'order_id',v_order_id,'order_number',v_order_number,'currency',v_cart.currency,'subtotal',v_subtotal,'delivery_fee',0,'total',v_subtotal,'status','pending_payment');
