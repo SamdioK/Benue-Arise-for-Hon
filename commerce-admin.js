@@ -15,12 +15,14 @@ const {data:{user},error}=await db.auth.getUser();if(error||!user){status("Sign 
 const {data:admin,error:roleError}=await db.from("admins").select("user_id,role").eq("user_id",user.id).maybeSingle();
 if(roleError||!admin){status("This account is not on the portal administrator allowlist. Commerce management is restricted.");return;}
 adminReady=true;$("#commerce-admin-panel").hidden=false;status("Administrator access verified. Commerce records are saved directly to Supabase.");
-await Promise.all([loadCategories(),loadBooks(),loadOrders()]);
+await Promise.all([loadCategories(),loadBooks(),loadOrders(),loadServices(),loadServiceRequests()]);
 $("#commerce-book-form").addEventListener("submit",saveBook);
 $("#commerce-service-form").addEventListener("submit",saveService);
 $("#commerce-marketplace-form").addEventListener("submit",saveMarketplace);
 $("#commerce-refresh-books").addEventListener("click",loadBooks);
 $("#commerce-refresh-orders").addEventListener("click",loadOrders);
+$("#commerce-refresh-services").addEventListener("click",loadServices);
+$("#commerce-refresh-requests").addEventListener("click",loadServiceRequests);
 }catch(e){console.error(e);status("Commerce administration could not initialise. Confirm the Phase 1 database migration has been applied.");}
 }
 async function loadCategories(){
@@ -72,7 +74,7 @@ const form=event.currentTarget,fd=new FormData(form),mode=fd.get("pricing_mode")
 const payload={title,slug:String(fd.get("slug")||"").trim()||slugify(title),description:String(fd.get("description")||"").trim()||null,pricing_mode:mode,status:"draft",price_ngn:mode==="quote"?null:Number(fd.get("price_ngn")),price_usd:mode==="quote"?null:Number(fd.get("price_usd"))};
 if(mode!=="quote"&&(!fd.get("price_ngn")||!fd.get("price_usd"))){status("Fixed and starting-price services require both NGN and USD prices.");return;}
 const button=form.querySelector('button[type="submit"]');button.disabled=true;status("Saving service to Supabase…");
-try{const {error}=await db.from("service_offerings").insert(payload);if(error)throw error;form.reset();status("Service saved successfully as a draft in Supabase.");}
+try{const {error}=await db.from("service_offerings").insert(payload);if(error)throw error;form.reset();status("Service saved successfully as a draft in Supabase.");await loadServices();}
 catch(e){console.error(e);status("Service was not saved: "+(e.message||"Supabase rejected the operation")+".");}
 finally{button.disabled=false;}
 }
@@ -87,6 +89,19 @@ async function publishBook(id,button){
 button.disabled=true;
 try{const {data:variants,error:vErr}=await db.from("shop_product_variants").select("id,format,digital_storage_path,is_active").eq("product_id",id).eq("is_active",true);if(vErr)throw vErr;if(!variants?.length)throw new Error("Add at least one active edition before publishing.");if(variants.some(v=>v.format==="digital"&&!v.digital_storage_path))throw new Error("The digital edition has no private file.");const {error}=await db.from("shop_products").update({status:"published"}).eq("id",id);if(error)throw error;status("Book published. It is now eligible to appear in the public catalogue.");await loadBooks();}
 catch(e){status("Book not published: "+e.message);button.disabled=false;}
+}
+async function loadServices(){
+const {data,error}=await db.from("service_offerings").select("id,title,status,pricing_mode,price_ngn,price_usd").order("created_at",{ascending:false}).limit(50);if(error)throw error;
+const list=$("#commerce-service-list");if(!data?.length){list.innerHTML="<p>No services have been added yet.</p>";return;}
+list.innerHTML=data.map(v=>'<div class="admin-record"><div><strong>'+esc(v.title)+'</strong><small>'+esc(v.status)+' · '+esc(v.pricing_mode)+' · '+(v.pricing_mode==="quote"?"Quotation": "NGN "+Number(v.price_ngn).toFixed(2)+" / USD "+Number(v.price_usd).toFixed(2))+'</small></div>'+(v.status==="draft"?'<button type="button" data-publish-service="'+esc(v.id)+'">Publish</button>':'')+'</div>').join("");
+list.querySelectorAll("[data-publish-service]").forEach(button=>button.addEventListener("click",async()=>{button.disabled=true;try{const {error}=await db.from("service_offerings").update({status:"published"}).eq("id",button.dataset.publishService);if(error)throw error;status("Service published and now available to visitors.");await loadServices();}catch(e){status("Service could not be published: "+e.message);button.disabled=false;}}));
+}
+async function loadServiceRequests(){
+const {data,error}=await db.from("service_requests").select("id,request_number,customer_name,customer_email,description,status,created_at,service_offerings(title)").order("created_at",{ascending:false}).limit(30);if(error)throw error;
+const list=$("#commerce-request-list");if(!data?.length){list.innerHTML="<p>No service enquiries have been received.</p>";return;}
+const states=["submitted","under_review","quoted","accepted","scheduled","in_progress","completed","declined","cancelled"];
+list.innerHTML=data.map(r=>'<article class="admin-record"><strong>'+esc(r.request_number)+' · '+esc(r.service_offerings?.title||"Service enquiry")+'</strong><small>'+esc(r.customer_name)+' · '+esc(r.customer_email)+' · '+esc(new Date(r.created_at).toLocaleString("en-GB"))+'</small><p>'+esc(r.description)+'</p><label class="commerce-request-status">Request status<select data-request-id="'+esc(r.id)+'">'+states.map(v=>'<option value="'+v+'" '+(v===r.status?"selected":"")+'>'+v.replaceAll("_"," ")+'</option>').join("")+'</select></label></article>').join("");
+list.querySelectorAll("[data-request-id]").forEach(select=>select.addEventListener("change",async()=>{select.disabled=true;try{const {error}=await db.from("service_requests").update({status:select.value}).eq("id",select.dataset.requestId);if(error)throw error;status("Service enquiry status updated in Supabase.");}catch(e){status("Could not update enquiry status: "+e.message);await loadServiceRequests();}finally{select.disabled=false;}}));
 }
 async function loadOrders(){
 const {data,error}=await db.from("shop_orders").select("id,order_number,currency,total,status,created_at").order("created_at",{ascending:false}).limit(20);
