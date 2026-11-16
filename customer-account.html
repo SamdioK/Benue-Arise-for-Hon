@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#073f2c">
+<meta name="description" content="Secure customer sign-in for S. T. Hon (SAN) & Co. — Lawshield Partners.">
+<link rel="stylesheet" href="customer-account.css">
+<script src="config.js"></script>
+<title>Customer Sign In | Lawshield Partners</title>
+</head>
+<body class="lawshield-auth-page">
+<main class="auth-shell">
+  <section class="auth-visual" aria-label="Lawshield books and professional services">
+    <div class="visual-top">
+      <div class="visual-library" aria-hidden="true">
+        <div class="library-shelf shelf-one"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="library-shelf shelf-two"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="justice-art">
+          <svg viewBox="0 0 340 340" role="img" aria-label="Scales of justice and judge's gavel">
+            <defs><linearGradient id="gold" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#ffe29a"/><stop offset=".45" stop-color="#bd7a16"/><stop offset="1" stop-color="#f8d477"/></linearGradient></defs>
+            <g fill="none" stroke="url(#gold)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M170 38v215M95 76h150M170 40l-75 36 75 0 75-0zM95 76L48 174M95 76l47 98M245 76l-47 98M245 76l47 98"/>
+              <path d="M36 175q59 38 118 0M186 175q59 38 118 0" />
+              <path d="M170 38V18m-13 0h26M137 254h66l-12 20h-42zM116 279h108v14H116z"/>
+            </g>
+            <g fill="url(#gold)" stroke="#8d5911" stroke-width="2"><path d="M37 176h112q-7 37-56 39-49-2-56-39zM191 176h112q-7 37-56 39-49-2-56-39z"/><path d="M236 244l61 31-10 18-61-31zM226 236l19-17 22 14-19 18zM282 268l26-17 13 17-26 18z"/></g>
+          </svg>
+        </div>
+        <div class="library-caption"><span>KNOWLEDGE · JUSTICE · SERVICE</span><strong>Ideas that inform.<br>Service that stands.</strong></div>
+      </div>
+    </div>
+    <div class="visual-features">
+      <div class="feature-row"><span class="feature-icon" aria-hidden="true">▤</span><span><strong>Buy Books</strong><small>Print &amp; Digital Editions</small></span></div>
+      <div class="feature-row"><span class="feature-icon" aria-hidden="true">⚖</span><span><strong>Request Services</strong><small>Legal &amp; Professional</small></span></div>
+      <div class="feature-row"><span class="feature-icon" aria-hidden="true">🛒</span><span><strong>Manage Orders</strong><small>Track &amp; Download</small></span></div>
+      <div class="feature-row"><span class="feature-icon" aria-hidden="true">♙</span><span><strong>Your Account</strong><small>Profile, Purchases &amp; More</small></span></div>
+    </div>
+    <div class="visual-brand-watermark">LAWSHIELD PARTNERS</div>
+  </section>
+
+  <section class="auth-main">
+    <div class="auth-card">
+      <div class="auth-brand">
+        <img src="assets/lawshield-scales.svg" alt="Scales of justice">
+        <div><strong>S. T. HON (SAN) &amp; CO.</strong><span>LAWSHIELD PARTNERS</span></div>
+      </div>
+      <div class="auth-clock" role="timer" aria-label="Current West Africa Time"><strong id="auth-time">--:--:-- WAT</strong><span id="auth-date">Loading date…</span></div>
+
+      <div id="signin-view" class="auth-view">
+        <div class="auth-heading"><h1>Welcome Back</h1><p>Sign in to your Lawshield account</p><i></i></div>
+        <form id="signin-form" class="auth-form">
+          <label class="auth-field"><span aria-hidden="true">✉</span><input type="email" name="email" placeholder="Email address" autocomplete="email" required></label>
+          <label class="auth-field"><span aria-hidden="true">♙</span><input id="signin-password" type="password" name="password" placeholder="Password" autocomplete="current-password" minlength="8" required><button class="password-toggle" type="button" data-toggle-password="signin-password" aria-label="Show password">◉</button></label>
+          <div class="auth-options"><span class="secure-session">Private, secure sign-in</span><button type="button" class="text-action" id="forgot-button">Forgot password?</button></div>
+          <button class="auth-primary" type="submit"><span aria-hidden="true">↪</span> Sign In</button>
+          <p class="auth-status" id="signin-status" role="status" aria-live="polite"></p>
+        </form>
+        <div class="auth-or"><span></span><b>or</b><span></span></div>
+        <button class="auth-secondary" type="button" id="show-signup"><span aria-hidden="true">♟+</span> Create a New Account</button>
+      </div>
+
+      <div id="signup-view" class="auth-view" hidden>
+        <div class="auth-heading"><h1>Join Lawshield</h1><p>Create your customer account</p><i></i></div>
+        <form id="signup-form" class="auth-form">
+          <label class="auth-field"><span aria-hidden="true">♙</span><input name="full_name" placeholder="Full name" autocomplete="name" minlength="2" maxlength="160" required></label>
+          <label class="auth-field"><span aria-hidden="true">✉</span><input type="email" name="email" placeholder="Email address" autocomplete="email" required></label>
+          <label class="auth-field"><span aria-hidden="true">☎</span><input name="phone" type="tel" placeholder="Phone number (optional)" autocomplete="tel" maxlength="40"></label>
+          <label class="auth-field"><span aria-hidden="true">♙</span><input id="signup-password" type="password" name="password" placeholder="Create password (8+ characters)" autocomplete="new-password" minlength="8" required><button class="password-toggle" type="button" data-toggle-password="signup-password" aria-label="Show password">◉</button></label>
+          <button class="auth-primary" type="submit">Create Account</button>
+          <p class="auth-status" id="signup-status" role="status" aria-live="polite"></p>
+        </form>
+        <button class="auth-back" type="button" data-show-signin>Already have an account? Sign in</button>
+      </div>
+
+      <div id="forgot-view" class="auth-view" hidden>
+        <div class="auth-heading"><h1>Reset Password</h1><p>We will send a secure reset link to your email</p><i></i></div>
+        <form id="forgot-form" class="auth-form">
+          <label class="auth-field"><span aria-hidden="true">✉</span><input type="email" name="email" placeholder="Email address" autocomplete="email" required></label>
+          <button class="auth-primary" type="submit">Send Reset Link</button>
+          <p class="auth-status" id="forgot-status" role="status" aria-live="polite"></p>
+        </form>
+        <button class="auth-back" type="button" data-show-signin>Return to sign in</button>
+      </div>
+
+      <div id="reset-view" class="auth-view" hidden>
+        <div class="auth-heading"><h1>Choose a New Password</h1><p>Secure your Lawshield account</p><i></i></div>
+        <form id="reset-form" class="auth-form">
+          <label class="auth-field"><span aria-hidden="true">♙</span><input type="password" name="password" placeholder="New password (8+ characters)" minlength="8" required></label>
+          <button class="auth-primary" type="submit">Update Password</button>
+          <p class="auth-status" id="reset-status" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+
+      <div id="account-view" class="auth-view" hidden>
+        <div class="auth-heading"><h1>Welcome</h1><p>Your Lawshield customer account is active</p><i></i></div>
+        <p class="account-email" id="account-email"></p>
+        <div class="account-actions"><a href="bookshop.html">Explore Books &amp; Services</a><a href="cart.html">Open Shopping Cart</a></div>
+        <button class="auth-back" id="signout-button" type="button">Sign out</button>
+      </div>
+      <p class="auth-legal">By signing in, you agree to our <a href="#terms" data-open-legal="terms">Terms of Service</a> and <a href="#privacy" data-open-legal="privacy">Privacy Policy</a>.</p>
+    </div>
+    <div class="trust-strip"><div><b>♢</b><span>Secure &amp; Trusted</span></div><i></i><div><b>▣</b><span>Your data is protected</span></div><i></i><div><b>◉</b><span>Dedicated client support</span></div></div>
+    <a class="back-to-shop" href="bookshop.html">← Return to Bookshop &amp; Services</a>
+  </section>
+</main>
+<dialog id="legal-dialog" class="legal-dialog"><button type="button" id="legal-close" aria-label="Close">×</button><h2 id="legal-title"></h2><p id="legal-copy"></p></dialog>
+<script src="customer-account.js" defer></script>
+</body></html>
