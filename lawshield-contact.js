@@ -10,9 +10,9 @@ if(!cfg.SUPABASE_URL||!cfg.SUPABASE_PUBLISHABLE_KEY){$("#lawshield-contact-load-
 try{
 const {createClient}=await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/+esm");
 const db=createClient(cfg.SUPABASE_URL,cfg.SUPABASE_PUBLISHABLE_KEY,{db:{schema:"arise_site"},auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
-const {data,error}=await db.from("site_settings").select("setting_value").eq("setting_key","lawshield_contact").maybeSingle();if(error)throw error;
-const v=data?.setting_value||{};
-if(v.publication_status!=="published"){return;}
+const {data,error}=await db.from("lawshield_contact_profiles").select("contact_data,status").eq("id","primary").eq("status","published").maybeSingle();if(error)throw error;
+const v=data?.contact_data||{};
+if(!data||data.status!=="published"){return;}
 const methods=$("#lawshield-contact-methods"),social=$("#lawshield-social-links");let count=0;
 for(const key of ["phone","whatsapp","email"]){const value=String(v[key]||"").trim();if(!value)continue;let href=key==="email"?"mailto:"+value:key==="whatsapp"?"https://wa.me/"+value.replace(/\D/g,""):"tel:"+value.replace(/[^+\d]/g,"");methods.insertAdjacentHTML("beforeend",'<a class="lawshield-contact-link" href="'+esc(href)+'"><span>'+labels[key]+'</span><strong>'+esc(value)+'</strong></a>');count++;}
 for(const key of ["website","facebook","instagram","linkedin","x","youtube"]){const value=String(v[key]||"").trim();if(!value||!/^https:\/\//i.test(value))continue;social.insertAdjacentHTML("beforeend",'<a class="lawshield-social-link" href="'+esc(value)+'" target="_blank" rel="noopener noreferrer">'+labels[key]+' <span aria-hidden="true">↗</span></a>');}
