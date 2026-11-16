@@ -214,3 +214,20 @@
  .auth-card:before{width:56%;height:150px}
  .auth-card:after{width:61%;height:165px}
 }
+
+/* Request Services: compact gold legal gavel and sound block, visually distinct from the scales logo. */
+.visual-features .feature-icon.service-icon{
+  background:linear-gradient(145deg,#07523a 0%,#063d2e 100%) !important;
+}
+.visual-features .feature-icon.service-icon svg{
+  width:56% !important;
+  height:56% !important;
+  stroke:#f4c65c !important;
+  stroke-width:2.35 !important;
+  stroke-linecap:round !important;
+  stroke-linejoin:round !important;
+}
+.visual-features .feature-icon.service-icon svg *{
+  fill:none !important;
+  stroke:#f4c65c !important;
+}
