@@ -32,3 +32,88 @@
 .legal-dialog{width:min(520px,calc(100% - 28px));border:0;border-radius:20px;padding:28px;box-shadow:0 20px 80px #0004}.legal-dialog::backdrop{background:#160d1d88}.legal-dialog button{float:right;border:0;background:none;font-size:1.5rem}.legal-dialog h2{font-family:'Playfair Display',Georgia,serif;color:var(--purple)}.legal-dialog p{line-height:1.7;color:#625b66}
 @media(max-width:900px){body{padding:0;display:block}.auth-shell{min-height:100vh;border-radius:0;grid-template-columns:1fr;overflow:visible}.auth-visual{min-height:0}.visual-top{height:280px;min-height:280px}.visual-features{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;padding:24px}.feature-icon{width:44px;height:44px;border-radius:13px;font-size:1.25rem}.feature-row{gap:10px}.feature-row strong{font-size:.92rem}.feature-row small{font-size:.72rem}.visual-features:before{top:265px}.auth-main{padding:28px 18px 35px}.auth-card{padding:28px 24px;border-radius:25px}.trust-strip{border-radius:18px;flex-wrap:wrap}.trust-strip>i{display:none}.trust-strip div{min-width:42%;justify-content:center}}
 @media(max-width:520px){.visual-top{height:220px;min-height:220px}.visual-features{padding:22px 16px;gap:17px 10px}.feature-icon{width:38px;height:38px;border-radius:11px;font-size:1.1rem}.feature-row{gap:8px}.feature-row strong{font-size:.82rem}.feature-row small{font-size:.65rem}.visual-features:before{top:207px}.auth-main{padding:24px 12px 30px;gap:18px}.auth-card{padding:25px 17px;border-radius:22px}.auth-brand{gap:9px}.auth-brand img{width:54px;height:54px}.auth-brand strong{font-size:1.12rem}.auth-brand span{font-size:.7rem}.auth-heading h1{font-size:2.1rem}.auth-field{height:55px;padding:0 12px;border-radius:12px}.auth-primary,.auth-secondary{min-height:56px;font-size:1rem}.auth-options{font-size:.74rem}.trust-strip{padding:13px 9px;gap:12px}.trust-strip div{min-width:100%;justify-content:flex-start;padding-left:14px}.trust-strip div span{font-size:.78rem}.auth-legal{font-size:.68rem}}
+
+/* Refinement pass: closer to the approved reference, with stronger hierarchy and reliable phone layout. */
+.auth-shell{grid-template-columns:minmax(360px,.82fr) minmax(540px,1.18fr);min-height:860px;border-radius:26px;box-shadow:0 18px 58px #21102220}
+.auth-visual{min-height:860px}
+.visual-top{height:46%;min-height:390px}
+.visual-features{gap:clamp(20px,2.6vh,30px);padding:34px clamp(24px,3.4vw,48px)}
+.feature-row strong{font-size:clamp(1.08rem,1.7vw,1.35rem);font-weight:800;letter-spacing:-.015em}
+.feature-row small{font-size:.96rem;font-weight:500;line-height:1.35}
+.feature-icon{width:58px;height:58px;border-radius:16px;border-width:2px;font-size:1.55rem}
+.library-caption{left:26px;bottom:22px;gap:8px}
+.library-caption span{font-size:.7rem;font-weight:800;letter-spacing:.15em}
+.library-caption strong{font-size:clamp(1.55rem,2.25vw,2.1rem);font-weight:800;line-height:1.08}
+.auth-main{padding:clamp(24px,3.4vw,48px);gap:25px}
+.auth-card{width:min(100%,700px);padding:clamp(30px,4vw,50px);border-radius:30px;box-shadow:0 14px 40px #3a17401c}
+.auth-brand{gap:16px}
+.auth-brand img{width:86px;height:86px}
+.auth-brand strong{font-size:clamp(1.3rem,2.5vw,1.9rem);font-weight:800;letter-spacing:-.015em}
+.auth-brand span{font-size:1rem;font-weight:800;letter-spacing:.14em}
+.auth-clock{margin:9px 0 25px}
+.auth-clock strong{font-size:.86rem;font-weight:800}
+.auth-clock span{font-size:.76rem;font-weight:600}
+.auth-heading{margin-bottom:28px}
+.auth-heading h1{font-size:clamp(2.35rem,4vw,3.35rem);font-weight:800;letter-spacing:-.045em;line-height:1.06}
+.auth-heading p{font-size:clamp(1.02rem,1.6vw,1.22rem);font-weight:500}
+.auth-heading i{width:92px;height:7px;margin-top:22px}
+.auth-form{gap:17px}
+.auth-field{height:66px;padding:0 18px;border:1.5px solid #c5c1c8;border-radius:14px}
+.auth-field>span{font-size:1.45rem;font-weight:700}
+.auth-field input{font-size:1.08rem;font-weight:600}
+.auth-field input::placeholder{color:#66616a;opacity:1;font-weight:500}
+.auth-options{font-size:.9rem;font-weight:600}
+.text-action,.auth-back{font-size:.94rem;font-weight:800}
+.auth-primary,.auth-secondary{min-height:64px;font-size:1.2rem;font-weight:800;letter-spacing:-.01em}
+.auth-primary{background:linear-gradient(100deg,#006b43,#005137);box-shadow:0 5px 12px #00482f25}
+.auth-secondary{font-size:1.13rem;border-width:1.7px}
+.auth-or{margin:20px 0}
+.auth-legal{font-size:.78rem;font-weight:500}
+.trust-strip{width:min(100%,740px);padding:18px 20px;gap:15px}
+.trust-strip div{font-size:.83rem;font-weight:800}
+.trust-strip b{font-size:1.45rem}
+.back-to-shop{font-size:.84rem;font-weight:800}
+.auth-status{font-size:.86rem;font-weight:600}
+/* Avoid a squeezed two-column miniature on tablets, zoomed phones and narrow browser windows. */
+@media(max-width:1100px){
+  body{padding:0;display:block}
+  .auth-shell{width:100%;min-height:100vh;grid-template-columns:1fr;border-radius:0;overflow:visible}
+  .auth-visual{min-height:0}
+  .visual-top{height:290px;min-height:290px}
+  .visual-features{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 16px;padding:25px clamp(20px,5vw,48px)}
+  .visual-features:before{top:275px}
+  .feature-row{gap:12px}
+  .feature-row strong{font-size:1.05rem}
+  .feature-row small{font-size:.82rem}
+  .feature-icon{width:48px;height:48px}
+  .auth-main{padding:32px 20px 38px}
+  .auth-card{width:min(100%,680px)}
+  .trust-strip{width:min(100%,680px)}
+}
+@media(max-width:560px){
+  .visual-top{height:230px;min-height:230px}
+  .visual-features{grid-template-columns:1fr;gap:14px;padding:22px 24px 26px}
+  .visual-features:before{top:216px}
+  .feature-row{gap:13px}
+  .feature-row strong{font-size:1rem}
+  .feature-row small{font-size:.8rem}
+  .feature-icon{width:46px;height:46px;border-radius:13px}
+  .library-caption{left:18px;bottom:15px}
+  .library-caption span{font-size:.58rem}
+  .library-caption strong{font-size:1.5rem}
+  .auth-main{padding:22px 12px 30px;gap:18px}
+  .auth-card{padding:25px 18px;border-radius:22px}
+  .auth-brand img{width:60px;height:60px}
+  .auth-brand strong{font-size:1.2rem}
+  .auth-brand span{font-size:.76rem}
+  .auth-heading h1{font-size:2.35rem}
+  .auth-heading p{font-size:1rem}
+  .auth-field{height:58px;padding:0 13px}
+  .auth-field input{font-size:1rem}
+  .auth-primary,.auth-secondary{min-height:58px;font-size:1.05rem}
+  .auth-options{font-size:.8rem}
+  .trust-strip{border-radius:18px;padding:15px 12px;gap:13px}
+  .trust-strip div{min-width:100%;justify-content:flex-start;padding-left:14px;font-size:.82rem}
+  .trust-strip>i{display:none}
+  .auth-legal{font-size:.72rem}
+}
