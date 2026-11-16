@@ -21,13 +21,12 @@ const dialPreview=$("#phone-dial-preview");
 const selectedDial=()=>countrySelect?.selectedOptions?.[0]?.dataset.dial||"234";
 countrySelect?.addEventListener("change",()=>{if(dialPreview)dialPreview.textContent="+"+selectedDial();});
 function buildInternationalPhone(){
-  const digits=String(phoneInput?.value||"").replace(/\\D/g,"");
+  const raw=String(phoneInput?.value||"").trim();
+  const digits=raw.replace(/\D/g,"");
   if(!digits)return "";
-  const dial=selectedDial();
-  const national=digits.replace(/^0+/,"");
-  if(!national)throw new Error("Please enter a valid phone number.");
-  if(national.length<6||national.length>14)throw new Error("Please enter a valid phone number.");
-  return "+"+dial+national;
+  const national=raw.startsWith("+")?digits:digits.replace(/^0+/,"");
+  if(national.length<7||national.length>15)throw new Error("Please enter a valid phone number.");
+  return raw.startsWith("+")?"+"+national:"+"+selectedDial()+national;
 }
 async function init(){
 
