@@ -177,7 +177,7 @@
 }
 
 /* Approved Lawshield corner treatment: purple folded corner with a diagonal gold sweep. */
-.auth-card{isolation:isolate;overflow:hidden;position:relative}
+.auth-card{isolation:isolate;overflow:visible;position:relative}
 .auth-card:before{
   content:"";
   position:absolute;
