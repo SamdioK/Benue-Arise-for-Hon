@@ -701,3 +701,12 @@
 .resend-confirmation{justify-self:center;border:0;background:transparent;color:var(--purple);font:700 .78rem 'DM Sans',sans-serif;text-decoration:underline;cursor:pointer;padding:4px 8px}
 .resend-confirmation:disabled{opacity:.55;cursor:wait}
 @media(max-width:560px){.phone-field .iti input{font-size:.95rem}.phone-help{font-size:.68rem}}
+
+/* Native international phone selector: no third-party JavaScript or CDN dependency */
+.phone-field{display:grid;grid-template-columns:minmax(0,1.18fr) auto minmax(0,1.5fr);align-items:center;gap:8px;padding:7px 12px;min-height:62px;overflow:visible}
+.phone-country-label{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.phone-field select{width:100%;min-width:0;height:44px;border:0;border-right:1px solid #ded6e1;background:transparent;color:#342d38;font:600 .82rem 'DM Sans',sans-serif;outline:0;padding:0 5px 0 0}
+.phone-dial-preview{font-weight:800;color:var(--purple);font-size:.9rem;white-space:nowrap}
+.phone-field input{width:100%;min-width:0;height:44px;border:0!important;outline:0!important;box-shadow:none!important;background:transparent!important;padding:0 4px!important;font:500 .95rem 'DM Sans',sans-serif;color:#25212a}
+.phone-help{display:block;margin:-9px 4px 0;color:#77717a;font-size:.72rem;line-height:1.4}
+@media(max-width:560px){.phone-field{grid-template-columns:minmax(0,1.2fr) auto minmax(0,1.1fr);gap:5px;padding:6px 9px}.phone-field select{font-size:.72rem}.phone-dial-preview{font-size:.82rem}.phone-field input{font-size:.88rem}.phone-help{font-size:.68rem}}
