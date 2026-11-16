@@ -170,3 +170,21 @@ The customer account landing page is `customer-account.html`. It provides the br
 4. Test show/hide password controls.
 5. Confirm the page is responsive at phone, tablet and desktop widths.
 6. Confirm no localStorage, sessionStorage or IndexedDB calls exist in the customer account files.
+
+
+## 12. Global telephone entry and email-confirmation recovery
+
+The registration form now uses the international telephone input component. Nigeria (+234) is the default country, while the searchable country selector supports international customers. The selected number is validated and normalised to E.164 before it is submitted as Supabase Auth user metadata. A valid example format is `+2348012345678`; the country dialling code is included in the stored value. The phone field remains optional.
+
+The registration confirmation message is deliberately worded so it does not claim that an email has definitely arrived. Customers should check Inbox, Spam/Junk and Promotions. The **Resend confirmation email** control calls Supabase Auth's signup-resend endpoint for customers whose address still needs confirmation. If Supabase reports that the address is already confirmed, the customer is instructed to sign in or use password recovery instead.
+
+### Support and verification
+
+- A successful signup API response is not proof of inbox delivery.
+- A repeated signup for an existing account may be accepted with a generic response to prevent account enumeration; it does not mean a new confirmation message was sent.
+- If a customer reports a missing message, inspect the Auth user's `email_confirmed_at` and the Auth logs before asking them to register again.
+- If the account is already confirmed, direct the customer to **Sign In** or **Forgot password?**; do not ask them to create another account.
+- For a genuinely unconfirmed account, use **Resend confirmation email**, then check the configured Supabase SMTP/provider delivery logs and the recipient's spam folders.
+- Test phone entry with Nigeria (+234), United Kingdom (+44), United States (+1), Ghana (+233), and at least one additional country. Confirm the saved phone value includes the correct country calling code and is in E.164 format.
+- Confirm the selector is usable on narrow mobile screens and can search by country name or calling code.
+- The phone selector does not store data in browser storage. The validated international phone string is submitted to Supabase Auth metadata.
