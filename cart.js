@@ -3,6 +3,8 @@ const cfg=window.ARISE_CONFIG||{},$=s=>document.querySelector(s);
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const money=(v,c)=>new Intl.NumberFormat(c==="NGN"?"en-NG":"en-US",{style:"currency",currency:c,maximumFractionDigits:2}).format(Number(v||0));
 document.querySelectorAll("[data-year]").forEach(n=>n.textContent=new Date().getFullYear());
+const timeNode=$("#cart-wat-time"),dateNode=$("#cart-wat-date");
+if(timeNode&&dateNode){const tf=new Intl.DateTimeFormat("en-GB",{timeZone:"Africa/Lagos",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false}),df=new Intl.DateTimeFormat("en-GB",{timeZone:"Africa/Lagos",weekday:"short",day:"2-digit",month:"short",year:"numeric"});const tick=()=>{const now=new Date();timeNode.textContent=tf.format(now)+" WAT";dateNode.textContent=df.format(now);};tick();window.setInterval(tick,1000);}
 const state={db:null,user:null,cart:null,currency:new URLSearchParams(location.search).get("currency")==="USD"?"USD":"NGN",items:[]};
 const accountStatus=m=>$("#account-status").textContent=m;
 const cartStatus=m=>$("#cart-status").textContent=m;
