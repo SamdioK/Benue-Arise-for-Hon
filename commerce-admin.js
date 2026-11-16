@@ -40,6 +40,9 @@ const slug=String(fd.get("slug")||"").trim()||slugify(title);
 const p={title,author_name:author,slug,category_id:fd.get("category_id")||null,publisher:String(fd.get("publisher")||"").trim()||null,isbn_13:String(fd.get("isbn_13")||"").trim()||null,description:String(fd.get("description")||"").trim()||null,status:"draft",product_kind:"book"};
 const physical=String(fd.get("physical_ngn")||"")!==""||String(fd.get("physical_usd")||"")!=="";
 const digital=String(fd.get("digital_ngn")||"")!==""||String(fd.get("digital_usd")||"")!=="";
+const listing=String(fd.get("listing_url")||"").trim();
+const marketplace=String(fd.get("marketplace")||"").trim();
+if(listing&&(!marketplace||!listing.startsWith("https://"))){status("Marketplace name and a secure HTTPS listing URL are required.");return;}
 if(!physical&&!digital){status("Enter at least one edition and its NGN and USD prices.");return;}
 if(physical&&(!fd.get("physical_ngn")||!fd.get("physical_usd"))){status("Physical edition requires both NGN and USD prices.");return;}
 if(digital&&(!fd.get("digital_ngn")||!fd.get("digital_usd")||!fd.get("digital_file")?.size)){status("Digital edition requires NGN and USD prices and an e-book file.");return;}
@@ -53,8 +56,7 @@ const variants=[];
 if(physical)variants.push({product_id:productId,format:"physical",price_ngn:Number(fd.get("physical_ngn")),price_usd:Number(fd.get("physical_usd")),stock_quantity:fd.get("physical_stock")===""?0:Number(fd.get("physical_stock")),weight_grams:fd.get("physical_weight")===""?null:Number(fd.get("physical_weight"))});
 if(digital){const path=await upload("shop-digital",fd.get("digital_file"),productId);variants.push({product_id:productId,format:"digital",price_ngn:Number(fd.get("digital_ngn")),price_usd:Number(fd.get("digital_usd")),digital_storage_path:path});}
 if(variants.length){const {error:e}=await db.from("shop_product_variants").insert(variants);if(e)throw e;}
-const listing=String(fd.get("listing_url")||"").trim();
-if(listing){const marketplace=String(fd.get("marketplace")||"").trim();if(!marketplace||!listing.startsWith("https://"))throw new Error("Marketplace name and a secure HTTPS listing URL are required.");const raw=String(fd.get("external_price")||"");const {error:e}=await db.from("shop_external_listings").insert({product_id:productId,marketplace,listing_url:listing,observed_price:raw===""?null:Number(raw),currency:fd.get("external_currency")||null,capture_method:"manual",price_observed_at:raw===""?null:new Date().toISOString(),source_note:"Manually entered reference; verify retailer terms before displaying any price."});if(e)throw e;}
+if(listing){const raw=String(fd.get("external_price")||"");const {error:e}=await db.from("shop_external_listings").insert({product_id:productId,marketplace,listing_url:listing,observed_price:raw===""?null:Number(raw),currency:fd.get("external_currency")||null,capture_method:"manual",price_observed_at:raw===""?null:new Date().toISOString(),source_note:"Manually entered reference; verify retailer terms before displaying any price."});if(e)throw e;}
 form.reset();status("Book saved successfully in Supabase as a draft. Review its editions and marketplace reference before publishing.");await loadBooks();
 }catch(e){console.error(e);status("Book was not fully saved: "+(e.message||"Supabase rejected the operation")+". Check the draft record and uploaded files before retrying.");}
 finally{submit.disabled=false;}
