@@ -90,20 +90,24 @@ if(error){cartStatus(error.message);return;}state.cart={id:data.id,currency:data
 async function prepareOrder(e){
 e.preventDefault();if(!state.user||!state.cart||!state.items.length)return;
 const form=e.currentTarget,fd=new FormData(form),button=$("#prepare-order-button");
-const physical=state.items.some(i=>i.shop_product_variants?.format==="physical");
+const physical=state.items.some(i=>i.format==="physical");
 const address={address_line1:String(fd.get("address_line1")||"").trim(),city:String(fd.get("city")||"").trim(),state:String(fd.get("state")||"").trim(),country:String(fd.get("country")||"").trim()};
-if(physical&&!address.address_line1){checkoutStatus("Enter a delivery address for printed books.");return;}
-button.disabled=true;checkoutStatus("Preparing your order using current Supabase prices…");
+if(physical&&(!address.address_line1||!address.city||!address.country)){checkoutStatus("Enter the street address, city and country for printed books.");return;}
+button.disabled=true;checkoutStatus("Preparing your order with current database prices…");
 try{
-const {data,error}=await state.db.functions.invoke("lawshield-prepare-order",{body:{cart_id:state.cart.id,customer_name:fd.get("customer_name"),customer_email:fd.get("customer_email"),customer_phone:fd.get("customer_phone"),delivery_address:physical?address:null,delivery_method:fd.get("delivery_method"),customer_note:fd.get("customer_note")}});
+const {data,error}=await state.db.rpc("commerce_prepare_order",{p_customer_name:fd.get("customer_name"),p_customer_email:fd.get("customer_email"),p_customer_phone:fd.get("customer_phone"),p_delivery_address:physical?address:null,p_delivery_method:fd.get("delivery_method"),p_customer_note:fd.get("customer_note")});
 if(error)throw error;if(!data?.success)throw new Error(data?.error||"Order could not be prepared.");
-checkoutStatus("Order "+data.order_number+" has been recorded for "+money(data.total,data.currency)+". Payment is not yet enabled. The order is awaiting payment and is not confirmed as paid.");
+checkoutStatus("Order "+data.order_number+" has been recorded for "+money(data.total,data.currency)+". Payment is not yet enabled. This order is awaiting payment and is not marked as paid.");
 state.cart=null;state.items=[];await loadOrders();await loadCart();
 }catch(err){checkoutStatus(err.message||"Order preparation failed. Please try again.");}
 finally{button.disabled=false;}
 }
 async function loadOrders(){
-const {data,error}=await state.db.from("shop_orders").select("id,order_number,currency,total,status,created_at").eq("customer_id",state.customer.id).order("created_at",{ascending:false}).limit(20);
+try{const {data,error}=await state.db.rpc("commerce_customer_orders");if(error)throw error;
+$("#order-history").hidden=false;$("#order-list").innerHTML=data?.length?data.map(o=>'<article class="order-record"><strong>'+esc(o.order_number)+'</strong><small>'+esc(o.status.replaceAll("_"," "))+' · '+money(o.total,o.currency)+' · '+esc(new Date(o.created_at).toLocaleDateString("en-GB"))+'</small></article>').join(""):"<p>No orders yet.</p>";
+}catch(error){console.warn("Order history",error);}
+}
+=await state.db.from("shop_orders").select("id,order_number,currency,total,status,created_at").eq("customer_id",state.customer.id).order("created_at",{ascending:false}).limit(20);
 if(error){console.warn("Order history",error);return;}
 $("#order-history").hidden=false;$("#order-list").innerHTML=data?.length?data.map(o=>'<article class="order-record"><strong>'+esc(o.order_number)+'</strong><small>'+esc(o.status.replaceAll("_"," "))+' · '+money(o.total,o.currency)+' · '+esc(new Date(o.created_at).toLocaleDateString("en-GB"))+'</small></article>').join(""):"<p>No orders yet.</p>";
 }
