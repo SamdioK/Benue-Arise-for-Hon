@@ -3,6 +3,7 @@ const cfg=window.ARISE_CONFIG||{},$=s=>document.querySelector(s);
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 document.querySelectorAll("[data-year]").forEach(n=>n.textContent=new Date().getFullYear());
 const toggle=$(".menu-toggle"),nav=$(".nav");toggle?.addEventListener("click",()=>{const o=nav.classList.toggle("nav-open");toggle.setAttribute("aria-expanded",String(o));});
+let db=null;
 const state={products:[],categories:[],services:[],currency:"NGN",search:"",category:"",format:""};
 const money=(v,c)=>new Intl.NumberFormat(c==="NGN"?"en-NG":"en-US",{style:"currency",currency:c,maximumFractionDigits:2}).format(Number(v||0));
 const date=v=>v?new Intl.DateTimeFormat("en-GB",{dateStyle:"medium",timeStyle:"short",timeZone:"Africa/Lagos"}).format(new Date(v))+" WAT":"";
@@ -27,8 +28,7 @@ function renderServices(){
 if(!state.services.length){$("#service-grid").innerHTML='<p class="shop-status">Professional services will be listed here when published.</p>';return;}
 $("#service-grid").innerHTML=state.services.map(s=>{
 const price=s.pricing_mode==="quote"?"Request a quotation":(s.pricing_mode==="from"?"From ":"")+money(state.currency==="NGN"?s.price_ngn:s.price_usd,state.currency);
-const msg="I would like to enquire about "+s.title+". Please share the next steps.";
-return '<article class="service-card"><div class="service-body"><span class="service-category">PROFESSIONAL SERVICE</span><h3>'+esc(s.title)+'</h3><p class="service-description">'+esc(s.description||"Contact the team to discuss the scope and delivery.")+'</p><p class="service-price">'+esc(price)+'<small>'+(s.pricing_mode==="quote"?"Final fee depends on agreed scope.":"Shown in your selected currency.")+'</small></p><a class="service-cta" href="contact.html?subject='+encodeURIComponent(msg)+'">Enquire about this service ↗</a></div></article>';
+return '<article class="service-card"><div class="service-body"><span class="service-category">PROFESSIONAL SERVICE</span><h3>'+esc(s.title)+'</h3><p class="service-description">'+esc(s.description||"Contact the team to discuss the scope and delivery.")+'</p><p class="service-price">'+esc(price)+'<small>'+(s.pricing_mode==="quote"?"Final fee depends on agreed scope.":"Shown in your selected currency.")+'</small></p><button class="service-cta" type="button" data-service-id="'+esc(s.id)+'" data-service-title="'+esc(s.title)+'">Enquire about this service ↗</button></div></article>';
 }).join("");
 }
 function render(){renderBooks();renderServices();}
@@ -36,11 +36,11 @@ async function load(){
 if(!cfg.SUPABASE_URL||!cfg.SUPABASE_PUBLISHABLE_KEY){$("#bookshop-status").textContent="The catalogue connection is not configured. Please contact the site administrator.";$("#services-status").textContent="The services catalogue is temporarily unavailable.";return;}
 try{
 const {createClient}=await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/+esm");
-const client=createClient(cfg.SUPABASE_URL,cfg.SUPABASE_PUBLISHABLE_KEY,{db:{schema:"arise_site"},auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
+db=createClient(cfg.SUPABASE_URL,cfg.SUPABASE_PUBLISHABLE_KEY,{db:{schema:"arise_site"},auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
 const [p,c,s]=await Promise.all([
-client.from("shop_products").select("id,title,author_name,description,isbn_10,isbn_13,publisher,cover_storage_path,category_id,shop_product_variants(id,format,price_ngn,price_usd,is_active),shop_external_listings(marketplace,listing_url,observed_price,currency,price_observed_at,price_display_authorized,capture_method)").eq("status","published").order("display_order").order("title"),
-client.from("shop_categories").select("id,name").eq("is_active",true).order("display_order"),
-client.from("service_offerings").select("id,title,description,pricing_mode,price_ngn,price_usd").eq("status","published").order("display_order")
+db.from("shop_products").select("id,title,author_name,description,isbn_10,isbn_13,publisher,cover_storage_path,category_id,shop_product_variants(id,format,price_ngn,price_usd,is_active),shop_external_listings(marketplace,listing_url,observed_price,currency,price_observed_at,price_display_authorized,capture_method)").eq("status","published").order("display_order").order("title"),
+db.from("shop_categories").select("id,name").eq("is_active",true).order("display_order"),
+db.from("service_offerings").select("id,title,description,pricing_mode,price_ngn,price_usd").eq("status","published").order("display_order")
 ]);
 const err=p.error||c.error||s.error;if(err)throw err;
 state.products=p.data||[];state.categories=c.data||[];state.services=s.data||[];renderCategories();
@@ -48,6 +48,11 @@ $("#bookshop-status").textContent=state.products.length?state.products.length+" 
 $("#services-status").textContent=state.services.length?state.services.length+" professional service(s) available.":"No professional services have been published yet.";render();
 }catch(e){console.error("Bookshop load failed",e);$("#bookshop-status").textContent="The catalogue could not be loaded from Supabase. Please try again later.";}
 }
+$("#service-grid").addEventListener("click",e=>{const btn=e.target.closest("[data-service-id]");if(!btn)return;const dialog=$("#service-request-dialog"),form=$("#service-request-form");form.elements.service_id.value=btn.dataset.serviceId;$("#service-request-heading").textContent="Enquire about "+btn.dataset.serviceTitle;$("#service-request-name").textContent="Tell us what you need in relation to "+btn.dataset.serviceTitle+". The team will review your request.";$("#service-request-status").textContent="";dialog.hidden=false;form.elements.customer_name.focus();});
+$("#service-request-close").addEventListener("click",()=>{$("#service-request-dialog").hidden=true;});
+$("#service-request-dialog").addEventListener("click",e=>{if(e.target.id==="service-request-dialog")e.currentTarget.hidden=true;});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#service-request-dialog").hidden)$("#service-request-dialog").hidden=true;});
+$("#service-request-form").addEventListener("submit",async e=>{e.preventDefault();const form=e.currentTarget,fd=new FormData(form),button=$("#service-request-submit"),out=$("#service-request-status");if(fd.get("website"))return;if(!db){out.textContent="The service request system is unavailable. Please try again later.";return;}button.disabled=true;out.textContent="Submitting your request securely…";try{const {data,error}=await db.functions.invoke("commerce-service-request",{body:{service_id:fd.get("service_id"),customer_name:fd.get("customer_name"),customer_email:fd.get("customer_email"),customer_phone:fd.get("customer_phone"),currency:fd.get("currency"),description:fd.get("description"),website:fd.get("website")}});if(error)throw error;if(!data?.success)throw new Error(data?.error||"Request was not accepted.");out.textContent="Your enquiry has been received. Reference: "+data.request_number+". Please keep this reference for follow-up.";form.reset();}catch(err){out.textContent=err.message||"Your enquiry could not be submitted. Please try again.";}finally{button.disabled=false;}});
 $("#shop-currency").addEventListener("change",e=>{state.currency=e.target.value;render();});
 $("#book-search").addEventListener("input",e=>{state.search=e.target.value.trim();renderBooks();});
 $("#book-category").addEventListener("change",e=>{state.category=e.target.value;renderBooks();});
