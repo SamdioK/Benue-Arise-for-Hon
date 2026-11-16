@@ -19,16 +19,28 @@ function initInternationalPhone(){
 const input=$("#signup-phone");
 if(!input||!window.intlTelInput)return;
 phoneIti=window.intlTelInput(input,{
-  initialCountry:"ng",
+  initialCountryLookup:async()=>{
+    try{
+      const response=await fetch("https://ipapi.co/json/",{headers:{Accept:"application/json"}});
+      if(response.ok){
+        const location=await response.json();
+        const country=String(location.country_code||"").toLowerCase();
+        if(/^[a-z]{2}$/.test(country))return country;
+      }
+    }catch(_error){}
+    return "ng";
+  },
   countryOrder:["ng"],
+  countrySelectorMode:"AUTO",
+  countrySearch:true,
   separateDialCode:true,
-  nationalMode:true,
-  autoPlaceholder:"aggressive",
+  showFlags:true,
+  numberDisplayFormat:"INTERNATIONAL",
+  placeholderNumberPolicy:"AGGRESSIVE",
   formatAsYouType:true,
-  formatOnDisplay:true,
+  strictMode:true,
   loadUtils:()=>import("https://cdn.jsdelivr.net/npm/intl-tel-input@29.5.11/build/js/utils.js")
-});
-}
+});}
 async function init(){
 initInternationalPhone();
 if(!cfg.SUPABASE_URL||!cfg.SUPABASE_PUBLISHABLE_KEY){status("signin-status","The secure account service is not configured.");return;}
