@@ -140,3 +140,33 @@ Fields include:
 5. Confirm HTTPS social URLs open in a new tab with safe link attributes.
 6. Confirm the commercial Contact links from the Bookshop and Cart open `lawshield-contact.html`, not the campaign Contact page.
 7. Confirm the campaign `contact.html` remains a separate page and is not overwritten.
+
+## 11. Dedicated customer sign-in and registration experience
+
+The customer account landing page is `customer-account.html`. It provides the branded Lawshield sign-in composition with a legal-library visual panel, firm identity, customer access features, sign-in form, account registration, password recovery, password visibility control, and security information.
+
+### Customer workflow
+
+1. Open **My Account** from the Bookshop or Cart navigation.
+2. Sign in using the email address and password registered with Supabase Auth.
+3. New customers can choose **Create a New Account** and provide their name, email, optional phone number and password.
+4. Customers who cannot access their account can request a password-reset email.
+5. Follow the secure email link to choose a new password.
+6. After successful sign-in, the page confirms the active account and provides links to the Bookshop and Cart.
+7. The Cart also retains its own sign-in form for direct checkout access.
+
+### Session and persistence policy
+
+- Supabase Auth handles credentials; passwords are never written to application tables or browser storage.
+- The account page sets `persistSession:false`; the session remains in page memory only and is not written to localStorage, sessionStorage or IndexedDB.
+- A customer may need to authenticate again when navigating to another page or reloading. This is deliberate until a server-managed session hand-off is designed that preserves the project's no-browser-persistence requirement.
+- The Remember-me device persistence option is intentionally not offered.
+
+### Test tasks
+
+1. Test sign-in with a valid customer account and an invalid password.
+2. Create a new account and confirm the email-confirmation flow if enabled in Supabase Auth.
+3. Request a password reset and complete it from the email link.
+4. Test show/hide password controls.
+5. Confirm the page is responsive at phone, tablet and desktop widths.
+6. Confirm no localStorage, sessionStorage or IndexedDB calls exist in the customer account files.
