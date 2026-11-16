@@ -91,7 +91,9 @@
         <form id="forgot-form" class="auth-form recovery-panel" hidden>
           <p class="recovery-intro">Enter the email address registered to your Lawshield customer account.</p>
           <label class="auth-field"><span aria-hidden="true">✉</span><input type="email" name="email" placeholder="Email address" autocomplete="email" required></label>
-          <button class="auth-primary" type="submit">Send Recovery Email</button>
+          <button class="auth-primary" type="submit" id="send-email-otp">Send Email OTP</button>
+          <label class="auth-field otp-field" id="email-otp-wrap" hidden><span aria-hidden="true">⌑</span><input name="token" inputmode="numeric" autocomplete="one-time-code" placeholder="Enter 6-digit OTP" minlength="6" maxlength="6" pattern="[0-9]{6}"></label>
+          <button class="auth-primary" type="button" id="verify-email-otp" hidden>Verify OTP</button>
           <p class="auth-status" id="forgot-status" role="status" aria-live="polite"></p>
           <button class="auth-back" type="button" data-recovery-back>Choose another method</button>
         </form>
@@ -104,11 +106,11 @@
           <p class="auth-status" id="phone-recovery-status" role="status" aria-live="polite"></p>
           <button class="auth-back" type="button" data-recovery-back>Choose another method</button>
         </form>
-        <form id="phone-new-password-form" class="auth-form recovery-panel" hidden>
-          <p class="recovery-intro">Your phone number has been verified. Choose a new password for your account.</p>
+        <form id="recovery-new-password-form" class="auth-form recovery-panel" hidden>
+          <p class="recovery-intro">Your contact method has been verified. Choose a new password for your Lawshield customer account.</p>
           <label class="auth-field"><span aria-hidden="true">♙</span><input type="password" name="password" placeholder="New password (8+ characters)" minlength="8" autocomplete="new-password" required></label>
           <button class="auth-primary" type="submit">Update Password</button>
-          <p class="auth-status" id="phone-password-status" role="status" aria-live="polite"></p>
+          <p class="auth-status" id="recovery-password-status" role="status" aria-live="polite"></p>
         </form>
         <button class="auth-back" type="button" data-show-signin>Return to sign in</button>
       </div>
