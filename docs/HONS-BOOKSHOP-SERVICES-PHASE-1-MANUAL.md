@@ -1,13 +1,13 @@
-# Hon's Bookshop & Services — Phase 1: Commerce Foundation
+# S. T. Hon (SAN) & Co. — Lawshield Partners — Phase 1: Commerce Foundation
 
-**Project:** Benue Arise for Hon  
+**Project:** S. T. Hon (SAN) & Co. (Lawshield Partners)  
 **Working branch:** `implementation/brand-and-foundation`  
 **Database:** Supabase project `atstsekevoozausbiqbi`, schema `arise_site`  
 **Status:** Foundation migration applied successfully to the connected Supabase project on 16 November 2026.
 
 ## 1. Purpose
 
-This phase establishes a secure, extensible commerce data foundation for Hon's Bookshop & Services. It supports physical and digital books, independently maintained NGN and USD prices, external marketplace references, professional services, quotation workflows, orders, payments, delivery tracking and secure digital fulfilment.
+This phase establishes a secure, extensible commerce data foundation for S. T. Hon (SAN) & Co. — Lawshield Partners. It supports physical and digital books, independently maintained NGN and USD prices, external marketplace references, professional services, quotation workflows, orders, payments, delivery tracking and secure digital fulfilment.
 
 This commercial module is operationally and financially separate from campaign donations, political contributions and campaign support.
 
@@ -77,7 +77,7 @@ Digital fulfilment must issue short-lived signed URLs only after a verified succ
 8. Preview the catalogue record, then publish it.
 
 ### Customer: purchase a book
-1. Open Hon's Bookshop & Services.
+1. Open S. T. Hon (SAN) & Co. — Lawshield Partners.
 2. Select the preferred currency, NGN or USD.
 3. Choose a physical or digital edition.
 4. Add books to the cart. The cart enforces one currency.
