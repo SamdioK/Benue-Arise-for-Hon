@@ -690,12 +690,12 @@
 
 /* International customer phone entry */
 .phone-field .iti{width:100%;flex:1;min-width:0;--iti-path-flags-1x:url("https://cdn.jsdelivr.net/npm/intl-tel-input@29.5.11/build/img/flags.webp");--iti-path-flags-2x:url("https://cdn.jsdelivr.net/npm/intl-tel-input@29.5.11/build/img/flags@2x.webp");--iti-path-globe-1x:url("https://cdn.jsdelivr.net/npm/intl-tel-input@29.5.11/build/img/globe.webp");--iti-path-globe-2x:url("https://cdn.jsdelivr.net/npm/intl-tel-input@29.5.11/build/img/globe@2x.webp")}
-.phone-field .iti input{width:100%;min-width:0;height:54px;padding-left:12px!important;border:0!important;box-shadow:none!important;font:500 1rem 'DM Sans',sans-serif}
-.phone-field .iti__selected-country{padding:0 9px 0 2px}
+.phone-field .iti input{width:100%;min-width:0;height:54px;padding-left:var(--iti-input-left,90px)!important;border:0!important;box-shadow:none!important;font:500 1rem 'DM Sans',sans-serif}
+.phone-field .iti__selected-country{padding:0 10px 0 7px;min-width:84px}.phone-field .iti__selected-dial-code{font-size:.94rem;font-weight:700;color:#39313e;margin-left:6px}.phone-field .iti__selected-country-primary{display:flex;align-items:center;gap:3px}.phone-field .iti__flag-container{padding:0}
 .phone-field .iti__country-container{z-index:4}
 .phone-field .iti__dropdown-content{z-index:20;border:1px solid #d8cbdc;border-radius:12px;box-shadow:0 12px 30px #24152a25}
 .phone-field .iti__search-input{width:calc(100% - 18px);margin:9px}
 .phone-help{display:block;margin:-9px 4px 0 42px;color:#77717a;font-size:.72rem;line-height:1.4}
 .resend-confirmation{justify-self:center;border:0;background:transparent;color:var(--purple);font:700 .78rem 'DM Sans',sans-serif;text-decoration:underline;cursor:pointer;padding:4px 8px}
 .resend-confirmation:disabled{opacity:.55;cursor:wait}
-@media(max-width:560px){.phone-field .iti input{font-size:.95rem}.phone-help{margin-left:38px;font-size:.68rem}}
+@media(max-width:560px){.phone-field .iti input{font-size:.95rem;padding-left:var(--iti-input-left,86px)!important}.phone-help{margin-left:38px;font-size:.68rem}}
