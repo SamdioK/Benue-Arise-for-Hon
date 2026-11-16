@@ -3,8 +3,10 @@
 
 /* Lawshield Partners identity */
 .lawshield-brand{display:flex;align-items:center;gap:12px;min-width:0;text-decoration:none;color:#29251f}
-.lawshield-brand img{display:block;width:min(100%,420px);height:auto;max-height:76px;object-fit:contain;object-position:left center}
-.lawshield-brand span{display:none}
+.lawshield-brand img{display:block;width:58px;height:58px;object-fit:contain;flex:0 0 58px}
+.lawshield-brand span{display:flex;flex-direction:column;gap:3px;line-height:1.05}
+.lawshield-brand span strong{font:800 .95rem/1.05 Georgia,serif;letter-spacing:.035em;color:#211d19}
+.lawshield-brand span small{font-size:.58rem;letter-spacing:.18em;font-weight:900;color:#176342}
 .lawshield-nav{gap:clamp(10px,2vw,25px)}
 .lawshield-nav a{font-size:.78rem}
 .lawshield-nav a:last-child{color:#176342;font-weight:850}
