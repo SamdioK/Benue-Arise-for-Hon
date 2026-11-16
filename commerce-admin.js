@@ -18,6 +18,7 @@ adminReady=true;$("#commerce-admin-panel").hidden=false;status("Administrator ac
 await Promise.all([loadCategories(),loadBooks(),loadOrders()]);
 $("#commerce-book-form").addEventListener("submit",saveBook);
 $("#commerce-service-form").addEventListener("submit",saveService);
+$("#commerce-marketplace-form").addEventListener("submit",saveMarketplace);
 $("#commerce-refresh-books").addEventListener("click",loadBooks);
 $("#commerce-refresh-orders").addEventListener("click",loadOrders);
 }catch(e){console.error(e);status("Commerce administration could not initialise. Confirm the Phase 1 database migration has been applied.");}
@@ -54,13 +55,16 @@ const productId=product.id;
 const cover=await upload("shop-covers",fd.get("cover"),productId);
 if(cover){const {error:e}=await db.from("shop_products").update({cover_storage_path:cover}).eq("id",productId);if(e)throw e;}
 const variants=[];
-if(physical)variants.push({product_id:productId,format:"physical",price_ngn:Number(fd.get("physical_ngn")),price_usd:Number(fd.get("physical_usd")),stock_quantity:fd.get("physical_stock")===""?0:Number(fd.get("physical_stock")),weight_grams:fd.get("physical_weight")===""?null:Number(fd.get("physical_weight"))});
+if(physical)variants.push({product_id:productId,format:"physical",price_ngn:Number(fd.get("physical_ngn")),price_usd:Number(fd.get("physical_usd")),stock_quantity:fd.get("physical_stock")===""?null:Number(fd.get("physical_stock")),weight_grams:fd.get("physical_weight")===""?null:Number(fd.get("physical_weight"))});
 if(digital){const path=await upload("shop-digital",fd.get("digital_file"),productId);variants.push({product_id:productId,format:"digital",price_ngn:Number(fd.get("digital_ngn")),price_usd:Number(fd.get("digital_usd")),digital_storage_path:path});}
 if(variants.length){const {error:e}=await db.from("shop_product_variants").insert(variants);if(e)throw e;}
 if(listing){const raw=String(fd.get("external_price")||"");const {error:e}=await db.from("shop_external_listings").insert({product_id:productId,marketplace,listing_url:listing,observed_price:raw===""?null:Number(raw),currency:fd.get("external_currency")||null,price_display_authorized:fd.get("price_display_authorized")==="on",capture_method:"manual",price_observed_at:raw===""?null:new Date().toISOString(),source_note:"Manually entered reference; verify retailer terms before displaying any price."});if(e)throw e;}
 form.reset();status("Book saved successfully in Supabase as a draft. Review its editions and marketplace reference before publishing.");await loadBooks();
 }catch(e){console.error(e);status("Book was not fully saved: "+(e.message||"Supabase rejected the operation")+". Check the draft record and uploaded files before retrying.");}
 finally{submit.disabled=false;}
+}
+async function saveMarketplace(event){
+event.preventDefault();if(!adminReady)return;const form=event.currentTarget,fd=new FormData(form),url=String(fd.get("listing_url")||"").trim();if(!url.startsWith("https://")){status("Use a secure HTTPS marketplace listing URL.");return;}const raw=String(fd.get("observed_price")||"");const payload={product_id:fd.get("product_id"),marketplace:String(fd.get("marketplace")||"").trim(),marketplace_region:String(fd.get("marketplace_region")||"").trim()||null,listing_url:url,observed_price:raw===""?null:Number(raw),currency:fd.get("currency")||null,price_observed_at:raw===""?null:new Date().toISOString(),price_display_authorized:fd.get("price_display_authorized")==="on",capture_method:"manual"};const button=form.querySelector("button[type=submit]");button.disabled=true;status("Saving marketplace listing in Supabase…");try{const {error}=await db.from("shop_external_listings").insert(payload);if(error)throw error;form.reset();status("Marketplace listing saved. The source link is visible on the public book page; price display follows the permission setting.");await loadBooks();}catch(e){status("Marketplace listing was not saved: "+(e.message||"Supabase rejected the operation")+".");}finally{button.disabled=false;}
 }
 async function saveService(event){
 event.preventDefault();if(!adminReady)return;
@@ -75,7 +79,7 @@ finally{button.disabled=false;}
 async function loadBooks(){
 const {data,error}=await db.from("shop_products").select("id,title,author_name,status,shop_product_variants(format,price_ngn,price_usd,is_active)").order("created_at",{ascending:false}).limit(50);
 if(error)throw error;
-const list=$("#commerce-book-list");if(!data?.length){list.innerHTML="<p>No books have been added yet.</p>";return;}
+const list=$("#commerce-book-list");const picker=$("#commerce-marketplace-book");if(picker)picker.innerHTML='<option value="">Choose a book</option>'+(data||[]).map(p=>'<option value="'+esc(p.id)+'">'+esc(p.title)+'</option>').join("");if(!data?.length){list.innerHTML="<p>No books have been added yet.</p>";return;}
 list.innerHTML=data.map(p=>'<div class="admin-record"><div><strong>'+esc(p.title)+'</strong><small>'+esc(p.author_name)+' · '+esc(p.status)+' · '+(p.shop_product_variants||[]).map(v=>esc(v.format)).join(", ")+'</small></div>'+(p.status==="draft"?'<button type="button" data-publish-book="'+esc(p.id)+'">Publish</button>':'')+'</div>').join("");
 list.querySelectorAll("[data-publish-book]").forEach(b=>b.addEventListener("click",()=>publishBook(b.dataset.publishBook,b)));
 }
