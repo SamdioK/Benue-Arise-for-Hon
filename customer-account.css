@@ -127,3 +127,23 @@
 .auth-brand-stacked span:before,.auth-brand-stacked span:after{content:"";display:block;flex:1 1 42px;max-width:70px;min-width:24px;height:2px;background:linear-gradient(90deg,#e6ad31,#f3d27c);border-radius:2px}
 .auth-clock{margin-top:13px}
 @media(max-width:560px){.auth-brand.auth-brand-stacked{gap:6px}.auth-brand-stacked img{width:94px;height:88px}.auth-brand-stacked strong{font-size:1.42rem}.auth-brand-stacked span{font-size:.78rem;gap:9px;letter-spacing:.09em}.auth-brand-stacked span:before,.auth-brand-stacked span:after{max-width:48px;min-width:18px}}
+
+/* Unified, custom-drawn line icons for the four customer benefits. */
+.visual-features .feature-icon{
+  color:#f4c65c;
+  background:linear-gradient(145deg,#064d37,#022f24);
+  box-shadow:inset 0 0 0 1px #f4c65c22,0 3px 10px #001b1438;
+}
+.visual-features .feature-icon svg{
+  display:block;
+  width:68%;
+  height:68%;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:2.35;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.visual-features .feature-row:first-child .feature-icon svg{
+  stroke-width:2.15;
+}
