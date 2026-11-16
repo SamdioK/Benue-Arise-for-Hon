@@ -83,7 +83,7 @@ The storefront reads published records from Supabase. It does not use browser st
 
 ## 9. Current boundaries
 
-- Cart and checkout are not yet enabled.
+- The authenticated customer cart and pending-order preparation are documented in Phase 3. Payment collection is not yet enabled.
 - Paystack initialisation, webhook verification, refunds and order receipts are not yet enabled.
 - Digital downloads remain unavailable until payment verification and entitlement delivery are implemented.
 - Physical stock and delivery management tables exist, but customer checkout and fulfilment workflows are not yet enabled.
@@ -112,7 +112,7 @@ The storefront reads published records from Supabase. It does not use browser st
 - [x] Administrator book and service draft creation.
 - [x] Secure service enquiry Edge Function deployed.
 - [x] Administrator service publishing and enquiry status queue.
-- [ ] Full cart and checkout.
+- [x] Authenticated cart and pending-order preparation (see Phase 3 manual).
 - [ ] Payment verification and order fulfilment.
 - [ ] Digital download entitlement.
 - [ ] Quote and appointment management.
