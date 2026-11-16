@@ -15,7 +15,11 @@ const category=state.categories.find(c=>c.id===p.category_id)?.name||"Book colle
 const cover=p.cover_storage_path&&cfg.SUPABASE_URL?cfg.SUPABASE_URL+"/storage/v1/object/public/shop-covers/"+p.cover_storage_path.split("/").map(encodeURIComponent).join("/"):"";
 const variants=(p.shop_product_variants||[]).filter(v=>v.is_active&&(!state.format||v.format===state.format));
 const editions=variants.map(v=>'<div class="book-edition"><span>'+(v.format==="physical"?"Printed edition":"Digital edition")+'</span><strong>'+money(state.currency==="NGN"?v.price_ngn:v.price_usd,state.currency)+'</strong></div>').join("");
-const refs=(p.shop_external_listings||[]).map(x=>'<a href="'+esc(x.listing_url)+'" target="_blank" rel="noopener noreferrer">'+esc(x.marketplace)+' listing ↗</a>').join("");
+const refs=(p.shop_external_listings||[]).map(x=>{
+const shown=x.price_display_authorized&&x.observed_price!==null&&x.currency;
+const price=shown?" · "+money(x.observed_price,x.currency)+(x.price_observed_at?" (checked "+esc(date(x.price_observed_at))+")":""):"";
+return '<a href="'+esc(x.listing_url)+'" target="_blank" rel="noopener noreferrer">'+esc(x.marketplace)+' listing ↗</a>'+price;
+}).join("");
 return '<article class="book-card"><div class="book-cover">'+(cover?'<img src="'+esc(cover)+'" alt="Cover of '+esc(p.title)+'" loading="lazy">':'<div class="book-cover-placeholder">'+esc(p.title)+'</div>')+'</div><div class="book-body"><span class="book-category">'+esc(category)+'</span><h3>'+esc(p.title)+'</h3><p class="book-author">By '+esc(p.author_name)+(p.publisher?' · '+esc(p.publisher):'')+'</p><p class="book-description">'+esc(p.description||"Explore this published work.")+'</p><div class="book-editions">'+(editions||'<span class="shop-status">No active edition is currently available.</span>')+'</div>'+(refs?'<div class="marketplace-links">'+refs+'<small>External retailer prices and availability may change. Check the retailer for its current price.</small></div>':'')+'</div></article>';
 }).join("");
 }
@@ -34,7 +38,7 @@ try{
 const {createClient}=await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/+esm");
 const client=createClient(cfg.SUPABASE_URL,cfg.SUPABASE_PUBLISHABLE_KEY,{db:{schema:"arise_site"},auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
 const [p,c,s]=await Promise.all([
-client.from("shop_products").select("id,title,author_name,description,isbn_10,isbn_13,publisher,cover_storage_path,category_id,shop_product_variants(id,format,price_ngn,price_usd,is_active),shop_external_listings(marketplace,listing_url,capture_method)").eq("status","published").order("display_order").order("title"),
+client.from("shop_products").select("id,title,author_name,description,isbn_10,isbn_13,publisher,cover_storage_path,category_id,shop_product_variants(id,format,price_ngn,price_usd,is_active),shop_external_listings(marketplace,listing_url,observed_price,currency,price_observed_at,price_display_authorized,capture_method)").eq("status","published").order("display_order").order("title"),
 client.from("shop_categories").select("id,name").eq("is_active",true).order("display_order"),
 client.from("service_offerings").select("id,title,description,pricing_mode,price_ngn,price_usd").eq("status","published").order("display_order")
 ]);
