@@ -29,3 +29,19 @@
 .shop-wat-clock strong{font-size:.75rem;letter-spacing:.035em;font-variant-numeric:tabular-nums;color:#245c43}
 .shop-wat-clock small{font-size:.64rem;color:#756d62}
 @media(max-width:640px){.shop-wat-clock{margin-bottom:21px;padding:8px 11px}.shop-wat-clock strong{font-size:.7rem}.shop-wat-clock small{font-size:.6rem}}
+
+/* Keep the live WAT date/time directly beneath the Lawshield Partners wordmark. */
+.lawshield-brand{align-items:center}
+.lawshield-brand .lawshield-brand-copy{display:flex;flex-direction:column;align-items:flex-start;gap:3px;min-width:0}
+.lawshield-brand .lawshield-brand-copy>strong{font:800 1.12rem/1.05 Georgia,serif;letter-spacing:.015em;color:#211d19}
+.lawshield-brand .lawshield-brand-copy>small{font-size:.66rem;line-height:1.1;letter-spacing:.18em;font-weight:900;color:#176342}
+.lawshield-brand .shop-wat-clock{display:flex;flex-direction:row;align-items:center;gap:6px;margin:2px 0 0;padding:0;border:0;border-radius:0;background:transparent;font-family:Inter,system-ui,sans-serif;line-height:1.15}
+.lawshield-brand .shop-wat-clock strong{font-size:.65rem;letter-spacing:.025em;font-weight:800;color:#245c43;font-variant-numeric:tabular-nums}
+.lawshield-brand .shop-wat-clock small{font-size:.59rem;letter-spacing:.015em;font-weight:600;color:#756d62}
+@media(max-width:640px){
+ .lawshield-brand .lawshield-brand-copy>strong{font-size:.98rem}
+ .lawshield-brand .lawshield-brand-copy>small{font-size:.59rem}
+ .lawshield-brand .shop-wat-clock{gap:5px;margin-top:3px}
+ .lawshield-brand .shop-wat-clock strong{font-size:.61rem}
+ .lawshield-brand .shop-wat-clock small{font-size:.55rem}
+}
