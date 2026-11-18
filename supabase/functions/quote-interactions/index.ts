@@ -1,7 +1,7 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 const cors={"Access-Control-Allow-Origin":"*","Access-Control-Allow-Headers":"authorization, x-client-info, apikey, content-type","Access-Control-Allow-Methods":"POST, OPTIONS"};
 const json=(body:unknown,status=200)=>new Response(JSON.stringify(body),{status,headers:{...cors,"Content-Type":"application/json"}});
-const validQuote=(q:unknown)=>q==="challenge-your-challenge"||q==="poverty-will-suffer";
+const validQuote=(q:unknown)=>q==="challenge-your-challenge"||q==="poverty-will-suffer"||q==="scorecards-poverty-go-suffer";
 async function sha(value:string){const bytes=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(value));return [...new Uint8Array(bytes)].map(b=>b.toString(16).padStart(2,"0")).join("");}
 function moderate(value:string){const text=value.toLowerCase().replace(/[\u200b-\u200f\uFEFF]/g,"");const rules:[RegExp,string][]=[
 [/\b(fuck|fucking|motherfucker|shit|bullshit|bitch|bastard|asshole|dickhead|cunt)\b/i,"Profanity or abusive language"],
