@@ -1,2 +1,2 @@
-/* Browser-safe Supabase configuration. Use only the project URL and publishable/anon key. Never add service-role keys here. */
-window.ARISE_CONFIG = window.ARISE_CONFIG || { SUPABASE_URL: "", SUPABASE_PUBLISHABLE_KEY: "" };
+/* Browser-safe Supabase configuration. Publishable keys are intended for public clients; database access is restricted by RLS. */
+window.ARISE_CONFIG = { SUPABASE_URL: "https://atstsekevoozausbiqbi.supabase.co", SUPABASE_PUBLISHABLE_KEY: "sb_publishable_mD18Fear8eew3LrpdVwZyA_9AaTOSOx" };
