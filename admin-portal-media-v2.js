@@ -325,7 +325,8 @@ async function checkAuth() {
       $("#new-record").textContent = "+ New record";
       $("#cms-panel .cms-top h2").textContent = "Manage portal content";
     }
-    updateNewRecordLabel();
+    const selectedModule = modules[$("#content-type").value];
+    if (selectedModule) $("#new-record").textContent = "+ New " + (isManager ? "profile record" : selectedModule.label);
     await loadList();
     $("#quote-moderation-panel").hidden = isManager;
     if (!isManager) {
