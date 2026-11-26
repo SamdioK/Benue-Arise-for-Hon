@@ -83,8 +83,48 @@ let authCheckInFlight = null;
 let recoveryMode = new URLSearchParams(window.location.hash.slice(1)).get("type") === "recovery" || new URLSearchParams(window.location.search).get("type") === "recovery" || new URLSearchParams(window.location.search).has("code");
 const say = (message) => { const node = $("#cms-status"); if (node) node.textContent = message; };
 
-function syncModulePicker() {
-  const selected = $("#content-type")?.value;
+const authSay = (message) => { const node = $("#auth-status"); if (node) node.textContent = message; };
+
+async function initialise() {
+  if (!cfg.SUPABASE_URL || !cfg.SUPABASE_PUBLISHABLE_KEY) {
+    authSay("Supabase browser configuration is missing.");
+    return;
+  }
+  const { createClient } = await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/+esm");
+  client = createClient(cfg.SUPABASE_URL, cfg.SUPABASE_PUBLISHABLE_KEY, {
+    db: { schema: "arise_site" },
+    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, flowType: "pkce" }
+  });
+  client.auth.onAuthStateChange((event) => {
+    if (event === "PASSWORD_RECOVERY") { recoveryMode = true; showPasswordRecovery(); return; }
+    if (recoveryMode) return;
+    if (event === "SIGNED_OUT") {
+      currentUser = null; currentRole = null;
+      $("#auth-panel").hidden = false; $("#cms-panel").hidden = true;
+      authSay("You have signed out.");
+      return;
+    }
+    // Token refreshes are not sign-in/sign-out events. Do not re-run the
+    // administrator gate on every refresh; it caused overlapping UI checks.
+    if (event === "INITIAL_SESSION" || event === "SIGNED_IN" || event === "USER_UPDATED") {
+      window.setTimeout(() => checkAuth(), 0);
+    }
+  });
+  $("#login-form").addEventListener("submit", login);
+  $("#forgot-password").addEventListener("click", requestPasswordReset);
+  $("#recovery-form").addEventListener("submit", completePasswordRecovery);
+  $("#signout").addEventListener("click", async () => { await client.auth.signOut(); });
+  const activateModule = (moduleKey) => {
+    const nextModule = modules[moduleKey];
+    if (!nextModule) { say("The selected content module is unavailable. Please choose another module."); return false; }
+    activeModule = nextModule;
+    activeId = null;
+    clearEditor();
+    updateMuxBroadcastControls();
+    loadList();
+    return true;
+  };
+  $("#content-type").addEventListener("change", () => { const key = $("#content-type").value; if (!activateModule(key)) return; $("#content-workspace").classList.remove("is-editor-open"); $("#content-workspace .record-form").classList.remove("is-editing"); say("Showing " + modules[key].label + ". Select New record to add content."); });
   $("#open-broadcast-events")?.addEventListener("click",()=>{$("#content-type").value="broadcast_events";$("#content-type").dispatchEvent(new Event("change",{bubbles:true}));$("#content-workspace").scrollIntoView({behavior:"smooth",block:"start"})});
   $("#admin-search").addEventListener("input", loadList);
   $("#new-record").addEventListener("click", () => {
@@ -250,7 +290,6 @@ async function checkAuth() {
     $("#playlist-track-manager").hidden = isManager;
     $("#gallery-media-manager").hidden = isManager;
     $("#content-type").disabled = isManager;
-    
     if (isManager) {
       $("#content-type").value = "profile_records";
       activeModule = modules.profile_records;
