@@ -82,6 +82,19 @@ let currentRole = null;
 let authCheckInFlight = null;
 let recoveryMode = new URLSearchParams(window.location.hash.slice(1)).get("type") === "recovery" || new URLSearchParams(window.location.search).get("type") === "recovery" || new URLSearchParams(window.location.search).has("code");
 const say = (message) => { const node = $("#cms-status"); if (node) node.textContent = message; };
+
+function syncModulePicker() {
+  const selected = $("#content-type")?.value;
+  $("#content-module-picker")?.querySelectorAll("[data-module]").forEach((button) => {
+    const active = button.dataset.module === selected;
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-pressed", active ? "true" : "false");
+  });
+  const selectedLabel = $("#content-module-picker [data-module=\"" + selected + "\"]")?.textContent?.trim();
+  const newButton = $("#new-record");
+  if (newButton) newButton.textContent = currentRole === "profile_manager" ? "+ New profile record" : "+ New " + (selectedLabel || "record");
+}
+
 const authSay = (message) => { const node = $("#auth-status"); if (node) node.textContent = message; };
 
 async function initialise() {
@@ -123,26 +136,42 @@ async function initialise() {
     loadList();
     return true;
   };
-  $("#content-type").addEventListener("change", () => activateModule($("#content-type").value));
-  $("#open-broadcast-events")?.addEventListener("click",()=>{$("#content-type").value="broadcast_events";$("#content-type").dispatchEvent(new Event("change",{bubbles:true}));$("#content-type").scrollIntoView({behavior:"smooth",block:"center"})});
+  $("#content-type").addEventListener("change", () => { activateModule($("#content-type").value); syncModulePicker(); });
+  $("#content-module-picker")?.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-module]");
+    if (!button || !modules[button.dataset.module]) return;
+    $("#content-type").value = button.dataset.module;
+    $("#content-type").dispatchEvent(new Event("change", { bubbles: true }));
+  });
+  $("#open-broadcast-events")?.addEventListener("click",()=>{$("#content-type").value="broadcast_events";$("#content-type").dispatchEvent(new Event("change",{bubbles:true}));$("#content-workspace").scrollIntoView({behavior:"smooth",block:"start"})});
   $("#admin-search").addEventListener("input", loadList);
   $("#new-record").addEventListener("click", () => {
     const selectedKey = $("#content-type").value;
-    if (modules[selectedKey] && activeModule !== modules[selectedKey]) activateModule(selectedKey);
+    const selectedModule = modules[selectedKey];
+    if (!selectedModule) { say("Choose a valid content module before creating a record."); return; }
+    if (activeModule !== selectedModule) {
+      activeModule = selectedModule;
+      activeId = null;
+      loadList();
+    }
     activeId = null;
     clearEditor();
     updateMuxBroadcastControls();
     $("#form-heading").textContent = "New " + activeModule.label;
     $("#record-id-label").textContent = "Unsaved record";
     say("Complete the fields below, then select Save record.");
-    const editor = $("#content-workspace .record-form");
+    const workspace = $("#content-workspace");
+    const editor = workspace?.querySelector(".record-form");
+    workspace?.classList.add("is-editor-open");
     editor?.classList.add("is-editing");
+    syncModulePicker();
     window.requestAnimationFrame(() => {
       editor?.scrollIntoView({ behavior: "smooth", block: "start" });
-      $("#record-fields input:not([type=hidden]), #record-fields select, #record-fields textarea")?.focus({ preventScroll: true });
+      const firstField = $("#record-fields input:not([type=hidden]), #record-fields select, #record-fields textarea");
+      firstField?.focus({ preventScroll: true });
     });
   });
-  $("#reset-record").addEventListener("click", () => { activeId = null; clearEditor(); updateMuxBroadcastControls(); });
+  $("#reset-record").addEventListener("click", () => { activeId = null; clearEditor(); updateMuxBroadcastControls(); $("#content-workspace").classList.remove("is-editor-open"); $("#content-workspace .record-form").classList.remove("is-editing"); });
   $("#record-form").addEventListener("submit", saveRecord);
   $("#playlist-select")?.addEventListener("change", loadPlaylistSongOptions);
   $("#save-playlist-tracks")?.addEventListener("click", savePlaylistTracks);
@@ -275,6 +304,7 @@ async function checkAuth() {
   if (commercePanel) commercePanel.hidden = isManager;
   window.dispatchEvent(new Event("arise-admin-ready"));
     $("#profile-manager-users").hidden = isManager;
+    syncModulePicker();
     $("#site-assets-manager").hidden = isManager;
     $("#campaign-audio-manager").hidden = isManager;
     $("#playlist-track-manager").hidden = isManager;
