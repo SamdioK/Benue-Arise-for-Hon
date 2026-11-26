@@ -85,72 +85,6 @@ const say = (message) => { const node = $("#cms-status"); if (node) node.textCon
 
 function syncModulePicker() {
   const selected = $("#content-type")?.value;
-  $("#content-module-picker")?.querySelectorAll("[data-module]").forEach((button) => {
-    const active = button.dataset.module === selected;
-    button.classList.toggle("is-active", active);
-    button.setAttribute("aria-pressed", active ? "true" : "false");
-  });
-  const selectedLabel = $("#content-module-picker [data-module=\"" + selected + "\"]")?.textContent?.trim();
-  const newButton = $("#new-record");
-  if (newButton) newButton.textContent = currentRole === "profile_manager" ? "+ New profile record" : "+ New " + (selectedLabel || "record");
-}
-
-const authSay = (message) => { const node = $("#auth-status"); if (node) node.textContent = message; };
-
-async function initialise() {
-  if (!cfg.SUPABASE_URL || !cfg.SUPABASE_PUBLISHABLE_KEY) {
-    authSay("Supabase browser configuration is missing.");
-    return;
-  }
-  const { createClient } = await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/+esm");
-  client = createClient(cfg.SUPABASE_URL, cfg.SUPABASE_PUBLISHABLE_KEY, {
-    db: { schema: "arise_site" },
-    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, flowType: "pkce" }
-  });
-  client.auth.onAuthStateChange((event) => {
-    if (event === "PASSWORD_RECOVERY") { recoveryMode = true; showPasswordRecovery(); return; }
-    if (recoveryMode) return;
-    if (event === "SIGNED_OUT") {
-      currentUser = null; currentRole = null;
-      $("#auth-panel").hidden = false; $("#cms-panel").hidden = true;
-      authSay("You have signed out.");
-      return;
-    }
-    // Token refreshes are not sign-in/sign-out events. Do not re-run the
-    // administrator gate on every refresh; it caused overlapping UI checks.
-    if (event === "INITIAL_SESSION" || event === "SIGNED_IN" || event === "USER_UPDATED") {
-      window.setTimeout(() => checkAuth(), 0);
-    }
-  });
-  $("#login-form").addEventListener("submit", login);
-  $("#forgot-password").addEventListener("click", requestPasswordReset);
-  $("#recovery-form").addEventListener("submit", completePasswordRecovery);
-  $("#signout").addEventListener("click", async () => { await client.auth.signOut(); });
-  const activateModule = (moduleKey) => {
-    const nextModule = modules[moduleKey];
-    if (!nextModule) { say("The selected content module is unavailable. Please choose another module."); return false; }
-    activeModule = nextModule;
-    activeId = null;
-    clearEditor();
-    updateMuxBroadcastControls();
-    loadList();
-    return true;
-  };
-  $("#content-type").addEventListener("change", () => { activateModule($("#content-type").value); syncModulePicker(); });
-  $("#content-module-picker")?.querySelectorAll("[data-module]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const moduleKey = button.dataset.module;
-      if (!modules[moduleKey] || button.disabled) return;
-      $("#content-type").value = moduleKey;
-      const changed = activateModule(moduleKey);
-      if (!changed) return;
-      $("#content-workspace").classList.remove("is-editor-open");
-      $("#content-workspace .record-form").classList.remove("is-editing");
-      syncModulePicker();
-      say("Showing " + modules[moduleKey].label + ". Select New record to add content.");
-      $("#admin-record-list")?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    });
-  });
   $("#open-broadcast-events")?.addEventListener("click",()=>{$("#content-type").value="broadcast_events";$("#content-type").dispatchEvent(new Event("change",{bubbles:true}));$("#content-workspace").scrollIntoView({behavior:"smooth",block:"start"})});
   $("#admin-search").addEventListener("input", loadList);
   $("#new-record").addEventListener("click", () => {
@@ -172,7 +106,6 @@ async function initialise() {
     const editor = workspace?.querySelector(".record-form");
     workspace?.classList.add("is-editor-open");
     editor?.classList.add("is-editing");
-    syncModulePicker();
     window.requestAnimationFrame(() => {
       editor?.scrollIntoView({ behavior: "smooth", block: "start" });
       const firstField = $("#record-fields input:not([type=hidden]), #record-fields select, #record-fields textarea");
@@ -312,13 +245,12 @@ async function checkAuth() {
   if (commercePanel) commercePanel.hidden = isManager;
   window.dispatchEvent(new Event("arise-admin-ready"));
     $("#profile-manager-users").hidden = isManager;
-    syncModulePicker();
     $("#site-assets-manager").hidden = isManager;
     $("#campaign-audio-manager").hidden = isManager;
     $("#playlist-track-manager").hidden = isManager;
     $("#gallery-media-manager").hidden = isManager;
     $("#content-type").disabled = isManager;
-    $("#content-module-picker")?.querySelectorAll("[data-module]").forEach((button) => { button.disabled = isManager && button.dataset.module !== "profile_records"; });
+    
     if (isManager) {
       $("#content-type").value = "profile_records";
       activeModule = modules.profile_records;
@@ -329,7 +261,6 @@ async function checkAuth() {
       $("#new-record").textContent = "+ New record";
       $("#cms-panel .cms-top h2").textContent = "Manage portal content";
     }
-    syncModulePicker();
     await loadList();
     $("#quote-moderation-panel").hidden = isManager;
     if (!isManager) {
