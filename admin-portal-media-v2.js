@@ -310,6 +310,7 @@ async function checkAuth() {
     $("#playlist-track-manager").hidden = isManager;
     $("#gallery-media-manager").hidden = isManager;
     $("#content-type").disabled = isManager;
+    $("#content-module-picker")?.querySelectorAll("[data-module]").forEach((button) => { button.disabled = isManager && button.dataset.module !== "profile_records"; });
     if (isManager) {
       $("#content-type").value = "profile_records";
       activeModule = modules.profile_records;
