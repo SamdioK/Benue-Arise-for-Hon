@@ -174,3 +174,10 @@
 }
 
 .module-picker-options button:disabled{opacity:.45;cursor:not-allowed}
+
+
+/* Final reliable single-select content navigation */
+.content-module-label{display:block;color:#254b34;font-size:11px;font-weight:850}
+.content-module-select{display:block!important;position:static!important;clip:auto!important;width:100%!important;height:auto!important;min-height:48px;padding:11px 38px 11px 12px;border:1px solid #cbdacb;border-radius:9px;background:#fff;color:#173f2d;font-family:inherit;font-size:13px;font-weight:700;line-height:1.45;white-space:normal}
+.content-module-select:focus{outline:2px solid #24794e;outline-offset:2px;border-color:#24794e}
+.content-module-picker,.content-picker-heading{display:none!important}
