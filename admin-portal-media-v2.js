@@ -35,7 +35,7 @@ const modules = {
     fields: [
       ["section_key","Website section","select",true,["biography","legal_academic","public_service","scholarships","philanthropy","achievements","projects","evidence"]],
       ["title","Title","text",true],["slug","URL slug","text",true],["category","Subsection / category (use exact Personal Profile subsection name)","text"],
-      ["excerpt","Short summary","textarea"],["body","Full content","textarea"],["image_url","Photograph URL (Supabase Storage)","url"],["image_alt","Photograph description (accessibility)","text"],["milestone_date","Milestone date","date"],["display_order","Display order","number"],["location","Location / LGA","text"],
+      ["excerpt","Short summary","textarea"],["body","Full content","textarea"],["image_url","Photograph URL (Supabase Storage)","url"],["image_alt","Photograph description (accessibility)","text"],["video_path","Profile video storage path (upload using Profile Video Upload)","text"],["milestone_date","Milestone date","date"],["display_order","Display order","number"],["location","Location / LGA","text"],
       ["source_url","Primary source URL","url"],["evidence_url","Supporting evidence URL","url"],
       ["verification_status","Verification status","select",true,["Under Verification","Verified","Official Record","Campaign Statement"]],
       ["status","Publication status","select",true,["draft","published","archived"]],
@@ -647,6 +647,28 @@ async function uploadStorageFile(bucket,path,file,statusNode) {
     xhr.send(file);
   });
 }
+
+async function uploadProfileVideo(){
+  const input=$("#profile-video-file"),status=$("#profile-video-status"),button=$("#upload-profile-video"),file=input?.files?.[0];
+  if(activeModule.table!=="profile_records"){status.textContent="Select or create a record in the Profile, Projects & Evidence module first.";return}
+  if(!file){status.textContent="Choose a profile video first.";return}
+  const allowed=new Set(["video/mp4","video/webm","video/quicktime"]);
+  if(!allowed.has(file.type)){status.textContent="Supported formats are MP4, WebM and MOV.";return}
+  if(file.size>50*1024*1024){status.textContent="The selected video exceeds the 50 MB upload limit.";return}
+  button.disabled=true;button.textContent="Uploading…";status.textContent="Uploading profile video to Supabase Storage…";
+  try{
+    const safe=file.name.normalize("NFKD").replace(/[^a-zA-Z0-9._-]+/g,"-").replace(/^-+|-+$/g,"");
+    const path="videos/profile/"+Date.now()+"-"+safe;
+    await uploadStorageFile("gallery-media",path,file,status);
+    const field=document.querySelector('#record-fields [name="video_path"]');
+    if(!field)throw new Error("Profile video field is unavailable. Switch to the Profile, Projects & Evidence module and reopen the record.");
+    field.value=path;field.dispatchEvent(new Event("input",{bubbles:true}));
+    status.textContent="Upload confirmed in Supabase Storage. The video path has been inserted into the open profile record. Save the profile record to retain the video.";
+    input.value="";
+  }catch(error){status.textContent=error.message||"Profile video upload failed."}
+  finally{button.disabled=false;button.textContent="Upload profile video"}
+}
+$("#upload-profile-video")?.addEventListener("click",uploadProfileVideo);
 
 async function uploadGalleryMedia(){
   const input=$("#gallery-media-file"),status=$("#gallery-media-status"),button=$("#upload-gallery-media"),file=input?.files?.[0];
