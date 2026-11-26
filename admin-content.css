@@ -181,3 +181,13 @@
 .content-module-select{display:block!important;position:static!important;clip:auto!important;width:100%!important;height:auto!important;min-height:48px;padding:11px 38px 11px 12px;border:1px solid #cbdacb;border-radius:9px;background:#fff;color:#173f2d;font-family:inherit;font-size:13px;font-weight:700;line-height:1.45;white-space:normal}
 .content-module-select:focus{outline:2px solid #24794e;outline-offset:2px;border-color:#24794e}
 .content-module-picker,.content-picker-heading{display:none!important}
+
+
+/* Dedicated Candidate Profile entry point */
+.candidate-profile-launch{display:grid;width:100%;gap:5px;margin:2px 0 12px;padding:13px 14px;border:1px solid #cbdccf;border-left:4px solid #176b43;border-radius:10px;background:#f4f8f3;color:#174832;text-align:left;font-family:inherit;cursor:pointer}
+.candidate-profile-launch-kicker{font-size:9px;font-weight:900;letter-spacing:.12em;color:#8a6a35}
+.candidate-profile-launch strong{font-size:13px;line-height:1.45;overflow-wrap:anywhere}
+.candidate-profile-launch>span:last-child{font-size:10px;font-weight:750;color:#28714b}
+.candidate-profile-launch.is-active{border-color:#176b43;background:#eaf4eb;box-shadow:0 0 0 2px #d7e9d9}
+.candidate-profile-launch:focus-visible{outline:2px solid #24794e;outline-offset:2px}
+.candidate-profile-launch:disabled{opacity:.6;cursor:not-allowed}
