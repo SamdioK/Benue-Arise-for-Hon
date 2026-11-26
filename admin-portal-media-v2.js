@@ -10,7 +10,7 @@ const modules = {
     fields: [
       ["title","Title","text",true],["slug","URL slug","text",true],["excerpt","Short summary","textarea"],
       ["content","Full article","textarea"],["featured_image","Featured image URL","url"],
-      ["status","Status","select",true,["draft","published","archived"]],["published_at","Publication date and time","datetime-local"]
+      ["status","Status","select",true,["draft","published","archived"]],["published_at","Publication date and time (WAT)","datetime-local"]
     ] },
   events: { label: "Events", table: "events", id: "id", order: "created_at",
     fields: [
