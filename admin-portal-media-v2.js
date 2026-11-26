@@ -137,11 +137,19 @@ async function initialise() {
     return true;
   };
   $("#content-type").addEventListener("change", () => { activateModule($("#content-type").value); syncModulePicker(); });
-  $("#content-module-picker")?.addEventListener("click", (event) => {
-    const button = event.target.closest("[data-module]");
-    if (!button || !modules[button.dataset.module]) return;
-    $("#content-type").value = button.dataset.module;
-    $("#content-type").dispatchEvent(new Event("change", { bubbles: true }));
+  $("#content-module-picker")?.querySelectorAll("[data-module]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const moduleKey = button.dataset.module;
+      if (!modules[moduleKey] || button.disabled) return;
+      $("#content-type").value = moduleKey;
+      const changed = activateModule(moduleKey);
+      if (!changed) return;
+      $("#content-workspace").classList.remove("is-editor-open");
+      $("#content-workspace .record-form").classList.remove("is-editing");
+      syncModulePicker();
+      say("Showing " + modules[moduleKey].label + ". Select New record to add content.");
+      $("#admin-record-list")?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    });
   });
   $("#open-broadcast-events")?.addEventListener("click",()=>{$("#content-type").value="broadcast_events";$("#content-type").dispatchEvent(new Event("change",{bubbles:true}));$("#content-workspace").scrollIntoView({behavior:"smooth",block:"start"})});
   $("#admin-search").addEventListener("input", loadList);
@@ -321,6 +329,7 @@ async function checkAuth() {
       $("#new-record").textContent = "+ New record";
       $("#cms-panel .cms-top h2").textContent = "Manage portal content";
     }
+    syncModulePicker();
     await loadList();
     $("#quote-moderation-panel").hidden = isManager;
     if (!isManager) {
