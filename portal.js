@@ -134,11 +134,14 @@ function renderRecords(records, mode = "standard") {
     const media = mediaUrl ? (isVideo
       ? '<video class="record-image record-video" controls playsinline preload="metadata" ' + (posterUrl ? 'poster="' + esc(posterUrl) + '"' : "") + ' aria-label="' + esc(record.title || "Campaign gallery video") + '"><source src="' + esc(mediaUrl) + '"></video>'
       : '<img class="record-image" src="' + esc(mediaUrl) + '" alt="' + esc(record.alt_text || record.title || "Campaign gallery image") + '" loading="lazy">') : "";
+    const profileVideoPath = String(record.video_path || "").trim();
+    const profileVideoUrl = /^https:\/\//i.test(profileVideoPath) ? profileVideoPath : /^videos\/profile\//i.test(profileVideoPath) ? cfg.SUPABASE_URL + "/storage/v1/object/public/gallery-media/" + profileVideoPath.split("/").map(encodeURIComponent).join("/") : "";
+    const profileVideo = profileVideoUrl ? '<video class="record-image record-video" controls playsinline preload="metadata" aria-label="' + esc(record.title || "Candidate profile video") + '"><source src="' + esc(profileVideoUrl) + '"></video>' : "";
     const link = record.registration_url ? '<p><a class="text-link" href="' + esc(record.registration_url) + '" target="_blank" rel="noopener noreferrer">Event information ↗</a></p>' : "";
     const shareUrl = new URL(location.href);
     if (record.slug) shareUrl.searchParams.set("story", record.slug);
     const shareText = (record.title || "Benue Arise for Hon") + (summary ? " — " + summary : "");
-    return '<article class="record-card">' + media +
+    return '<article class="record-card">' + media + profileVideo +
       '<div class="record-meta"><span>' + esc(record.category || "Public information") + '</span><span class="status-pill">' + esc(record.status || "Published") + '</span></div>' +
       '<h3>' + escHeading(record.title) + '</h3>' +
       (record.venue || record.location ? '<p class="record-location">' + esc(record.venue || record.location) + '</p>' : "") +
@@ -194,9 +197,12 @@ function renderPersonalSection(section, records) {
   const cards = records.length ? records.map((record) => {
     const imageUrl = /^https:\/\//i.test(record.image_url || "") ? record.image_url : "";
     const image = imageUrl ? '<figure class="personal-record-image"><img src="' + esc(imageUrl) + '" alt="' + esc(record.image_alt || record.title || "Personal profile photograph") + '" loading="lazy"></figure>' : "";
+    const videoPath = String(record.video_path || "").trim();
+    const videoUrl = /^https:\/\//i.test(videoPath) ? videoPath : /^videos\/profile\//i.test(videoPath) ? cfg.SUPABASE_URL + "/storage/v1/object/public/gallery-media/" + videoPath.split("/").map(encodeURIComponent).join("/") : "";
+    const video = videoUrl ? '<figure class="personal-record-video"><video controls playsinline preload="metadata" aria-label="' + esc(record.title || "Candidate profile video") + '"><source src="' + esc(videoUrl) + '"></video></figure>' : "";
     const date = record.milestone_date ? new Date(record.milestone_date + "T12:00:00").toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"}) : "";
     const body = String(record.body || "").trim().split(/\n{2,}/).map(part => '<p>' + esc(part).replace(/\n/g,"<br>") + '</p>').join("");
-    return '<article class="personal-record-card">' + image + '<div class="personal-record-copy">' +
+    return '<article class="personal-record-card">' + image + video + '<div class="personal-record-copy">' +
       (date ? '<p class="personal-record-date">' + esc(date) + '</p>' : "") +
       '<h3>' + escHeading(record.title) + '</h3>' +
       (record.excerpt ? '<p class="personal-record-excerpt">' + esc(record.excerpt) + '</p>' : "") +
