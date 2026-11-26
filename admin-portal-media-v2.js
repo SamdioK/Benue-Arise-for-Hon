@@ -124,7 +124,31 @@ async function initialise() {
     loadList();
     return true;
   };
-  $("#content-type").addEventListener("change", () => { const key = $("#content-type").value; if (!activateModule(key)) return; $("#content-workspace").classList.remove("is-editor-open"); $("#content-workspace .record-form").classList.remove("is-editing"); say("Showing " + modules[key].label + ". Select New record to add content."); });
+  const updateNewRecordLabel = () => {
+    const key = $("#content-type").value;
+    const selected = modules[key];
+    if ($("#new-record") && selected) $("#new-record").textContent = "+ New " + (key === "profile_records" ? "profile record" : selected.label);
+    $("#open-candidate-profile")?.classList.toggle("is-active", key === "profile_records");
+    $("#open-candidate-profile")?.setAttribute("aria-pressed", key === "profile_records" ? "true" : "false");
+  };
+  $("#content-type").addEventListener("change", () => {
+    const key = $("#content-type").value;
+    if (!activateModule(key)) return;
+    $("#content-workspace").classList.remove("is-editor-open");
+    $("#content-workspace .record-form").classList.remove("is-editing");
+    updateNewRecordLabel();
+    say("Showing " + modules[key].label + ". Select New record to add content.");
+  });
+  $("#open-candidate-profile")?.addEventListener("click", () => {
+    $("#content-type").value = "profile_records";
+    const activated = activateModule("profile_records");
+    if (!activated) return;
+    $("#content-workspace").classList.remove("is-editor-open");
+    $("#content-workspace .record-form").classList.remove("is-editing");
+    updateNewRecordLabel();
+    say("Candidate Profile is open. Select New profile record to add biography, career, projects or evidence.");
+    $("#admin-record-list")?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  });
   $("#open-broadcast-events")?.addEventListener("click",()=>{$("#content-type").value="broadcast_events";$("#content-type").dispatchEvent(new Event("change",{bubbles:true}));$("#content-workspace").scrollIntoView({behavior:"smooth",block:"start"})});
   $("#admin-search").addEventListener("input", loadList);
   $("#new-record").addEventListener("click", () => {
@@ -290,6 +314,7 @@ async function checkAuth() {
     $("#playlist-track-manager").hidden = isManager;
     $("#gallery-media-manager").hidden = isManager;
     $("#content-type").disabled = isManager;
+    const profileLauncher = $("#open-candidate-profile"); if (profileLauncher) profileLauncher.disabled = false;
     if (isManager) {
       $("#content-type").value = "profile_records";
       activeModule = modules.profile_records;
@@ -300,6 +325,7 @@ async function checkAuth() {
       $("#new-record").textContent = "+ New record";
       $("#cms-panel .cms-top h2").textContent = "Manage portal content";
     }
+    updateNewRecordLabel();
     await loadList();
     $("#quote-moderation-panel").hidden = isManager;
     if (!isManager) {
