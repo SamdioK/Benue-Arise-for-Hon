@@ -116,3 +116,12 @@
 
 /* Profile video presentation */
 #profile-video-manager .studio-upload-card{max-width:560px}
+
+/* Profile editor guided controls and inline media previews */
+#record-fields label{display:flex;flex-direction:column;gap:7px}
+#record-fields select,#record-fields input,#record-fields textarea{max-width:100%;min-width:0}
+.profile-media-preview{display:flex;flex-direction:column;gap:7px;margin-top:8px;padding:10px;border:1px solid #e1e8df;border-radius:10px;background:#f8faf7;color:#64766a;font-size:11px}
+.profile-media-preview[hidden]{display:none}
+.profile-media-preview img{display:block;width:100%;max-width:340px;max-height:220px;object-fit:contain;border-radius:7px;background:#e9eee8}
+.profile-media-preview video{display:block;width:100%;max-width:440px;max-height:250px;aspect-ratio:16/9;object-fit:contain;background:#111;border-radius:7px}
+#record-fields input[type="datetime-local"]{min-height:42px}
