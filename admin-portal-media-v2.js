@@ -365,17 +365,107 @@ async function createMuxBroadcastStream(channelType) {
   }
 }
 
+const profileWebsiteSections = [
+  ["biography","Personal Profile"],["legal_academic","Legal & Academic Career"],["public_service","Public Service & Nation Building"],
+  ["scholarships","Education & Scholarships"],["philanthropy","Philanthropy & Humanitarian Services"],
+  ["achievements","Achievements & Recognition"],["projects","Projects & Community Impact"],["evidence","Accountability & Evidence Centre"]
+];
+const personalProfileSubsections = [
+  "Background & Origins","Early Life & Upbringing","Formative Influences","Personal Formation",
+  "Values & Philosophy","Life Milestones","Community & Cultural Roots","Beyond Public Life"
+];
+const profileCategories = {
+  legal_academic:["Legal Practice","Academic Career","Professional Memberships","Publications & Research","Honours & Professional Recognition"],
+  public_service:["Public Office","Public Appointments","Policy & Legislative Contributions","Institutional Leadership","Community Development","Public Service Milestones"],
+  scholarships:["Scholarship Programmes","Educational Support","Student Sponsorship","Learning Resources","Education Infrastructure"],
+  philanthropy:["Humanitarian Support","Community Outreach","Healthcare Support","Youth Empowerment","Women & Family Support","Relief & Emergency Assistance"],
+  achievements:["Awards & Honours","Professional Recognition","Leadership Recognition","National & International Recognition"],
+  projects:["Infrastructure Projects","Community Development","Education Projects","Healthcare Projects","Youth & Skills Development","Economic Empowerment"],
+  evidence:["Official Records","Project Documentation","Photographic Evidence","Media Reports","Independent Verification"]
+};
+const benueLgas = ["Ado","Agatu","Apa","Buruku","Gboko","Guma","Gwer East","Gwer West","Katsina-Ala","Konshisha","Kwande","Logo","Makurdi","Obi","Ogbadibo","Ohimini","Oju","Okpokwu","Otukpo","Tarka","Ukum","Ushongo","Vandeikya"];
+const makeOptions = (values, selected) => '<option value="">Select an option</option>' + values.map(value => {
+  const option = Array.isArray(value) ? value : [value,value];
+  return '<option value="' + esc(option[0]) + '"' + (String(selected ?? "") === String(option[0]) ? " selected" : "") + '>' + esc(option[1]) + '</option>';
+}).join("");
+function localDateTimeValue(value) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  const pad = number => String(number).padStart(2,"0");
+  return date.getFullYear()+"-"+pad(date.getMonth()+1)+"-"+pad(date.getDate())+"T"+pad(date.getHours())+":"+pad(date.getMinutes());
+}
+function profileVideoPreviewUrl(path) {
+  const value = String(path || "").trim();
+  if (/^https:\/\//i.test(value)) return value;
+  return /^videos\/profile\//i.test(value) ? cfg.SUPABASE_URL + "/storage/v1/object/public/gallery-media/" + value.split("/").map(encodeURIComponent).join("/") : "";
+}
+function refreshProfileCategoryOptions(sectionKey, selected = "") {
+  const select = $('#record-fields [name="category"]');
+  if (!select) return;
+  const options = sectionKey === "biography" ? personalProfileSubsections : (profileCategories[sectionKey] || ["General"]);
+  select.innerHTML = makeOptions(options, selected);
+  select.required = sectionKey === "biography";
+}
+function updateProfileMediaPreviews() {
+  const imageInput = $('#record-fields [name="image_url"]');
+  const videoInput = $('#record-fields [name="video_path"]');
+  const imageBox = $("#profile-image-preview");
+  const videoBox = $("#profile-video-preview");
+  if (imageBox) {
+    const url = String(imageInput?.value || "").trim();
+    imageBox.innerHTML = /^https:\/\//i.test(url) ? '<img src="' + esc(url) + '" alt="Photograph preview" loading="lazy"><span>Photograph preview</span>' : '<span>No photograph selected</span>';
+    imageBox.hidden = !url;
+  }
+  if (videoBox) {
+    const url = profileVideoPreviewUrl(videoInput?.value);
+    videoBox.innerHTML = url ? '<video controls playsinline preload="metadata"><source src="' + esc(url) + '"></video><span>Profile video preview</span>' : '<span>No profile video attached</span>';
+    videoBox.hidden = !url;
+  }
+}
+function wireProfileFieldControls(record = {}) {
+  if (activeModule.table !== "profile_records") return;
+  const section = $('#record-fields [name="section_key"]');
+  const category = $('#record-fields [name="category"]');
+  const slug = $('#record-fields [name="slug"]');
+  const title = $('#record-fields [name="title"]');
+  const location = $('#record-fields [name="location"]');
+  if (section && category) {
+    refreshProfileCategoryOptions(section.value, record.category || "");
+    section.addEventListener("change", () => refreshProfileCategoryOptions(section.value, ""));
+  }
+  if (location) location.outerHTML = '<select name="location">' + makeOptions(["Statewide / Benue State", "Multiple LGAs", ...benueLgas, "Outside Benue State"], record.location || "") + '</select>';
+  if (title && slug) {
+    slug.dataset.autoGenerated = record.slug ? "false" : "true";
+    title.addEventListener("input", () => {
+      if (slug.dataset.autoGenerated === "true" || !slug.value.trim()) {
+        slug.value = title.value.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");
+        slug.dataset.autoGenerated = "true";
+      }
+    });
+    slug.addEventListener("input", () => { slug.dataset.autoGenerated = "false"; });
+  }
+  $('#record-fields [name="image_url"]')?.addEventListener("input", updateProfileMediaPreviews);
+  $('#record-fields [name="video_path"]')?.addEventListener("input", updateProfileMediaPreviews);
+  updateProfileMediaPreviews();
+}
 function renderFields(record = {}) {
   const target = $("#record-fields");
   target.innerHTML = activeModule.fields.filter(([name]) => !(currentRole === "profile_manager" && name === "status")).map(([name,label,type,required,options]) => {
     const value = record[name] ?? (name === "status" ? "draft" : name === "published" ? "false" : "");
     const req = required ? " required" : "";
     if (type === "textarea") return '<label>' + esc(label) + '<textarea name="' + name + '" rows="5"' + req + '>' + esc(value) + '</textarea></label>';
-    if (type === "select") return '<label>' + esc(label) + '<select name="' + name + '"' + req + '>' + options.map(option => '<option value="' + option + '"' + (String(value) === option ? " selected" : "") + '>' + esc(option) + '</option>').join("") + '</select></label>';
-    const inputType = type === "datetime-local" && value ? "datetime-local" : type;
-    const formatted = type === "datetime-local" && value ? new Date(value).toISOString().slice(0,16) : value;
-    return '<label>' + esc(label) + '<input name="' + name + '" type="' + inputType + '" value="' + esc(formatted) + '"' + req + '></label>';
+    if (type === "select") {
+      const choices = name === "section_key" ? profileWebsiteSections : options;
+      return '<label>' + esc(label) + '<select name="' + name + '"' + req + '>' + makeOptions(choices, value) + '</select></label>';
+    }
+    const formatted = type === "datetime-local" ? localDateTimeValue(value) : value;
+    const inputType = type === "datetime-local" ? "datetime-local" : type;
+    const preview = name === "image_url" ? '<div id="profile-image-preview" class="profile-media-preview" hidden></div>' :
+      name === "video_path" ? '<div id="profile-video-preview" class="profile-media-preview" hidden></div>' : "";
+    return '<label>' + esc(label) + '<input name="' + name + '" type="' + inputType + '" value="' + esc(formatted) + '"' + req + '>' + preview + '</label>';
   }).join("");
+  wireProfileFieldControls(record);
 }
 
 function clearEditor() {
