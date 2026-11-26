@@ -125,3 +125,20 @@
 .profile-media-preview img{display:block;width:100%;max-width:340px;max-height:220px;object-fit:contain;border-radius:7px;background:#e9eee8}
 .profile-media-preview video{display:block;width:100%;max-width:440px;max-height:250px;aspect-ratio:16/9;object-fit:contain;background:#111;border-radius:7px}
 #record-fields input[type="datetime-local"]{min-height:42px}
+
+
+/* Mobile content-module picker and record-editor focus */
+#content-type{display:block;width:100%;min-height:48px;padding:12px 42px 12px 13px;border:1px solid #cbdacb;border-radius:9px;background-color:#fff;color:#173f2d;font-size:13px;font-weight:750;line-height:1.45;white-space:normal}
+#content-workspace .record-form{scroll-margin-top:18px}
+#record-fields input:focus,#record-fields select:focus,#record-fields textarea:focus{outline:2px solid #24794e;outline-offset:1px;border-color:#24794e}
+@media(max-width:650px){
+  #content-workspace{display:flex;flex-direction:column;gap:14px}
+  #content-workspace .cms-sidebar,#content-workspace .record-form{width:100%;min-width:0}
+  #content-workspace .cms-sidebar{padding:13px;gap:10px}
+  #content-workspace #new-record{width:100%;min-height:46px}
+  #content-workspace .record-form{padding:16px;border-radius:12px}
+  #content-workspace .record-form .form-title h3{font-size:19px;line-height:1.35}
+  #record-fields{display:grid;grid-template-columns:minmax(0,1fr);gap:13px}
+  #record-fields label{min-width:0}
+  #record-fields input,#record-fields select,#record-fields textarea{width:100%;box-sizing:border-box;min-height:43px;font-size:14px}
+}
