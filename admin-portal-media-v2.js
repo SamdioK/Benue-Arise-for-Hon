@@ -113,10 +113,35 @@ async function initialise() {
   $("#forgot-password").addEventListener("click", requestPasswordReset);
   $("#recovery-form").addEventListener("submit", completePasswordRecovery);
   $("#signout").addEventListener("click", async () => { await client.auth.signOut(); });
-  $("#content-type").addEventListener("change", () => { activeModule = modules[$("#content-type").value]; activeId = null; clearEditor(); updateMuxBroadcastControls(); loadList(); });
+  const activateModule = (moduleKey) => {
+    const nextModule = modules[moduleKey];
+    if (!nextModule) { say("The selected content module is unavailable. Please choose another module."); return false; }
+    activeModule = nextModule;
+    activeId = null;
+    clearEditor();
+    updateMuxBroadcastControls();
+    loadList();
+    return true;
+  };
+  $("#content-type").addEventListener("change", () => activateModule($("#content-type").value));
   $("#open-broadcast-events")?.addEventListener("click",()=>{$("#content-type").value="broadcast_events";$("#content-type").dispatchEvent(new Event("change",{bubbles:true}));$("#content-type").scrollIntoView({behavior:"smooth",block:"center"})});
   $("#admin-search").addEventListener("input", loadList);
-  $("#new-record").addEventListener("click", () => { activeId = null; clearEditor(); updateMuxBroadcastControls(); $("#form-heading").textContent = "New " + activeModule.label; });
+  $("#new-record").addEventListener("click", () => {
+    const selectedKey = $("#content-type").value;
+    if (modules[selectedKey] && activeModule !== modules[selectedKey]) activateModule(selectedKey);
+    activeId = null;
+    clearEditor();
+    updateMuxBroadcastControls();
+    $("#form-heading").textContent = "New " + activeModule.label;
+    $("#record-id-label").textContent = "Unsaved record";
+    say("Complete the fields below, then select Save record.");
+    const editor = $("#content-workspace .record-form");
+    editor?.classList.add("is-editing");
+    window.requestAnimationFrame(() => {
+      editor?.scrollIntoView({ behavior: "smooth", block: "start" });
+      $("#record-fields input:not([type=hidden]), #record-fields select, #record-fields textarea")?.focus({ preventScroll: true });
+    });
+  });
   $("#reset-record").addEventListener("click", () => { activeId = null; clearEditor(); updateMuxBroadcastControls(); });
   $("#record-form").addEventListener("submit", saveRecord);
   $("#playlist-select")?.addEventListener("change", loadPlaylistSongOptions);
