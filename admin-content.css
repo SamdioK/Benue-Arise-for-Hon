@@ -154,7 +154,7 @@
 .module-picker-group{display:grid;gap:7px;min-width:0}
 .module-picker-group h3{margin:0;padding:0 0 6px;border-bottom:1px solid #dce7dc;color:#8a6a35;font-size:10px;font-weight:900;letter-spacing:.09em;text-transform:uppercase}
 .module-picker-options{display:grid;grid-template-columns:minmax(0,1fr);gap:6px;min-width:0}
-.module-picker-options button{display:block;width:100%;min-width:0;min-height:42px;padding:10px 12px;border:1px solid #e0e8df;border-radius:8px;background:#fff;color:#294a35;text-align:left;font:600 11px/1.4 inherit;overflow-wrap:anywhere;cursor:pointer}
+.module-picker-options button{display:block;width:100%;min-width:0;min-height:42px;padding:10px 12px;border:1px solid #e0e8df;border-radius:8px;background:#fff;color:#294a35;text-align:left;font-family:inherit;font-size:11px;font-weight:600;line-height:1.4;overflow-wrap:anywhere;cursor:pointer}
 .module-picker-options button:hover,.module-picker-options button:focus-visible{border-color:#8eb69a;outline:2px solid #dcecdf;outline-offset:1px}
 .module-picker-options button.is-active{border-color:#176b43;background:#edf6ee;color:#14583b;box-shadow:inset 3px 0 #176b43;font-weight:850}
 #content-workspace.is-editor-open .record-form{border:1px solid #9fbea4;box-shadow:0 10px 30px #174a3212}
@@ -172,3 +172,5 @@
   #content-workspace #new-record{width:100%;min-height:48px}
   #content-workspace.is-editor-open .record-form{scroll-margin-top:12px}
 }
+
+.module-picker-options button:disabled{opacity:.45;cursor:not-allowed}
