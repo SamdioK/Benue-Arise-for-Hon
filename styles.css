@@ -975,3 +975,224 @@ body.campaign-subpage #record-list .record-card .gallery-caption,body.home-page 
     object-fit:contain;
   }
 }
+
+
+/* BENUE ARISE EDITORIAL PROFILE — approved ornamental green, gold and cream treatment */
+.personal-profile-page .personal-record-section,
+.personal-profile-page .profile-content-section{
+  background:#f7f5ee;
+}
+.personal-profile-page .personal-record-heading,
+.personal-profile-page .personal-record-group-heading{
+  border-color:#dfd2b6;
+}
+.personal-profile-page .personal-record-group-heading h2{
+  font-weight:800;
+  letter-spacing:-.02em;
+}
+.personal-profile-page .personal-record-group-heading p{
+  font-size:14px;
+  line-height:1.7;
+}
+.personal-profile-page .personal-record-card{
+  border:1px solid #e4d7b9;
+  border-radius:16px;
+  box-shadow:0 12px 34px #153c2a12;
+}
+.personal-profile-page .personal-record-image{
+  max-height:none;
+  height:auto;
+  overflow:hidden;
+  background:#ece7da;
+}
+.personal-profile-page .personal-record-image img{
+  display:block;
+  width:100%;
+  height:auto;
+  max-height:none;
+  object-fit:contain;
+  object-position:center;
+}
+.personal-profile-page .personal-record-copy{
+  padding:clamp(22px,3.4vw,38px);
+}
+.personal-profile-page .personal-record-copy h3{
+  color:#123f2d;
+  font-family:"Cormorant Garamond",Georgia,serif;
+  font-size:clamp(30px,3vw,42px);
+  font-weight:800;
+  line-height:1.08;
+  letter-spacing:-.025em;
+  margin:0 0 18px;
+}
+.personal-profile-page .personal-record-copy .personal-record-excerpt{
+  position:relative;
+  padding:18px 22px 18px 25px;
+  margin:0 0 24px;
+  border-left:6px solid #dba83e;
+  border-radius:0 12px 12px 0;
+  background:linear-gradient(110deg,#f8edcf 0%,#fff8e9 100%);
+  color:#17432f;
+  font-family:"Cormorant Garamond",Georgia,serif;
+  font-size:clamp(18px,1.7vw,21px);
+  font-weight:700;
+  line-height:1.55;
+  text-align:left;
+}
+.personal-profile-page .personal-record-copy p:not(.personal-record-date):not(.personal-record-excerpt){
+  color:#303a33;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:clamp(16px,1.25vw,18px);
+  font-weight:500;
+  line-height:1.85;
+  text-align:justify;
+  text-justify:inter-word;
+  margin:0 0 1.15em;
+  overflow-wrap:anywhere;
+}
+.personal-profile-page .personal-record-copy p.personal-record-opening{
+  position:relative;
+  padding-top:3px;
+}
+.personal-profile-page .personal-record-copy p.personal-record-opening::first-letter{
+  float:left;
+  margin:.08em .13em 0 0;
+  padding:0 .04em 0 0;
+  color:#b47b20;
+  font-family:"Monotype Corsiva","URW Chancery L","Apple Chancery","Brush Script MT",cursive;
+  font-size:4.65em;
+  font-style:italic;
+  font-weight:700;
+  line-height:.72;
+  text-shadow:1px 1px 0 #f0dfb4,2px 2px 0 #174b37;
+}
+.personal-profile-page .personal-record-copy p.personal-record-opening::before{
+  content:"❧";
+  display:inline-block;
+  color:#b47b20;
+  font-family:Georgia,serif;
+  font-size:1.1em;
+  margin-right:7px;
+  vertical-align:top;
+  line-height:1;
+}
+.personal-profile-page .personal-record-copy .personal-record-location{
+  text-align:left!important;
+  color:#6b705f!important;
+  font:italic 13px/1.5 Georgia,serif!important;
+}
+.personal-profile-page .personal-record-sources{
+  border-top:1px solid #e7dfcf;
+  padding-top:17px;
+  margin-top:22px;
+  font-size:12px;
+}
+.personal-profile-page .profile-editorial-card{
+  display:grid;
+  grid-template-columns:minmax(260px,38%) minmax(0,1fr);
+  overflow:hidden;
+  margin:0 0 30px;
+  border:1px solid #e4d7b9;
+  border-radius:16px;
+  background:#fffefa;
+  box-shadow:0 12px 34px #153c2a12;
+}
+.personal-profile-page .profile-editorial-image{
+  margin:0;
+  min-height:100%;
+  background:#e9e5db;
+}
+.personal-profile-page .profile-editorial-image img{
+  display:block;
+  width:100%;
+  height:100%;
+  min-height:320px;
+  object-fit:cover;
+  object-position:center top;
+}
+.personal-profile-page .profile-editorial-inner{
+  min-width:0;
+  padding:clamp(22px,3vw,38px);
+}
+.personal-profile-page .profile-editorial-kicker{
+  margin:0 0 12px;
+  color:#a4772c;
+  font:800 10px/1.5 Manrope,Arial,sans-serif;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+}
+.personal-profile-page .profile-editorial-kicker span{color:#7a8178}
+.personal-profile-page .profile-editorial-inner h2{
+  margin:0 0 18px;
+  color:#123f2d;
+  font:800 clamp(29px,3vw,40px)/1.08 "Cormorant Garamond",Georgia,serif;
+  letter-spacing:-.02em;
+}
+.personal-profile-page .profile-editorial-summary{
+  padding:17px 20px 17px 23px;
+  margin:0 0 23px;
+  border-left:6px solid #dba83e;
+  border-radius:0 12px 12px 0;
+  background:linear-gradient(110deg,#f8edcf 0%,#fff8e9 100%);
+  color:#17432f;
+  font:700 clamp(17px,1.6vw,20px)/1.55 "Cormorant Garamond",Georgia,serif;
+}
+.personal-profile-page .profile-editorial-body{
+  color:#303a33;
+  font:500 clamp(16px,1.2vw,18px)/1.85 Georgia,"Times New Roman",serif;
+}
+.personal-profile-page .profile-editorial-body p{
+  margin:0 0 1.15em;
+  text-align:justify;
+  text-justify:inter-word;
+  overflow-wrap:anywhere;
+}
+.personal-profile-page .profile-editorial-body p.profile-editorial-opening{
+  position:relative;
+}
+.personal-profile-page .profile-editorial-body p.profile-editorial-opening::first-letter{
+  float:left;
+  margin:.08em .13em 0 0;
+  color:#b47b20;
+  font-family:"Monotype Corsiva","URW Chancery L","Apple Chancery","Brush Script MT",cursive;
+  font-size:4.65em;
+  font-style:italic;
+  font-weight:700;
+  line-height:.72;
+  text-shadow:1px 1px 0 #f0dfb4,2px 2px 0 #174b37;
+}
+.personal-profile-page .profile-editorial-body p.profile-editorial-opening::before{
+  content:"❧";
+  color:#b47b20;
+  font-size:1.1em;
+  margin-right:7px;
+}
+.personal-profile-page .profile-editorial-location{
+  color:#6b705f;
+  font:italic 13px Georgia,serif;
+}
+.personal-profile-page .profile-editorial-footer{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  align-items:center;
+  border-top:1px solid #e7dfcf;
+  padding-top:17px;
+  margin-top:22px;
+  font-size:12px;
+}
+@media(max-width:760px){
+  .personal-profile-page .personal-record-section,
+  .personal-profile-page .profile-content-section{padding-left:5vw;padding-right:5vw}
+  .personal-profile-page .personal-record-copy{padding:21px}
+  .personal-profile-page .personal-record-copy h3{font-size:30px}
+  .personal-profile-page .personal-record-copy .personal-record-excerpt{font-size:18px;padding:15px 17px}
+  .personal-profile-page .personal-record-copy p:not(.personal-record-date):not(.personal-record-excerpt){font-size:16px;line-height:1.82}
+  .personal-profile-page .personal-record-copy p.personal-record-opening::first-letter,
+  .personal-profile-page .profile-editorial-body p.profile-editorial-opening::first-letter{font-size:4.2em}
+  .personal-profile-page .profile-editorial-card{grid-template-columns:1fr}
+  .personal-profile-page .profile-editorial-image img{height:auto;min-height:0;max-height:420px;object-fit:contain}
+  .personal-profile-page .profile-editorial-inner{padding:22px}
+  .personal-profile-page .profile-editorial-inner h2{font-size:31px}
+  .personal-profile-page .profile-editorial-body{font-size:16px;line-height:1.82}
+}
