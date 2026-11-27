@@ -108,11 +108,11 @@ function renderProfileEditorialRecord(record) {
   const summary = record.excerpt || record.description || "";
   const bodyText = String(record.body || record.content || record.content_text || "").trim();
   const imagePath = record.image_url || record.featured_image || record.storage_path || "";
-  const imageUrl = /^https?:\\/\\//i.test(imagePath) ? imagePath :
-    /^(images|photos)\\//i.test(imagePath) ? cfg.SUPABASE_URL + "/storage/v1/object/public/gallery-media/" + imagePath.split("/").map(encodeURIComponent).join("/") : "";
+  const imageUrl = /^https?:\/\//i.test(imagePath) ? imagePath :
+    /^(images|photos)\//i.test(imagePath) ? cfg.SUPABASE_URL + "/storage/v1/object/public/gallery-media/" + imagePath.split("/").map(encodeURIComponent).join("/") : "";
   const image = imageUrl ? '<figure class="profile-editorial-image"><img src="' + esc(imageUrl) + '" alt="' + esc(record.image_alt || record.alt_text || title) + '" loading="lazy"></figure>' : "";
-  const paragraphs = bodyText ? bodyText.split(/\\n{2,}/).filter(Boolean).map((part,index) =>
-    '<p' + (index === 0 ? ' class="profile-editorial-opening"' : '') + '>' + esc(part).replace(/\\n/g,"<br>") + '</p>'
+  const paragraphs = bodyText ? bodyText.split(/\n{2,}/).filter(Boolean).map((part,index) =>
+    '<p' + (index === 0 ? ' class="profile-editorial-opening"' : '') + '>' + esc(part).replace(/\n/g,"<br>") + '</p>'
   ).join("") : (record.content || record.description ? '<p class="profile-editorial-opening">' + esc(record.content || record.description) + '</p>' : "");
   const date = record.milestone_date || record.published_at || record.created_at;
   const dateLabel = date ? new Date(date).toLocaleDateString("en-GB",{timeZone:"Africa/Lagos",day:"numeric",month:"long",year:"numeric"}) : "";
