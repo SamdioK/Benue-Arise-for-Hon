@@ -33,8 +33,8 @@ const modules = {
     ] },
   profile_records: { label: "Profile, projects & evidence", table: "profile_records", id: "id", order: "updated_at",
     fields: [
-      ["section_key","Website section","select",true,["biography","legal_academic","public_service","scholarships","philanthropy","achievements","projects","evidence"]],
       ["category","Biography subcategory / section category","select",true],
+      ["section_key","Website section","select",true,["biography","legal_academic","public_service","scholarships","philanthropy","achievements","projects","evidence"]],
       ["title","Title","text",true],["slug","URL slug","text",true],
       ["excerpt","Short summary","textarea"],["body","Full content","textarea"],
       ["image_url","Photograph URL (uploaded to Supabase Storage)","url"],["image_alt","Photograph description (accessibility)","text"],["video_path","Profile video storage path (upload using Profile Video Upload)","text"],["milestone_date","Milestone date","date"],["display_order","Display order","number"],["location","Location / LGA","text"],
@@ -162,7 +162,9 @@ async function initialise() {
     editor?.classList.add("is-editing");
     window.requestAnimationFrame(() => {
       editor?.scrollIntoView({ behavior: "smooth", block: "start" });
-      const firstField = $("#record-fields input:not([type=hidden]), #record-fields select, #record-fields textarea");
+      const firstField = selectedKey === "profile_records"
+        ? $('#record-fields [name="category"]')
+        : $("#record-fields input:not([type=hidden]), #record-fields select, #record-fields textarea");
       firstField?.focus({ preventScroll: true });
     });
   });
