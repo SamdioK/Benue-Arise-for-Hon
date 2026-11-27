@@ -948,3 +948,30 @@ body.campaign-subpage #record-list .record-card .gallery-caption,body.home-page 
     line-height:1.85;
   }
 }
+
+
+/* Profile portrait correction: show the full photograph at a generous natural ratio */
+.personal-profile-page .personal-record-image{
+  width:100%;
+  max-height:none;
+  height:auto;
+  overflow:hidden;
+  background:#e6e6df;
+}
+.personal-profile-page .personal-record-image img{
+  display:block;
+  width:100%;
+  height:auto;
+  max-height:none;
+  aspect-ratio:auto;
+  object-fit:contain;
+  object-position:center;
+}
+@media(max-width:760px){
+  .personal-profile-page .personal-record-image img{
+    width:100%;
+    height:auto;
+    max-height:none;
+    object-fit:contain;
+  }
+}
