@@ -1196,3 +1196,38 @@ body.campaign-subpage #record-list .record-card .gallery-caption,body.home-page 
   .personal-profile-page .profile-editorial-inner h2{font-size:31px}
   .personal-profile-page .profile-editorial-body{font-size:16px;line-height:1.82}
 }
+
+
+/* Ornamental initial: explicit span keeps the calligraphic letter consistent across browsers */
+.personal-profile-page .editorial-dropcap{
+  position:relative;
+  float:left;
+  display:inline-block;
+  margin:.06em .14em 0 0;
+  padding:0 .06em .02em 0;
+  color:#b47b20;
+  font-family:"Monotype Corsiva","URW Chancery L","Apple Chancery","Brush Script MT",cursive;
+  font-size:4.7em;
+  font-style:italic;
+  font-weight:700;
+  line-height:.72;
+  text-shadow:1px 1px 0 #f0dfb4,2px 2px 0 #174b37;
+}
+.personal-profile-page .editorial-dropcap::after{
+  content:"❧";
+  position:absolute;
+  right:-.2em;
+  bottom:-.22em;
+  color:#174b37;
+  font-family:Georgia,serif;
+  font-size:.34em;
+  font-style:normal;
+  text-shadow:none;
+}
+.personal-profile-page .personal-record-opening::first-letter,
+.personal-profile-page .profile-editorial-opening::first-letter{float:none;font-size:inherit;color:inherit;text-shadow:none}
+.personal-profile-page .personal-record-opening::before,
+.personal-profile-page .profile-editorial-opening::before{content:none}
+@media(max-width:760px){
+  .personal-profile-page .editorial-dropcap{font-size:4.25em}
+}
