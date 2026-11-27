@@ -860,3 +860,91 @@ body.campaign-subpage #record-list .record-card .gallery-caption,body.home-page 
 .article-body .article-heading--references{margin-top:34px;padding:12px 16px;border:0;border-radius:7px 7px 0 0;background:linear-gradient(100deg,#0d603b,#16804b 84%,#e6a12d 84%);color:#fff;font:900 13px Arial,sans-serif;letter-spacing:.08em}
 .article-body .article-heading--references+.article-list{margin:0 0 22px;padding:12px 18px 12px 42px;border:1px solid #e2eadf;border-top:0;border-radius:0 0 9px 9px;background:#f2f7ef;color:#34463a;font-size:14px}
 .article-body .editorial-quote cite{display:block;margin-top:10px;color:#f5c65e;font:900 10px Arial,sans-serif;font-style:normal;letter-spacing:.1em;text-transform:uppercase}
+
+
+/* Profile record layout refinement — full-width responsive cards and readable editorial text */
+.personal-profile-page .personal-record-section{
+  width:100%;
+  box-sizing:border-box;
+}
+.personal-profile-page .personal-record-list,
+.personal-profile-page .personal-record-group,
+.personal-profile-page .personal-record-cards{
+  width:100%;
+  min-width:0;
+  box-sizing:border-box;
+}
+.personal-profile-page .personal-record-cards{
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));
+  gap:clamp(18px,2.2vw,28px);
+  align-items:stretch;
+}
+.personal-profile-page .personal-record-card{
+  width:100%;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+}
+.personal-profile-page .personal-record-image{
+  width:100%;
+  max-height:420px;
+}
+.personal-profile-page .personal-record-image img{
+  width:100%;
+  height:clamp(230px,34vw,420px);
+  max-height:420px;
+  object-fit:cover;
+  object-position:center 25%;
+}
+.personal-profile-page .personal-record-copy{
+  padding:clamp(20px,2.5vw,32px);
+}
+.personal-profile-page .personal-record-copy h3{
+  font-size:clamp(27px,2.2vw,34px);
+  line-height:1.18;
+  margin:0 0 14px;
+}
+.personal-profile-page .personal-record-copy p{
+  font-size:clamp(15px,1.12vw,16.5px);
+  line-height:1.9;
+  margin:0 0 1.05em;
+  color:#4f6056;
+  overflow-wrap:anywhere;
+}
+.personal-profile-page .personal-record-copy .personal-record-excerpt{
+  font-size:clamp(15.5px,1.18vw,17px);
+  line-height:1.8;
+  color:#294b3a;
+  margin-bottom:1.2em;
+}
+.personal-profile-page .personal-record-location{
+  font-size:13px!important;
+  margin-top:8px!important;
+}
+.personal-profile-page .personal-record-sources{
+  margin-top:auto;
+  padding-top:16px;
+  font-size:12px;
+}
+@media(max-width:760px){
+  .personal-profile-page .personal-record-section{
+    padding-left:5vw;
+    padding-right:5vw;
+  }
+  .personal-profile-page .personal-record-cards{
+    grid-template-columns:minmax(0,1fr);
+  }
+  .personal-profile-page .personal-record-image img{
+    height:clamp(230px,62vw,360px);
+  }
+  .personal-profile-page .personal-record-copy{
+    padding:20px;
+  }
+  .personal-profile-page .personal-record-copy h3{
+    font-size:27px;
+  }
+  .personal-profile-page .personal-record-copy p{
+    font-size:15.5px;
+    line-height:1.85;
+  }
+}
