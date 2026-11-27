@@ -259,7 +259,8 @@ function renderNewsRoute() {
   $("#news-return")?.addEventListener("click",()=>{history.replaceState(null,"",location.pathname);renderNewsRoute();});
 }
 window.addEventListener("hashchange",renderNewsRoute);
-\nconst personalSections = [
+
+const personalSections = [
   { key: "Background & Origins", id: "origins", title: "Background & Origins", intro: "Family background, place of origin and the roots of his personal story." },
   { key: "Early Life & Upbringing", id: "early-life", title: "Early Life & Upbringing", intro: "Childhood experiences, upbringing and formative years." },
   { key: "Formative Influences", id: "influences", title: "Formative Influences", intro: "People, events and experiences that helped shape his outlook." },
