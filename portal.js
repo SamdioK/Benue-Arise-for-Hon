@@ -186,25 +186,29 @@ function formatArticleBody(raw) {
   let headingIndex = 0;
   const flushParagraph = () => { if (paragraph.length) { output.push('<p class="article-paragraph">' + articleInline(paragraph.join(" ")) + '</p>'); paragraph=[]; } };
   const flushList = () => { if (list.length) { const tag=listType==="ol"?"ol":"ul"; output.push('<'+tag+' class="article-list">'+list.map(item=>'<li>'+articleInline(item)+'</li>').join("")+'</'+tag+'>'); list=[]; listType=""; } };
-  for (const rawLine of lines) {
-    const line=rawLine.trim();
+  for (let i=0;i<lines.length;i++) {
+    const line=lines[i].trim();
     if (!line) { flushParagraph(); flushList(); continue; }
     const h=line.match(/^(#{2,3})\s+(.+)$/);
     if (h) {
       flushParagraph(); flushList();
       const level=h[1].length, id=slugifyHeading(h[2]) || "article-section-"+(++headingIndex);
-      output.push('<h'+level+' id="'+id+'" class="article-heading">'+articleInline(h[2])+'</h'+level+'>');
+      const references=/^(references|references\s*&\s*sources|sources|bibliography)$/i.test(h[2].trim());
+      output.push('<h'+level+' id="'+id+'" class="article-heading'+(references?' article-heading--references':'')+'">'+articleInline(h[2])+'</h'+level+'>');
       continue;
     }
     if (/^---+$/.test(line)) { flushParagraph(); flushList(); output.push('<hr class="article-divider">'); continue; }
     if (line.startsWith(">")) {
       flushParagraph(); flushList();
       const quote=[];
-      quote.push(line.replace(/^>\s?/,""));
-      continueQuote: {
-        // Consecutive quote lines are gathered by the normal line parser below.
+      while (i<lines.length && lines[i].trim().startsWith(">")) {
+        quote.push(lines[i].trim().replace(/^>\s?/,""));
+        i++;
       }
-      output.push('<blockquote class="editorial-quote"><span class="quote-mark" aria-hidden="true">“</span><p>'+articleInline(quote.join(" "))+'</p></blockquote>');
+      i--;
+      let attribution="";
+      if (quote.length>1 && /^[-—–]\s*/.test(quote[quote.length-1])) attribution=quote.pop().replace(/^[-—–]\s*/,"");
+      output.push('<blockquote class="editorial-quote"><span class="quote-mark" aria-hidden="true">“</span><div><p>'+articleInline(quote.join(" "))+'</p>'+(attribution?'<cite>'+articleInline(attribution)+'</cite>':'')+'</div></blockquote>');
       continue;
     }
     const numbered=line.match(/^\d+[.)]\s+(.+)$/), bulleted=line.match(/^[-*]\s+(.+)$/);
@@ -232,7 +236,7 @@ function renderNewsArticle(record) {
   const excerpt=record.excerpt ? '<p class="article-standfirst">'+articleInline(record.excerpt)+'</p>' : "";
   const media=imageUrl ? '<figure class="article-featured-image"><img src="'+esc(imageUrl)+'" alt="'+esc(record.title||"Article image")+'"><figcaption>'+esc(record.title||"")+'</figcaption></figure>' : "";
   const shareUrl=location.href;
-  view.innerHTML='<button type="button" class="article-back" id="news-back-to-list">← Back to Newsroom</button><div class="article-layout"><article class="editorial-article"><div class="article-kicker">PUBLIC AFFAIRS <span>•</span> NEWS &amp; PUBLICATIONS</div><h1>'+title+'</h1>'+excerpt+'<div class="article-byline"><span class="article-author-mark">✦</span><span>BENUE ARISE FOR HON</span>'+(date?'<i aria-hidden="true"></i><time>'+esc(date)+'</time>':"")+'</div>'+media+'<div class="article-body">'+htmlBody+'</div><div class="article-share-row"><span>SHARE THIS ARTICLE</span><button type="button" data-record-share data-share-url="'+esc(shareUrl)+'" data-share-title="'+esc(record.title||"Benue Arise for Hon")+'" data-share-text="'+esc(record.excerpt||"")+'">↗ Share</button></div></article>'+toc+'</div>';
+  view.innerHTML='<button type="button" class="article-back" id="news-back-to-list">← Back to Newsroom</button><div class="article-layout"><article class="editorial-article"><div class="article-kicker">PUBLIC AFFAIRS <span>•</span> NEWS &amp; PUBLICATIONS</div><h1>'+title+'</h1>'+excerpt+'<div class="article-byline"><span class="article-author-mark">✦</span><span>BENUE ARISE NEWSROOM</span>'+(date?'<i aria-hidden="true"></i><time>'+esc(date)+'</time>':"")+'</div>'+media+'<div class="article-body">'+htmlBody+'</div><div class="article-share-row"><span>SHARE THIS ARTICLE</span><button type="button" data-record-share data-share-url="'+esc(shareUrl)+'" data-share-title="'+esc(record.title||"Benue Arise for Hon")+'" data-share-text="'+esc(record.excerpt||"")+'">↗ Share</button></div></article>'+toc+'</div>';
   view.hidden=false; if(list) list.hidden=true; if(toolbar) toolbar.hidden=true;
   $("#news-article-view")?.scrollIntoView({behavior:"smooth",block:"start"});
   $("#news-back-to-list")?.addEventListener("click",()=>{history.replaceState(null,"",location.pathname+location.search);renderNewsRoute();window.scrollTo({top:0,behavior:"smooth"});});
