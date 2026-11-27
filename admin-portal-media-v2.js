@@ -34,8 +34,10 @@ const modules = {
   profile_records: { label: "Profile, projects & evidence", table: "profile_records", id: "id", order: "updated_at",
     fields: [
       ["section_key","Website section","select",true,["biography","legal_academic","public_service","scholarships","philanthropy","achievements","projects","evidence"]],
-      ["title","Title","text",true],["slug","URL slug","text",true],["category","Subsection / category (use exact Personal Profile subsection name)","select"],
-      ["excerpt","Short summary","textarea"],["body","Full content","textarea"],["image_url","Photograph URL (Supabase Storage)","url"],["image_alt","Photograph description (accessibility)","text"],["video_path","Profile video storage path (upload using Profile Video Upload)","text"],["milestone_date","Milestone date","date"],["display_order","Display order","number"],["location","Location / LGA","text"],
+      ["category","Biography subcategory / section category","select",true],
+      ["title","Title","text",true],["slug","URL slug","text",true],
+      ["excerpt","Short summary","textarea"],["body","Full content","textarea"],
+      ["image_url","Photograph URL (uploaded to Supabase Storage)","url"],["image_alt","Photograph description (accessibility)","text"],["video_path","Profile video storage path (upload using Profile Video Upload)","text"],["milestone_date","Milestone date","date"],["display_order","Display order","number"],["location","Location / LGA","text"],
       ["source_url","Primary source URL","url"],["evidence_url","Supporting evidence URL","url"],
       ["verification_status","Verification status","select",true,["Under Verification","Verified","Official Record","Campaign Statement"]],
       ["status","Publication status","select",true,["draft","published","archived"]],
@@ -496,12 +498,13 @@ function wireProfileFieldControls(record = {}) {
   }
   $('#record-fields [name="image_url"]')?.addEventListener("input", updateProfileMediaPreviews);
   $('#record-fields [name="video_path"]')?.addEventListener("input", updateProfileMediaPreviews);
+  $("#upload-profile-image")?.addEventListener("click", uploadProfileImage);
   updateProfileMediaPreviews();
 }
 function renderFields(record = {}) {
   const target = $("#record-fields");
   target.innerHTML = activeModule.fields.filter(([name]) => !(currentRole === "profile_manager" && name === "status")).map(([name,label,type,required,options]) => {
-    const value = record[name] ?? (name === "status" ? "draft" : name === "published" ? "false" : "");
+    const value = record[name] ?? (name === "status" ? "draft" : name === "published" ? "false" : name === "section_key" ? "biography" : "");
     const req = required ? " required" : "";
     if (type === "textarea") return '<label>' + esc(label) + '<textarea name="' + name + '" rows="5"' + req + '>' + esc(value) + '</textarea></label>';
     if (type === "select") {
@@ -510,7 +513,7 @@ function renderFields(record = {}) {
     }
     const formatted = type === "datetime-local" ? localDateTimeValue(value) : value;
     const inputType = type === "datetime-local" ? "datetime-local" : type;
-    const preview = name === "image_url" ? '<div id="profile-image-preview" class="profile-media-preview" hidden></div>' :
+    const preview = name === "image_url" ? '<div id="profile-image-preview" class="profile-media-preview" hidden></div><div class="profile-inline-upload"><input id="profile-image-file" type="file" accept="image/jpeg,image/png,image/webp"><button type="button" id="upload-profile-image" class="btn btn-light">Upload photograph</button><span id="profile-image-status" role="status" aria-live="polite">JPG, PNG or WebP · Maximum 10 MB</span></div>' :
       name === "video_path" ? '<div id="profile-video-preview" class="profile-media-preview" hidden></div>' : "";
     return '<label>' + esc(label) + '<input name="' + name + '" type="' + inputType + '" value="' + esc(formatted) + '"' + req + '>' + preview + '</label>';
   }).join("");
@@ -787,6 +790,26 @@ async function uploadStorageFile(bucket,path,file,statusNode) {
   });
 }
 
+async function uploadProfileImage(){
+  const input=$("#profile-image-file"),status=$("#profile-image-status"),button=$("#upload-profile-image"),file=input?.files?.[0];
+  const field=$('#record-fields [name="image_url"]');
+  if(activeModule.table!=="profile_records"||!field){status.textContent="Create or open a candidate profile record before uploading.";return}
+  if(!file){status.textContent="Choose a photograph first.";return}
+  if(!new Set(["image/jpeg","image/png","image/webp"]).has(file.type)){status.textContent="Supported formats are JPG, PNG and WebP.";return}
+  if(file.size>10*1024*1024){status.textContent="The photograph exceeds the 10 MB upload limit.";return}
+  button.disabled=true;button.textContent="Uploading…";status.textContent="Uploading photograph to Supabase Storage…";
+  try{
+    const safe=file.name.normalize("NFKD").replace(/[^a-zA-Z0-9._-]+/g,"-").replace(/^-+|-+$/g,"");
+    const path="images/profile/"+Date.now()+"-"+safe;
+    await uploadStorageFile("gallery-media",path,file,status);
+    const {data}=client.storage.from("gallery-media").getPublicUrl(path);
+    if(!data?.publicUrl)throw new Error("Supabase did not return a public photograph URL.");
+    field.value=data.publicUrl;field.dispatchEvent(new Event("input",{bubbles:true}));
+    status.textContent="Upload confirmed in Supabase Storage. Save the profile record to retain the photograph.";
+    input.value="";
+  }catch(error){status.textContent=error.message||"Photograph upload failed."}
+  finally{button.disabled=false;button.textContent="Upload photograph"}
+}
 async function uploadProfileVideo(){
   const input=$("#profile-video-file"),status=$("#profile-video-status"),button=$("#upload-profile-video"),file=input?.files?.[0];
   if(activeModule.table!=="profile_records"){status.textContent="Select or create a record in the Profile, Projects & Evidence module first.";return}
