@@ -148,6 +148,7 @@ function renderRecords(records, mode = "standard") {
       (dateLabel ? '<small>' + esc(dateLabel) + '</small>' : "") +
       (record.verification_status ? '<p class="verification-label">' + esc(record.verification_status) + '</p>' : "") +
       (summary ? '<p class="record-description">' + esc(summary) + '</p>' : "") +
+      (pageKey() === "news" && record.slug ? '<a class="news-read-link" href="news.html#' + encodeURIComponent(record.slug) + '">Read full article <span aria-hidden="true">→</span></a>' : "") +
       (record.source_url ? '<p><a class="text-link" href="' + esc(record.source_url) + '" target="_blank" rel="noopener noreferrer">Primary source ↗</a></p>' : "") +
       (record.evidence_url ? '<p><a class="text-link" href="' + esc(record.evidence_url) + '" target="_blank" rel="noopener noreferrer">Supporting evidence ↗</a></p>' : "") +
       link + '<div class="record-social-actions"><button type="button" class="record-like" data-record-like aria-pressed="false">♡ <span>Like</span></button><button type="button" class="record-share" data-record-share data-share-url="' + esc(shareUrl.href) + '" data-share-title="' + esc(record.title || "Benue Arise for Hon") + '" data-share-text="' + esc(shareText) + '">↗ <span>Share</span></button></div></article>';
@@ -160,7 +161,101 @@ function renderRecords(records, mode = "standard") {
 }
 
 
-const personalSections = [
+
+/* Premium editorial newsroom: full article view, justified prose, quotations and references. */
+let publishedNewsRecords = [];
+const newsPage = () => pageKey() === "news" && $("#news-article-view");
+const activeNewsSlug = () => {
+  const fromQuery = new URLSearchParams(location.search).get("story");
+  const fromHash = decodeURIComponent(location.hash.replace(/^#/, ""));
+  return fromQuery || fromHash || "";
+};
+const articleInline = (value) => {
+  let out = esc(value);
+  out = out.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+  out = out.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+  out = out.replace(/\*(.+?)\*/g, "<em>$1</em>");
+  out = out.replace(/(^|\s)\[(\d{1,3})\](?=\s|$|[.,;:])/g, '$1<sup class="article-citation">[$2]</sup>');
+  return out;
+};
+const slugifyHeading = (value) => String(value).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+function formatArticleBody(raw) {
+  const lines = String(raw || "").replace(/\r\n?/g,"\n").split("\n");
+  const output = [];
+  let paragraph = [], list = [], listType = "";
+  let headingIndex = 0;
+  const flushParagraph = () => { if (paragraph.length) { output.push('<p class="article-paragraph">' + articleInline(paragraph.join(" ")) + '</p>'); paragraph=[]; } };
+  const flushList = () => { if (list.length) { const tag=listType==="ol"?"ol":"ul"; output.push('<'+tag+' class="article-list">'+list.map(item=>'<li>'+articleInline(item)+'</li>').join("")+'</'+tag+'>'); list=[]; listType=""; } };
+  for (const rawLine of lines) {
+    const line=rawLine.trim();
+    if (!line) { flushParagraph(); flushList(); continue; }
+    const h=line.match(/^(#{2,3})\s+(.+)$/);
+    if (h) {
+      flushParagraph(); flushList();
+      const level=h[1].length, id=slugifyHeading(h[2]) || "article-section-"+(++headingIndex);
+      output.push('<h'+level+' id="'+id+'" class="article-heading">'+articleInline(h[2])+'</h'+level+'>');
+      continue;
+    }
+    if (/^---+$/.test(line)) { flushParagraph(); flushList(); output.push('<hr class="article-divider">'); continue; }
+    if (line.startsWith(">")) {
+      flushParagraph(); flushList();
+      const quote=[];
+      quote.push(line.replace(/^>\s?/,""));
+      continueQuote: {
+        // Consecutive quote lines are gathered by the normal line parser below.
+      }
+      output.push('<blockquote class="editorial-quote"><span class="quote-mark" aria-hidden="true">“</span><p>'+articleInline(quote.join(" "))+'</p></blockquote>');
+      continue;
+    }
+    const numbered=line.match(/^\d+[.)]\s+(.+)$/), bulleted=line.match(/^[-*]\s+(.+)$/);
+    if (numbered || bulleted) {
+      flushParagraph();
+      const nextType=numbered?"ol":"ul";
+      if (listType && listType!==nextType) flushList();
+      listType=nextType; list.push((numbered||bulleted)[1]); continue;
+    }
+    flushList(); paragraph.push(line);
+  }
+  flushParagraph(); flushList();
+  return output.join("");
+}
+function renderNewsArticle(record) {
+  const view=$("#news-article-view"), list=$("#record-list"), toolbar=$(".section .toolbar");
+  if (!view || !record) return false;
+  const title=escHeading(record.title || "News & Publications");
+  const date=record.published_at ? new Date(record.published_at).toLocaleDateString("en-GB",{timeZone:"Africa/Lagos",day:"numeric",month:"long",year:"numeric"}) : "";
+  const imageUrl=/^https?:\/\//i.test(record.featured_image||"") ? record.featured_image : "";
+  const body=record.content || record.content_text || record.body || record.description || "";
+  const htmlBody=formatArticleBody(body);
+  const headings=[...htmlBody.matchAll(/<h[23] id="([^"]+)">([\s\S]*?)<\/h[23]>/g)];
+  const toc=headings.length ? '<aside class="article-sidebar"><div class="article-sidebar-heading">IN THIS ARTICLE</div><nav aria-label="Article contents">'+headings.map(h=>'<a href="#'+h[1]+'">'+h[2]+'</a>').join("")+'</nav><div class="article-sidebar-note">BENUE ARISE FOR HON<br><span>RESCUE · REBUILD · RESTORE</span></div></aside>' : '<aside class="article-sidebar"><div class="article-sidebar-heading">EDITORIAL NOTE</div><p>Read the full article and consult the cited sources where provided.</p></aside>';
+  const excerpt=record.excerpt ? '<p class="article-standfirst">'+articleInline(record.excerpt)+'</p>' : "";
+  const media=imageUrl ? '<figure class="article-featured-image"><img src="'+esc(imageUrl)+'" alt="'+esc(record.title||"Article image")+'"><figcaption>'+esc(record.title||"")+'</figcaption></figure>' : "";
+  const shareUrl=location.href;
+  view.innerHTML='<button type="button" class="article-back" id="news-back-to-list">← Back to Newsroom</button><div class="article-layout"><article class="editorial-article"><div class="article-kicker">PUBLIC AFFAIRS <span>•</span> NEWS &amp; PUBLICATIONS</div><h1>'+title+'</h1>'+excerpt+'<div class="article-byline"><span class="article-author-mark">✦</span><span>BENUE ARISE FOR HON</span>'+(date?'<i aria-hidden="true"></i><time>'+esc(date)+'</time>':"")+'</div>'+media+'<div class="article-body">'+htmlBody+'</div><div class="article-share-row"><span>SHARE THIS ARTICLE</span><button type="button" data-record-share data-share-url="'+esc(shareUrl)+'" data-share-title="'+esc(record.title||"Benue Arise for Hon")+'" data-share-text="'+esc(record.excerpt||"")+'">↗ Share</button></div></article>'+toc+'</div>';
+  view.hidden=false; if(list) list.hidden=true; if(toolbar) toolbar.hidden=true;
+  $("#news-article-view")?.scrollIntoView({behavior:"smooth",block:"start"});
+  $("#news-back-to-list")?.addEventListener("click",()=>{history.replaceState(null,"",location.pathname+location.search);renderNewsRoute();window.scrollTo({top:0,behavior:"smooth"});});
+  return true;
+}
+function renderNewsRoute() {
+  if (!newsPage()) return;
+  const view=$("#news-article-view"), list=$("#record-list"), toolbar=$(".section .toolbar");
+  const slug=activeNewsSlug();
+  if (!slug) {
+    if(view){view.hidden=true;view.innerHTML="";}
+    if(list) list.hidden=false; if(toolbar) toolbar.hidden=false;
+    renderRecords(publishedNewsRecords);
+    return;
+  }
+  const record=publishedNewsRecords.find(item=>String(item.slug||"")===slug);
+  if (record) { renderNewsArticle(record); return; }
+  if(view){view.hidden=false;view.innerHTML='<div class="article-not-found"><h2>Article not found</h2><p>This article may have been unpublished or its link may have changed.</p><button type="button" id="news-return">Return to Newsroom</button></div>';}
+  if(list) list.hidden=true; if(toolbar) toolbar.hidden=true;
+  $("#news-return")?.addEventListener("click",()=>{history.replaceState(null,"",location.pathname);renderNewsRoute();});
+}
+window.addEventListener("hashchange",renderNewsRoute);
+\nconst personalSections = [
   { key: "Background & Origins", id: "origins", title: "Background & Origins", intro: "Family background, place of origin and the roots of his personal story." },
   { key: "Early Life & Upbringing", id: "early-life", title: "Early Life & Upbringing", intro: "Childhood experiences, upbringing and formative years." },
   { key: "Formative Influences", id: "influences", title: "Formative Influences", intro: "People, events and experiences that helped shape his outlook." },
@@ -236,7 +331,8 @@ async function loadPageRecords() {
     query = query.order(orderColumn, { ascending: key !== "news", nullsFirst: false }).limit(60);
     const { data, error } = await query;
     if (error) throw error;
-    if (key === "biography") renderPersonalProfileRecords(data || []); else renderRecords(data || []);
+    if (key === "news") { publishedNewsRecords = data || []; renderNewsRoute(); }
+    else if (key === "biography") renderPersonalProfileRecords(data || []); else renderRecords(data || []);
   } catch (error) {
     console.warn("Published records could not be loaded.", error);
     renderRecords(fallback);
