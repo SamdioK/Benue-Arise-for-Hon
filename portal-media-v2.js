@@ -320,7 +320,9 @@ if (tickerTrack) {
   (async () => {
     try {
       const client = await getClient();
-      let items = '<span class="ticker-item welcome-message">' + esc(tickerWelcome) + '</span>';
+      const tickerAnnouncement = "BREAKING ANNOUNCEMENT: On Friday, 27 November 2026, the SDP Governorship Candidate, Prof. (Chief) Sebastine Tartenger Hon, SAN, FCIArb, DSSRS, FICAP, Sema-Wan u Tiv, and his Deputy, Dr. (Mrs.) Margaret Ogah, unveiled their Welfarist Capitalist Model Manifesto. The full manifesto will soon be available on this portal. Stay connected!";
+      let items = '<span class="ticker-item ticker-announcement">' + esc(tickerAnnouncement) + '</span>' +
+        '<span class="ticker-item welcome-message">' + esc(tickerWelcome) + '</span>';
       if (client) {
         const { data, error } = await client.from("news")
           .select("title,slug,published_at")
