@@ -128,8 +128,6 @@ async function initialise() {
     const key = $("#content-type").value;
     const selected = modules[key];
     if ($("#new-record") && selected) $("#new-record").textContent = "+ New " + (key === "profile_records" ? "profile record" : selected.label);
-    $("#open-candidate-profile")?.classList.toggle("is-active", key === "profile_records");
-    $("#open-candidate-profile")?.setAttribute("aria-pressed", key === "profile_records" ? "true" : "false");
   };
   $("#content-type").addEventListener("change", () => {
     const key = $("#content-type").value;
@@ -304,7 +302,6 @@ async function checkAuth() {
     $("#playlist-track-manager").hidden = isManager;
     $("#gallery-media-manager").hidden = isManager;
     $("#content-type").disabled = isManager;
-    const profileLauncher = $("#open-candidate-profile"); if (profileLauncher) profileLauncher.disabled = false;
     if (isManager) {
       $("#content-type").value = "profile_records";
       activeModule = modules.profile_records;
