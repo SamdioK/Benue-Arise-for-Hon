@@ -4,3 +4,11 @@
 @media(max-width:1100px){.nav{gap:9px}.nav a{font-size:10px}.feature-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.record-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:760px){.site-header{padding:10px 5vw}.brand img{width:39px;height:39px}.brand strong{font-size:11px}.brand small{font-size:8px}.menu-toggle{display:block}.nav{display:none;position:absolute;top:100%;left:0;right:0;padding:12px 5vw 20px;background:white;box-shadow:0 15px 25px #092b1a1c;align-items:stretch;flex-direction:column;gap:0;max-height:75vh;overflow:auto}.nav.nav-open{display:flex}.nav a{font-size:13px;padding:11px 2px;border-bottom:1px solid #eaf0e9}.hero{grid-template-columns:1fr;padding:48px 6vw;gap:38px}.hero h1{font-size:clamp(48px,13vw,70px)}.hero-visual{max-width:340px}.portrait-frame{min-height:350px}.portrait-frame>img{height:350px}.hero-seal{right:-12px;width:70px;height:70px}.ticker{justify-content:center;font-size:8px}.section{padding:50px 6vw}.section-title{align-items:flex-start;flex-direction:column}.feature-grid,.record-grid{grid-template-columns:1fr}.feature-card{min-height:170px}.page-hero{padding:48px 6vw}.toolbar{display:grid;grid-template-columns:1fr}.toolbar input,.toolbar select{width:100%;min-width:0}.contact-layout{grid-template-columns:1fr;gap:25px}.footer{grid-template-columns:1fr;align-items:start;padding:30px 6vw 18px}.footer>small{grid-column:1}.footer-links{gap:12px}.lga-chips span{padding:7px 9px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+/* Manifesto announcement ticker */
+.ticker-announcement{display:block;overflow:hidden;white-space:nowrap;padding:13px 0;letter-spacing:.02em}
+.ticker-announcement .ticker-track{display:flex;width:max-content;animation:manifesto-ticker-scroll 48s linear infinite}
+.ticker-announcement .ticker-track span{display:block;flex:0 0 auto;padding:0 38px}
+.ticker-announcement:hover .ticker-track{animation-play-state:paused}
+@keyframes manifesto-ticker-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.ticker-announcement .ticker-track{animation:none;white-space:normal;width:auto;display:block}.ticker-announcement .ticker-track span[aria-hidden="true"]{display:none}}
