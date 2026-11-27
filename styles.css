@@ -1059,7 +1059,7 @@ body.campaign-subpage #record-list .record-card .gallery-caption,body.home-page 
   margin:.08em .13em 0 0;
   padding:0 .04em 0 0;
   color:#b47b20;
-  font-family:"England Hand DB","England Hand",cursive;
+  font-family:"URW Chancery L","Apple Chancery","Segoe Script","Brush Script MT",cursive;
   font-size:4.65em;
   font-style:italic;
   font-weight:700;
@@ -1154,7 +1154,7 @@ body.campaign-subpage #record-list .record-card .gallery-caption,body.home-page 
   float:left;
   margin:.08em .13em 0 0;
   color:#b47b20;
-  font-family:"England Hand DB","England Hand",cursive;
+  font-family:"URW Chancery L","Apple Chancery","Segoe Script","Brush Script MT",cursive;
   font-size:4.65em;
   font-style:italic;
   font-weight:700;
@@ -1206,7 +1206,7 @@ body.campaign-subpage #record-list .record-card .gallery-caption,body.home-page 
   margin:.06em .14em 0 0;
   padding:0 .06em .02em 0;
   color:#b47b20;
-  font-family:"England Hand DB","England Hand",cursive;
+  font-family:"URW Chancery L","Apple Chancery","Segoe Script","Brush Script MT",cursive;
   font-size:4.7em;
   font-style:italic;
   font-weight:700;
@@ -1264,4 +1264,46 @@ body.campaign-subpage #record-list .record-card .gallery-caption,body.home-page 
     max-height:420px;
     object-fit:contain;
   }
+}
+
+
+/* Original Benue Arise ornamental initial — inspired by flowing calligraphy, not a copied font asset */
+.personal-profile-page .editorial-dropcap{
+  font-size:5.05em;
+  font-style:italic;
+  font-weight:700;
+  letter-spacing:-.09em;
+  line-height:.68;
+  color:#155238;
+  background:linear-gradient(135deg,#174b35 12%,#1c6845 48%,#c58a20 82%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  text-shadow:none;
+  margin:.07em .16em .02em 0;
+  padding:0 .10em .10em 0;
+}
+.personal-profile-page .editorial-dropcap::before{
+  content:"";
+  position:absolute;
+  left:-.10em;
+  bottom:-.07em;
+  width:1.08em;
+  height:.32em;
+  border-bottom:2px solid #c58a20;
+  border-radius:0 0 70% 70%;
+  transform:rotate(-13deg);
+  opacity:.95;
+}
+.personal-profile-page .editorial-dropcap::after{
+  content:"❧";
+  position:absolute;
+  right:-.22em;
+  bottom:-.20em;
+  color:#c58a20;
+  -webkit-text-fill-color:#c58a20;
+  font-family:Georgia,serif;
+  font-size:.38em;
+  font-style:normal;
+  text-shadow:none;
 }
