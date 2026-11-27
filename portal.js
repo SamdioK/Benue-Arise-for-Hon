@@ -148,7 +148,8 @@ function renderRecords(records, mode = "standard") {
     return;
   }
   const profileEditorialPage = ["legal-academic","public-service","scholarships","philanthropy","achievements","projects","evidence","profile"].includes(pageKey());
-  if (profileEditorialPage) { box.innerHTML = filtered.map(renderProfileEditorialRecord).join(""); return; }\n  box.innerHTML = filtered.map((record) => {
+  if (profileEditorialPage) { box.innerHTML = filtered.map(renderProfileEditorialRecord).join(""); return; }
+  box.innerHTML = filtered.map((record) => {
     const summary = record.excerpt || record.description || record.content || record.content_text || record.body || record.caption || "";
     const date = record.published_at || record.starts_at || record.created_at;
     const dateLabel = date ? new Date(date).toLocaleDateString("en-GB", { timeZone: "Africa/Lagos", day: "numeric", month: "short", year: "numeric" }) : "";
