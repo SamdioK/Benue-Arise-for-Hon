@@ -231,7 +231,7 @@ function renderNewsArticle(record) {
   const imageUrl=/^https?:\/\//i.test(record.featured_image||"") ? record.featured_image : "";
   const body=record.content || record.content_text || record.body || record.description || "";
   const htmlBody=formatArticleBody(body);
-  const headings=[...htmlBody.matchAll(/<h[23] id="([^"]+)">([\s\S]*?)<\/h[23]>/g)];
+  const headings=[...htmlBody.matchAll(/<h[23] id="([^"]+)"[^>]*>([\s\S]*?)<\/h[23]>/g)];
   const toc=headings.length ? '<aside class="article-sidebar"><div class="article-sidebar-heading">IN THIS ARTICLE</div><nav aria-label="Article contents">'+headings.map(h=>'<a href="#'+h[1]+'">'+h[2]+'</a>').join("")+'</nav><div class="article-sidebar-note">BENUE ARISE FOR HON<br><span>RESCUE · REBUILD · RESTORE</span></div></aside>' : '<aside class="article-sidebar"><div class="article-sidebar-heading">EDITORIAL NOTE</div><p>Read the full article and consult the cited sources where provided.</p></aside>';
   const excerpt=record.excerpt ? '<p class="article-standfirst">'+articleInline(record.excerpt)+'</p>' : "";
   const media=imageUrl ? '<figure class="article-featured-image"><img src="'+esc(imageUrl)+'" alt="'+esc(record.title||"Article image")+'"><figcaption>'+esc(record.title||"")+'</figcaption></figure>' : "";
