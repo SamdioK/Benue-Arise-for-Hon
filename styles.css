@@ -1267,43 +1267,40 @@ body.campaign-subpage #record-list .record-card .gallery-caption,body.home-page 
 }
 
 
-/* Original Benue Arise ornamental initial — inspired by flowing calligraphy, not a copied font asset */
+/* Profile drop cap: bold Times New Roman, clean editorial initial */
 .personal-profile-page .editorial-dropcap{
-  font-size:5.05em;
-  font-style:italic;
-  font-weight:700;
-  letter-spacing:-.09em;
-  line-height:.68;
+  position:relative;
+  display:inline-block;
+  float:left;
+  font-family:"Times New Roman",Times,serif;
+  font-size:5.15em;
+  font-style:normal;
+  font-weight:900;
+  line-height:.76;
+  letter-spacing:-.075em;
   color:#155238;
-  background:linear-gradient(135deg,#174b35 12%,#1c6845 48%,#c58a20 82%);
-  -webkit-background-clip:text;
-  background-clip:text;
-  -webkit-text-fill-color:transparent;
+  -webkit-text-fill-color:#155238;
+  background:none;
+  -webkit-background-clip:border-box;
+  background-clip:border-box;
   text-shadow:none;
-  margin:.07em .16em .02em 0;
-  padding:0 .10em .10em 0;
+  margin:.045em .13em .02em 0;
+  padding:0 .06em .02em 0;
 }
 .personal-profile-page .editorial-dropcap::before{
   content:"";
   position:absolute;
-  left:-.10em;
-  bottom:-.07em;
-  width:1.08em;
-  height:.32em;
-  border-bottom:2px solid #c58a20;
-  border-radius:0 0 70% 70%;
-  transform:rotate(-13deg);
-  opacity:.95;
+  left:-.02em;
+  bottom:-.10em;
+  width:1.02em;
+  height:.18em;
+  border-bottom:3px solid #c99a35;
+  border-radius:0 0 75% 75%;
+  transform:rotate(-10deg);
 }
-.personal-profile-page .editorial-dropcap::after{
-  content:"❧";
-  position:absolute;
-  right:-.22em;
-  bottom:-.20em;
-  color:#c58a20;
-  -webkit-text-fill-color:#c58a20;
-  font-family:Georgia,serif;
-  font-size:.38em;
-  font-style:normal;
-  text-shadow:none;
+.personal-profile-page .editorial-dropcap::after{content:"";display:none;}
+@media(max-width:760px){
+  .personal-profile-page .editorial-dropcap{
+    font-size:4.8em;font-weight:900;margin-top:.04em;margin-right:.14em;
+  }
 }
