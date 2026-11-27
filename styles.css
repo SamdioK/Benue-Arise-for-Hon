@@ -856,3 +856,7 @@ body.campaign-subpage #record-list .record-card .gallery-caption,body.home-page 
  .article-sidebar nav{grid-template-columns:1fr}
 }
 @media(prefers-reduced-motion:reduce){.news-article-view *{scroll-behavior:auto!important}}
+
+.article-body .article-heading--references{margin-top:34px;padding:12px 16px;border:0;border-radius:7px 7px 0 0;background:linear-gradient(100deg,#0d603b,#16804b 84%,#e6a12d 84%);color:#fff;font:900 13px Arial,sans-serif;letter-spacing:.08em}
+.article-body .article-heading--references+.article-list{margin:0 0 22px;padding:12px 18px 12px 42px;border:1px solid #e2eadf;border-top:0;border-radius:0 0 9px 9px;background:#f2f7ef;color:#34463a;font-size:14px}
+.article-body .editorial-quote cite{display:block;margin-top:10px;color:#f5c65e;font:900 10px Arial,sans-serif;font-style:normal;letter-spacing:.1em;text-transform:uppercase}
