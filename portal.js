@@ -147,7 +147,8 @@ function renderRecords(records, mode = "standard") {
     box.innerHTML = '<section class="profile-empty-card"><span class="profile-empty-mark" aria-hidden="true">✦</span><p class="profile-empty-kicker">BENUE ARISE FOR HON</p><h2>More About the Journey, Coming Soon</h2><p>We are preparing this section with care. Verified profile information and supporting details will appear here as they are approved for publication.</p></section>';
     return;
   }
-  const profileEditorialPage = ["legal-academic","public-service","scholarships","philanthropy","achievements","projects","evidence","profile"].includes(pageKey());\n  if (profileEditorialPage) { box.innerHTML = filtered.map(renderProfileEditorialRecord).join(""); return; }\n  box.innerHTML = filtered.map((record) => {
+  const profileEditorialPage = ["legal-academic","public-service","scholarships","philanthropy","achievements","projects","evidence","profile"].includes(pageKey());
+  if (profileEditorialPage) { box.innerHTML = filtered.map(renderProfileEditorialRecord).join(""); return; }\n  box.innerHTML = filtered.map((record) => {
     const summary = record.excerpt || record.description || record.content || record.content_text || record.body || record.caption || "";
     const date = record.published_at || record.starts_at || record.created_at;
     const dateLabel = date ? new Date(date).toLocaleDateString("en-GB", { timeZone: "Africa/Lagos", day: "numeric", month: "short", year: "numeric" }) : "";
