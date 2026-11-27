@@ -139,16 +139,6 @@ async function initialise() {
     updateNewRecordLabel();
     say("Showing " + modules[key].label + ". Select New record to add content.");
   });
-  $("#open-candidate-profile")?.addEventListener("click", () => {
-    $("#content-type").value = "profile_records";
-    const activated = activateModule("profile_records");
-    if (!activated) return;
-    $("#content-workspace").classList.remove("is-editor-open");
-    $("#content-workspace .record-form").classList.remove("is-editing");
-    updateNewRecordLabel();
-    say("Candidate Profile is open. Select New profile record to add biography, career, projects or evidence.");
-    $("#admin-record-list")?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  });
   $("#open-broadcast-events")?.addEventListener("click",()=>{$("#content-type").value="broadcast_events";$("#content-type").dispatchEvent(new Event("change",{bubbles:true}));$("#content-workspace").scrollIntoView({behavior:"smooth",block:"start"})});
   $("#admin-search").addEventListener("input", loadList);
   $("#new-record").addEventListener("click", () => {
