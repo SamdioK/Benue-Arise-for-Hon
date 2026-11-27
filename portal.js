@@ -103,6 +103,33 @@ document.addEventListener("click", async (event) => {
   }
 });
 
+function renderProfileEditorialRecord(record) {
+  const title = record.title || "Profile record";
+  const summary = record.excerpt || record.description || "";
+  const bodyText = String(record.body || record.content || record.content_text || "").trim();
+  const imagePath = record.image_url || record.featured_image || record.storage_path || "";
+  const imageUrl = /^https?:\\/\\//i.test(imagePath) ? imagePath :
+    /^(images|photos)\\//i.test(imagePath) ? cfg.SUPABASE_URL + "/storage/v1/object/public/gallery-media/" + imagePath.split("/").map(encodeURIComponent).join("/") : "";
+  const image = imageUrl ? '<figure class="profile-editorial-image"><img src="' + esc(imageUrl) + '" alt="' + esc(record.image_alt || record.alt_text || title) + '" loading="lazy"></figure>' : "";
+  const paragraphs = bodyText ? bodyText.split(/\\n{2,}/).filter(Boolean).map((part,index) =>
+    '<p' + (index === 0 ? ' class="profile-editorial-opening"' : '') + '>' + esc(part).replace(/\\n/g,"<br>") + '</p>'
+  ).join("") : (record.content || record.description ? '<p class="profile-editorial-opening">' + esc(record.content || record.description) + '</p>' : "");
+  const date = record.milestone_date || record.published_at || record.created_at;
+  const dateLabel = date ? new Date(date).toLocaleDateString("en-GB",{timeZone:"Africa/Lagos",day:"numeric",month:"long",year:"numeric"}) : "";
+  return '<article class="profile-editorial-card">' + image +
+    '<div class="profile-editorial-inner">' +
+    '<div class="profile-editorial-kicker">' + esc(record.category || "BENUE ARISE PROFILE") + (dateLabel ? ' <span>· ' + esc(dateLabel) + '</span>' : '') + '</div>' +
+    '<h2>' + escHeading(title) + '</h2>' +
+    (summary ? '<p class="profile-editorial-summary">' + esc(summary) + '</p>' : '') +
+    '<div class="profile-editorial-body">' + paragraphs + '</div>' +
+    (record.location ? '<p class="profile-editorial-location">' + esc(record.location) + '</p>' : '') +
+    '<div class="profile-editorial-footer">' +
+    (record.verification_status ? '<span class="verification-label">' + esc(record.verification_status) + '</span>' : '') +
+    (record.source_url ? '<a class="text-link" href="' + esc(record.source_url) + '" target="_blank" rel="noopener noreferrer">Primary source ↗</a>' : '') +
+    (record.evidence_url ? '<a class="text-link" href="' + esc(record.evidence_url) + '" target="_blank" rel="noopener noreferrer">Supporting record ↗</a>' : '') +
+    '</div></div></article>';
+}
+
 function renderRecords(records, mode = "standard") {
   const box = $("#record-list");
   if (!box) return;
@@ -120,7 +147,7 @@ function renderRecords(records, mode = "standard") {
     box.innerHTML = '<section class="profile-empty-card"><span class="profile-empty-mark" aria-hidden="true">✦</span><p class="profile-empty-kicker">BENUE ARISE FOR HON</p><h2>More About the Journey, Coming Soon</h2><p>We are preparing this section with care. Verified profile information and supporting details will appear here as they are approved for publication.</p></section>';
     return;
   }
-  box.innerHTML = filtered.map((record) => {
+  const profileEditorialPage = ["legal-academic","public-service","scholarships","philanthropy","achievements","projects","evidence","profile"].includes(pageKey());\n  if (profileEditorialPage) { box.innerHTML = filtered.map(renderProfileEditorialRecord).join(""); return; }\n  box.innerHTML = filtered.map((record) => {
     const summary = record.excerpt || record.description || record.content || record.content_text || record.body || record.caption || "";
     const date = record.published_at || record.starts_at || record.created_at;
     const dateLabel = date ? new Date(date).toLocaleDateString("en-GB", { timeZone: "Africa/Lagos", day: "numeric", month: "short", year: "numeric" }) : "";
