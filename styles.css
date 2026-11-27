@@ -1231,3 +1231,37 @@ body.campaign-subpage #record-list .record-card .gallery-caption,body.home-page 
 @media(max-width:760px){
   .personal-profile-page .editorial-dropcap{font-size:4.25em}
 }
+
+
+/* Profile module pages use one continuous editorial column, not the generic three-card grid */
+.personal-profile-page .record-grid{
+  display:block;
+  width:100%;
+  min-width:0;
+}
+.personal-profile-page .profile-editorial-card{
+  display:block;
+  width:100%;
+  margin:0 0 30px;
+}
+.personal-profile-page .profile-editorial-image{
+  width:100%;
+  height:auto;
+  max-height:none;
+  background:#eee9dd;
+}
+.personal-profile-page .profile-editorial-image img{
+  width:100%;
+  height:auto;
+  min-height:0;
+  max-height:520px;
+  object-fit:contain;
+  object-position:center;
+}
+@media(max-width:760px){
+  .personal-profile-page .profile-editorial-image img{
+    height:auto;
+    max-height:420px;
+    object-fit:contain;
+  }
+}
