@@ -33,7 +33,6 @@ const modules = {
     ] },
   profile_records: { label: "Profile, projects & evidence", table: "profile_records", id: "id", order: "updated_at",
     fields: [
-      ["category","Biography subcategory / section category","select",true],
       ["section_key","Website section","select",true,["biography","legal_academic","public_service","scholarships","philanthropy","achievements","projects","evidence"]],
       ["title","Title","text",true],["slug","URL slug","text",true],
       ["excerpt","Short summary","textarea"],["body","Full content","textarea"],
@@ -131,14 +130,17 @@ async function initialise() {
     const selected = modules[key];
     if ($("#new-record") && selected) $("#new-record").textContent = "+ New " + (key === "profile_records" ? "profile record" : selected.label);
   };
-  $("#content-type").addEventListener("change", () => {
+  const syncSelectedContentModule = () => {
     const key = $("#content-type").value;
+    if (!modules[key]) { say("The selected content module is unavailable. Please choose another module."); return; }
     if (!activateModule(key)) return;
     $("#content-workspace").classList.remove("is-editor-open");
     $("#content-workspace .record-form").classList.remove("is-editing");
     updateNewRecordLabel();
     say("Showing " + modules[key].label + ". Select New record to add content.");
-  });
+  };
+  $("#content-type").addEventListener("change", syncSelectedContentModule);
+  $("#content-type").addEventListener("input", syncSelectedContentModule);
   $("#open-broadcast-events")?.addEventListener("click",()=>{$("#content-type").value="broadcast_events";$("#content-type").dispatchEvent(new Event("change",{bubbles:true}));$("#content-workspace").scrollIntoView({behavior:"smooth",block:"start"})});
   $("#admin-search").addEventListener("input", loadList);
   $("#new-record").addEventListener("click", () => {
