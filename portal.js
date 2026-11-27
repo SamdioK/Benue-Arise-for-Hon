@@ -328,7 +328,7 @@ function renderPersonalSection(section, records) {
     const videoUrl = /^https:\/\//i.test(videoPath) ? videoPath : /^videos\/profile\//i.test(videoPath) ? cfg.SUPABASE_URL + "/storage/v1/object/public/gallery-media/" + videoPath.split("/").map(encodeURIComponent).join("/") : "";
     const video = videoUrl ? '<figure class="personal-record-video"><video controls playsinline preload="metadata" aria-label="' + esc(record.title || "Candidate profile video") + '"><source src="' + esc(videoUrl) + '"></video></figure>' : "";
     const date = record.milestone_date ? new Date(record.milestone_date + "T12:00:00").toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"}) : "";
-    const body = String(record.body || "").trim().split(/\n{2,}/).map(part => '<p>' + esc(part).replace(/\n/g,"<br>") + '</p>').join("");
+    const body = String(record.body || "").trim().split(/\n{2,}/).filter(Boolean).map((part,index) => '<p' + (index === 0 ? ' class="personal-record-opening"' : '') + '>' + esc(part).replace(/\n/g,"<br>") + '</p>').join("");
     return '<article class="personal-record-card">' + image + video + '<div class="personal-record-copy">' +
       (date ? '<p class="personal-record-date">' + esc(date) + '</p>' : "") +
       '<h3>' + escHeading(record.title) + '</h3>' +
