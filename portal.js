@@ -124,9 +124,9 @@ function renderProfileEditorialRecord(record) {
     '<h2>' + escHeading(title) + '</h2>' +
     (summary ? '<p class="profile-editorial-summary">' + esc(summary) + '</p>' : '') +
     '<div class="profile-editorial-body">' + paragraphs + '</div>' +
-    (record.location ? '<p class="profile-editorial-location">' + esc(record.location) + '</p>' : '') +
+    (record.location ? '<span class="profile-location-badge"><span class="profile-location-icon" aria-hidden="true">⌖</span>' + esc(record.location) + '</span>' : '') +
     '<div class="profile-editorial-footer">' +
-    (record.verification_status ? '<span class="verification-label">' + esc(record.verification_status) + '</span>' : '') +
+    (record.verification_status ? '<span class="profile-status-badge"><span class="profile-status-icon" aria-hidden="true">✓</span>' + esc(record.verification_status) + '</span>' : '') +
     (record.source_url ? '<a class="text-link" href="' + esc(record.source_url) + '" target="_blank" rel="noopener noreferrer">Primary source ↗</a>' : '') +
     (record.evidence_url ? '<a class="text-link" href="' + esc(record.evidence_url) + '" target="_blank" rel="noopener noreferrer">Supporting record ↗</a>' : '') +
     '</div></div></article>';

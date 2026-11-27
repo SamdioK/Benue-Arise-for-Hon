@@ -1304,3 +1304,73 @@ body.campaign-subpage #record-list .record-card .gallery-caption,body.home-page 
     font-size:4.8em;font-weight:900;margin-top:.04em;margin-right:.14em;
   }
 }
+
+
+/* Distinct editorial metadata badges: place and verification status */
+.personal-profile-page .profile-location-badge,
+.personal-profile-page .profile-status-badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:.55rem;
+  width:max-content;
+  max-width:100%;
+  box-sizing:border-box;
+  border-radius:999px;
+  padding:.58rem 1rem;
+  margin:.7rem .55rem .25rem 0;
+  font-family:Arial,sans-serif;
+  font-size:.88rem;
+  font-weight:750;
+  line-height:1.25;
+  letter-spacing:.01em;
+  vertical-align:middle;
+}
+.personal-profile-page .profile-location-badge{
+  color:#174b35;
+  background:linear-gradient(110deg,#fff5df,#fbe5bd);
+  border:1.5px solid #d58a24;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.7);
+}
+.personal-profile-page .profile-status-badge{
+  color:#fff;
+  background:linear-gradient(110deg,#14583b,#08734b);
+  border:1.5px solid #d6a23a;
+  box-shadow:0 2px 7px rgba(20,88,59,.12);
+}
+.personal-profile-page .profile-location-icon{
+  display:inline-grid;
+  place-items:center;
+  width:1.35em;
+  height:1.35em;
+  border-radius:50%;
+  color:#fff;
+  background:#df7c16;
+  font-size:1.08em;
+  font-weight:900;
+}
+.personal-profile-page .profile-status-icon{
+  display:inline-grid;
+  place-items:center;
+  width:1.35em;
+  height:1.35em;
+  border-radius:50%;
+  color:#17613f;
+  background:#fff;
+  font-size:1em;
+  font-weight:900;
+}
+.personal-profile-page .profile-editorial-footer,
+.personal-profile-page .personal-record-sources{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:.55rem;
+}
+@media(max-width:520px){
+  .personal-profile-page .profile-location-badge,
+  .personal-profile-page .profile-status-badge{
+    font-size:.82rem;
+    padding:.52rem .82rem;
+  }
+}
