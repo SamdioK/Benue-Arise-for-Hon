@@ -148,3 +148,13 @@ body.audio-playing .player-play{box-shadow:0 0 0 5px #d9ad5824}
   .now-reactions,.now-share{margin-top:2px}
   .now-share-icons{margin-top:9px}
 }
+
+/* Benue Arise Audio official ownership imprint */
+.audio-ownership-imprint{display:flex;align-items:center;justify-content:center;gap:12px;max-width:620px;margin:18px auto 22px;padding:13px 16px;border:1px solid rgba(217,173,88,.58);border-radius:14px;background:linear-gradient(115deg,#073a29,#0b563b);color:#fff;box-shadow:0 12px 28px rgba(0,0,0,.16)}
+.audio-ownership-imprint>span:not(.audio-ownership-mic){display:flex;flex-direction:column;gap:3px;text-align:left}
+.audio-ownership-imprint strong{font-size:12px;letter-spacing:.09em;color:#fff}
+.audio-ownership-imprint small{font-size:8px;letter-spacing:.13em;color:#e6c36e;font-weight:800}
+.audio-ownership-imprint i{height:30px;width:1px;background:rgba(255,255,255,.4);flex:0 0 1px}
+.audio-ownership-mic{font-size:28px;color:#e6bd57}
+.audio-ownership-imprint .audio-ownership-owner{align-items:flex-start}
+@media(max-width:520px){.audio-ownership-imprint{gap:8px;padding:11px 9px}.audio-ownership-imprint strong{font-size:10px}.audio-ownership-imprint small{font-size:7px}.audio-ownership-mic{font-size:23px}}
