@@ -18,5 +18,28 @@
 </style></head><body><main class="card"><div class="brand">BENUE ARISE AUDIO · OFFICIAL CAMPAIGN MUSIC</div>
 <img class="art" src="https://atstsekevoozausbiqbi.supabase.co/storage/v1/object/public/campaign-audio/artwork/1795866032367-195589.png" alt="Barr. James Jime Nyigba for Gboko III (Central) 2027 song artwork">
 <h1>Barr. James Jime Nyigba for Gboko III (Central) 2027</h1><p class="artist">Prince Nyon Ukough JP</p><p class="desc">A campaign song for the Social Democratic Party (SDP) candidate for Gboko III (Central) Constituency, Benue State, ahead of the 2027 general election. The song calls for James Jime Nyigba, Esq., to represent his people in the Benue State House of Assembly, highlighting the importance of lawmaking, effective legislation and better dividends of democracy.</p>
-<a class="download" href="https://atstsekevoozausbiqbi.supabase.co/functions/v1/song-download?slug=barr-james-jime-nyigba-gboko-iii-central-2027">Download MP3 with cover artwork</a><a class="listen" href="https://samdiok.github.io/Benue-Arise-for-Hon/campaign-songs.html?song=barr-james-jime-nyigba-gboko-iii-central-2027">Listen to this song</a><p class="foot">Benue Arise for Hon · Leadership · Service · Public Engagement</p>
-</main></body></html>
+<a class="download" href="#" data-download-url="https://atstsekevoozausbiqbi.supabase.co/functions/v1/song-download?slug=barr-james-jime-nyigba-gboko-iii-central-2027">Download MP3 with cover artwork</a><p id="download-status" class="foot" aria-live="polite"></p><a class="listen" href="https://samdiok.github.io/Benue-Arise-for-Hon/campaign-songs.html?song=barr-james-jime-nyigba-gboko-iii-central-2027">Listen to this song</a><p class="foot">Benue Arise for Hon · Leadership · Service · Public Engagement</p>
+</main><script>
+(function(){
+ const button=document.querySelector(".download[data-download-url]");
+ const status=document.getElementById("download-status");
+ if(!button)return;
+ button.addEventListener("click",async function(event){
+  event.preventDefault();
+  if(button.dataset.busy==="1")return;
+  button.dataset.busy="1";button.textContent="Preparing your MP3…";if(status)status.textContent="Retrieving audio and embedding its official artwork and artist details.";
+  try{
+   const response=await fetch(button.dataset.downloadUrl,{method:"GET",mode:"cors",cache:"no-store"});
+   if(!response.ok){const message=await response.text();throw new Error(message||("Download failed ("+response.status+")"));}
+   const blob=await response.blob();
+   if(!blob.size)throw new Error("The download returned an empty audio file.");
+   const objectUrl=URL.createObjectURL(blob),a=document.createElement("a");
+   a.href=objectUrl;a.download="barr-james-jime-nyigba-gboko-iii-central-2027.mp3";document.body.appendChild(a);a.click();a.remove();
+   setTimeout(()=>URL.revokeObjectURL(objectUrl),60000);
+   button.textContent="Download MP3 with cover artwork";if(status)status.textContent="Your tagged MP3 is ready. Check your Downloads folder.";
+  }catch(error){
+   button.textContent="Try download again";if(status)status.textContent="Download could not be completed: "+(error&&error.message?error.message:"Please try again.");
+  }finally{button.dataset.busy="0";}
+ });
+})();
+</script></body></html>

@@ -18,5 +18,28 @@
 </style></head><body><main class="card"><div class="brand">BENUE ARISE AUDIO · OFFICIAL CAMPAIGN MUSIC</div>
 <img class="art" src="https://atstsekevoozausbiqbi.supabase.co/storage/v1/object/public/campaign-audio/artwork/1794644518538-135689.jpg" alt="Angwe U Gomna Prof. S. T. Hon, SAN 2027 song artwork">
 <h1>Angwe U Gomna Prof. S. T. Hon, SAN 2027</h1><p class="artist">Mrs. Agnes Kyaatser</p><p class="desc">A Tiv-language campaign song supporting Prof. Sebastine Tartenger Hon, SAN, and his 2027 governorship ambition in Benue State.</p>
-<a class="download" href="https://atstsekevoozausbiqbi.supabase.co/functions/v1/song-download?slug=angwe-u-gomna-prof-s-t-hon-san-2027">Download MP3 with cover artwork</a><a class="listen" href="https://samdiok.github.io/Benue-Arise-for-Hon/campaign-songs.html?song=angwe-u-gomna-prof-s-t-hon-san-2027">Listen to this song</a><p class="foot">Benue Arise for Hon · Leadership · Service · Public Engagement</p>
-</main></body></html>
+<a class="download" href="#" data-download-url="https://atstsekevoozausbiqbi.supabase.co/functions/v1/song-download?slug=angwe-u-gomna-prof-s-t-hon-san-2027">Download MP3 with cover artwork</a><p id="download-status" class="foot" aria-live="polite"></p><a class="listen" href="https://samdiok.github.io/Benue-Arise-for-Hon/campaign-songs.html?song=angwe-u-gomna-prof-s-t-hon-san-2027">Listen to this song</a><p class="foot">Benue Arise for Hon · Leadership · Service · Public Engagement</p>
+</main><script>
+(function(){
+ const button=document.querySelector(".download[data-download-url]");
+ const status=document.getElementById("download-status");
+ if(!button)return;
+ button.addEventListener("click",async function(event){
+  event.preventDefault();
+  if(button.dataset.busy==="1")return;
+  button.dataset.busy="1";button.textContent="Preparing your MP3…";if(status)status.textContent="Retrieving audio and embedding its official artwork and artist details.";
+  try{
+   const response=await fetch(button.dataset.downloadUrl,{method:"GET",mode:"cors",cache:"no-store"});
+   if(!response.ok){const message=await response.text();throw new Error(message||("Download failed ("+response.status+")"));}
+   const blob=await response.blob();
+   if(!blob.size)throw new Error("The download returned an empty audio file.");
+   const objectUrl=URL.createObjectURL(blob),a=document.createElement("a");
+   a.href=objectUrl;a.download="angwe-u-gomna-prof-s-t-hon-san-2027.mp3";document.body.appendChild(a);a.click();a.remove();
+   setTimeout(()=>URL.revokeObjectURL(objectUrl),60000);
+   button.textContent="Download MP3 with cover artwork";if(status)status.textContent="Your tagged MP3 is ready. Check your Downloads folder.";
+  }catch(error){
+   button.textContent="Try download again";if(status)status.textContent="Download could not be completed: "+(error&&error.message?error.message:"Please try again.");
+  }finally{button.dataset.busy="0";}
+ });
+})();
+</script></body></html>
